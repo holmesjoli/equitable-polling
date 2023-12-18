@@ -7,15 +7,13 @@ import { State, County, ChangeYear } from '../utils/Types';
 import geoData from '../data/geoData.json';
 import { changeYearData } from "../utils/Global";
 
-export function PageDescription():  JSX.Element {
+export function PageDescription({children}: {children: React.ReactNode}):  JSX.Element {
 
     return(
         <div className="QueryGroup">
-             <h3>Page description</h3>
-            <div id="PageDescription" className="QueryComponent">
-                <p>
-                    The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.
-                </p>
+             <h3>Description</h3>
+                <div id="PageDescription" className="QueryComponent">
+                {children}
             </div>
         </div>
     )

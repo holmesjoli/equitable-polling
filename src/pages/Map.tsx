@@ -18,7 +18,9 @@ export default function Map({}): JSX.Element {
             <div className="Content">
                 <PageNavigation />
                 <div className="Query">
-                    <PageDescription />
+                    <PageDescription>
+                        <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
+                    </PageDescription>
                     <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
                     <SelectGeography state={state} setState={setState} county={county} setCounty={setCounty} />
                 </div>

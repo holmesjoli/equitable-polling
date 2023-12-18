@@ -1,0 +1,13 @@
+.Status {
+    position: fixed;
+    top: 5rem;
+    right: 1rem;
+    cursor: grab;
+    background-color: rgba(250, 246, 240, .9);
+    width: 250px;
+    transition: right 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border: 1px solid $appBorderColor;
+    border-radius: 5px;
+    overflow-y: auto;
+    z-index: +9;
+}
