@@ -1,0 +1,14 @@
+.Query {
+    background-color: #FAF6F0;
+    border-right: 1px solid #F4DFC8;
+}
+
+.QueryComponent {
+    padding-bottom: $appPadding;
+}
+
+.QueryGroup {
+    border-bottom: 1px solid #F4DFC8;
+    padding: $appPadding;
+    margin: 0 $appMargin;
+}

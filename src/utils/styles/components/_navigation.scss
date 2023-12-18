@@ -1,0 +1,14 @@
+.Navigation {
+    background-color: $appPanelColor;
+    padding: $appPadding;
+    border-bottom: 1px solid $appBorderColor;
+
+    h1 {
+        margin: $appMargin;
+    }
+
+    h3 {
+        margin: $appMargin;
+        padding: $appPadding;
+    }
+}

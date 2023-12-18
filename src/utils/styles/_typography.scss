@@ -1,0 +1,88 @@
+// Typography styles 
+
+body {
+  font-family: $baseFont;
+  font-size: $baseFontSize;
+  line-height: $baseLineHeight;
+  // letter-spacing: 0.1em;
+}
+
+// disable selection in the UI
+* {
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+
+// emable in the help 
+.formatted * {
+  -webkit-touch-callout:default;
+  -webkit-user-select:text;
+  -moz-user-select:text;
+  -ms-user-select:text;
+  user-select:text;
+}
+
+// base typography
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 300;
+  margin-bottom: 1.4rem;
+  margin-top: 0;
+}
+
+h1 {
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.75rem;
+  line-height: 1.25;
+}
+
+h3 {
+  font-size: .95rem;
+  line-height: 1.3;
+  font-weight: 500;
+  padding-bottom: 1rem;
+  margin-bottom: 0;
+}
+
+h4 {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+h5 {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+h6 {
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+p {
+  font-size: .85rem;
+  font-weight: 400;
+}
+
+b, strong {
+  font-weight: bold;
+}
+
+a {
+  color: $appColor;
+  text-decoration: none;
+}
+
+a:hover {
+  color: $appColorFocus;
+}
+
+img {
+  max-width: 100%;
+}
