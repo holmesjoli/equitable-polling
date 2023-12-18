@@ -1,12 +1,15 @@
 import { useNavigate } from "react-router-dom";
 
 // Libraries
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Polygon, GeoJSON } from "react-leaflet";
 
 // Components
 import Main from '../components/Main';
 import Status from '../components/Status';
 import { PageDescription } from "../components/Query";
+import states from "../data/states.json";
+
+const purpleOptions = { color: 'purple' }
 
 export default function Home({}): JSX.Element {
 
@@ -16,10 +19,17 @@ export default function Home({}): JSX.Element {
       navigate(path);
     }
 
-    var maxBounds = [
-        [5.499550, -167.276413], //Southwest
-        [83.162102, -52.233040]  //Northeast
-    ];
+    // var maxBounds = [
+    //     [5.499550, -167.276413], //Southwest
+    //     [83.162102, -52.233040]  //Northeast
+    // ];
+
+    const features: GeoJSON.Feature[] = states.features.map((state: any) => state);
+
+    const data: GeoJSON.FeatureCollection = {
+        type: 'FeatureCollection',
+        features: features
+    };
 
     return(
 
@@ -40,6 +50,15 @@ export default function Home({}): JSX.Element {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
+                  <GeoJSON
+                    data={data}
+                    // key={geoJsonId}
+                    // style={geoJSONStyle}
+                    // onEachFeature={onEachFeature}
+                    // ref={geoJsonRef}
+                    // id="geoJsonAll"
+                    />
+                {/* <Polygon pathOptions={purpleOptions} positions={multiPolygon} /> */}
             </MapContainer>
         </Main>
     </div>

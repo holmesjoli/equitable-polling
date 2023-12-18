@@ -454,16 +454,23 @@ sc_county_change %>%
 
 states <- map_data("state")
 
-ggplot(states, aes(long, lat, group = region)) +
+ggplot(states, aes(long, lat, group = group)) +
   geom_polygon(fill = "#EAEAEA", colour = "#B7B7B7") +
-  geom_text(data = states %>% 
-              group_by(region) %>% 
-              summarize(lat = mean(lat), long = mean(long)) %>%
-              mutate(region = stringr::str_to_title(region)),
-            aes(long, lat, label = region)) +
+  # geom_text(data = states %>% 
+  #             group_by(region) %>% 
+  #             summarize(lat = mean(lat), long = mean(long)) %>%
+  #             mutate(region = stringr::str_to_title(region)),
+  #           aes(long, lat, label = region)) +
   theme_minimal() +
   theme(panel.grid = element_blank(),
         axis.text = element_blank(),
         axis.title = element_blank()) +
   coord_map()
-  
+
+ggsave("usa.svg")
+
+states_geo <- tigris::states(cb = T) %>% 
+  filter(STATEFP %in% c("13", "45", "28", "55")) %>% 
+  select(geometry) %>% 
+  # rename(name = NAME) %>% 
+  sf::write_sf("../data/states.geojson")
