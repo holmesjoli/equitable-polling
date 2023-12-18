@@ -24,11 +24,9 @@ export default function Home({}): JSX.Element {
     //     [83.162102, -52.233040]  //Northeast
     // ];
 
-    const features: GeoJSON.Feature[] = states.features.map((state: any) => state);
-
     const data: GeoJSON.FeatureCollection = {
         type: 'FeatureCollection',
-        features: features
+        features: states.features as GeoJSON.Feature[]
     };
 
     return(
