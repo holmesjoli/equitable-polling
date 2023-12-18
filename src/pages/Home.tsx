@@ -23,7 +23,7 @@ export default function Home({}): JSX.Element {
         <Main> 
             <MapContainer
                 className="home-map"
-                center={[39.82, -98.58]}
+                center={[39.97, -86.19]}
                 zoom={5}
                 maxZoom={18}
                 >
