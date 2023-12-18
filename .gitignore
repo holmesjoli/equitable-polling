@@ -1,6 +1,7 @@
 node_modules
 build
-.Rproj.user
 src/data/archive
 
+.Rproj.user
 .Rhistory
+.RData
