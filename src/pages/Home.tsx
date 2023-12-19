@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 import { useNavigate } from "react-router-dom";
 
 // Libraries
@@ -9,7 +11,7 @@ import Status from '../components/Status';
 import { PageDescription } from "../components/Query";
 import states from "../data/states.json";
 
-const purpleOptions = { color: 'purple' }
+const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2 };
 
 export default function Home({}): JSX.Element {
 
@@ -28,6 +30,35 @@ export default function Home({}): JSX.Element {
         type: 'FeatureCollection',
         features: states.features as GeoJSON.Feature[]
     };
+
+    function onEachFeature(_: any, layer: any) {
+        layer.on({
+          mouseover: mouseOver,
+          mouseout: mouseOut
+        //   click: onDrillDown
+        });
+    }
+
+    function mouseOver(e: any) {
+        var layer = e.target;
+        layer.setStyle({
+            color: "#047391",
+            fillOpacity: 0.7
+        });
+    }
+
+    function mouseOut(e: any) {
+        var layer = e.target;
+        layer.setStyle(style);
+    }
+
+    // function resetHighlight(e: any) {
+    //     geoJsonRef.current.leafletElement.resetStyle(e.target);
+    // }
+
+    // function zoomToFeature(e: any) {
+    //     mapRef.current.leafletElement.fitBounds(e.target.getBounds());
+    // }
 
     return(
 
@@ -48,15 +79,7 @@ export default function Home({}): JSX.Element {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
-                  <GeoJSON
-                    data={data}
-                    // key={geoJsonId}
-                    // style={geoJSONStyle}
-                    // onEachFeature={onEachFeature}
-                    // ref={geoJsonRef}
-                    // id="geoJsonAll"
-                    />
-                {/* <Polygon pathOptions={purpleOptions} positions={multiPolygon} /> */}
+                <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
             </MapContainer>
         </Main>
     </div>
