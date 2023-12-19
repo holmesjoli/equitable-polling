@@ -1,7 +1,7 @@
 [
     {
         "stname": "Georgia",
-        "stfp": "013",
+        "stfp": "13",
         "counties": [
             {
                 "cntyfp": "001",
@@ -802,7 +802,7 @@
     },
     {
         "stname": "South Carolina",
-        "stfp": "045",
+        "stfp": "45",
         "counties": [
             {
                 "cntyfp": "001",
@@ -1038,7 +1038,7 @@
     },
     {
         "stname": "Mississippi",
-        "stfp": "028",
+        "stfp": "28",
         "counties": [
             {
                 "cntyfp": "001",
@@ -1454,7 +1454,7 @@
     },
     {
         "stname": "Wisconsin",
-        "stfp": "055",
+        "stfp": "55",
         "counties": [
             {
                 "cntyfp": "001",

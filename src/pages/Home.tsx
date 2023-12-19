@@ -7,10 +7,12 @@ import * as d3 from 'd3';
 import Main from '../components/Main';
 import { StateStatus, USStatus } from '../components/Status';
 import states from "../data/states.json";
+import geoData from "../data/geoData.json";
 
 // Data 
 import { changeYearData } from "../utils/Global";
 import { QueryMenu } from "../components/Query";
+import { State } from "../utils/Types";
 
 const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2 };
 
@@ -55,10 +57,11 @@ export default function Home({}): JSX.Element {
     }
 
     function onClick(e: any) {
-        // var layer = e.target;
-        // console.log(layer);
+        var layer = e.target;
         // console.log(e.target.getBounds());
         setGeographicView("State");
+        console.log(geoData.find(d => d.stfp === layer.feature.properties.stfp));
+        // setState(geoData.find(d => d.stfp === layer.feature.properties.stfp) as State)
     }
 
     return(
