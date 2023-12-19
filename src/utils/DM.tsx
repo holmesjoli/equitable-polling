@@ -1,14 +1,18 @@
 // Data Management Step
-import states from "../data/states.json";
+import statesGeo from "../data/stateGeoJSON.json";
+import stateCounty from "../data/stateCounty.json";
 
 export function formattedGeoJSON() {
 
     const features = [] as GeoJSON.Feature[];
 
-    states.forEach((d: any) => {
+    statesGeo.forEach((d: any) => {
         features.push({type: 'Feature', 
-                    properties: {name: d.name, stfp: d.stfp, centroid: {lat: d.Y, long: d.X}}, 
-                    geometry: d.geometry})
+                       properties: {stname: d.stname, 
+                                    stfp: d.stfp, 
+                                    centroid: {lat: d.Y, long: d.X}, 
+                                    counties: stateCounty.find((e: any) => e.stfp === d.stfp)!.counties}, 
+                       geometry: d.geometry})
     });
 
     const data = {type: 'FeatureCollection', features: features} as GeoJSON.FeatureCollection;

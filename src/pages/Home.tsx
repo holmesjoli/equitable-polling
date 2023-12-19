@@ -6,6 +6,7 @@ import Main from '../components/Main';
 import { StateStatus, USStatus } from '../components/Status';
 import { QueryMenu } from "../components/Query";
 import Map from "../components/Map";
+import { formattedGeoJSON } from "../utils/DM";
 
 // Data 
 import { changeYearData, equityIndicatorData } from "../utils/Global";
@@ -17,9 +18,12 @@ const outerBounds = [
     [83.162102, -52.233040]  //Northeast
 ];
 
+// Data Management
+const data = formattedGeoJSON();
+
 export default function Home({}): JSX.Element {
 
-    const [state, setState] = useState({'stname':'', 'stfp':'', 'counties':[]});
+    const [state, setState] = useState({'stname':'', 'stfp':'', 'counties':[], centroid: {lat: 0, long: 0}});
     const [county, setCounty] = useState({'cntyname':'', 'cntyfp':'', 'cntygeoid':''});
     const [changeYear, setChangeYear] = useState(changeYearData[0]);
     const [equityIndicator, setEquityIndicator] = useState(equityIndicatorData[0]);
@@ -38,8 +42,8 @@ export default function Home({}): JSX.Element {
     return(
         <Main>
             {isFullScreen? <USStatus /> : <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} />}
-            <QueryMenu isFullScreen={isFullScreen} changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>
-            <Map setFullScreen={setFullScreen} setState={setState} setBounds={setBounds}/>
+            <QueryMenu data={data} isFullScreen={isFullScreen} changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>
+            <Map data={data} setFullScreen={setFullScreen} setState={setState} setBounds={setBounds}/>
     </Main>
     )
 }

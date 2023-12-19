@@ -3,9 +3,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-import { State, County, ChangeYear, EquityIndicator } from '../utils/Types';
-import geoData from '../data/geoData.json';
-import { changeYearData, equityIndicatorData } from "../utils/Global";
+import { State, County, ChangeYear } from '../utils/Types';
+import { changeYearData } from "../utils/Global";
 
 import styled from "styled-components";
 
@@ -40,10 +39,10 @@ export function PageDescription({children}: {children: React.ReactNode}):  JSX.E
     )
 }
 
-function SelectState({state, setState} : {state: State, setState: any}) : JSX.Element {
+function SelectState({data, state, setState} : {data: GeoJSON.FeatureCollection, state: State, setState: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
-        setState(geoData.find(d => d.stfp === event.target.value) as State);
+        setState(data.features.find(d => d.properties!.stfp === event.target.value)!.properties as State);
     };
 
     return (
@@ -57,8 +56,8 @@ function SelectState({state, setState} : {state: State, setState: any}) : JSX.El
                 label="State"
                 onChange={handleChange}
                 >
-                {geoData.map((state: State) => (
-                    <MenuItem key={state.stfp} value={state.stfp}>{state.stname}</MenuItem>
+                {data.features.map((state: any) => (
+                    <MenuItem key={state.properties.stfp} value={state.properties.stfp}>{state.properties.stname}</MenuItem>
                 ))}
                 </Select>
             </FormControl>
@@ -92,11 +91,11 @@ function SelectCounty({state, county, setCounty} : {state: State, county: County
     );
 }
 
-function SelectGeography({state, setState, county, setCounty} : {state: State, setState: any, county: County, setCounty: any}) : JSX.Element {
+function SelectGeography({data, state, setState, county, setCounty} : {data: GeoJSON.FeatureCollection, state: State, setState: any, county: County, setCounty: any}) : JSX.Element {
 
     return(
         <ComponentGroup title="Select geography">
-            <SelectState state={state} setState={setState}/>
+            <SelectState data={data} state={state} setState={setState}/>
             {state.stfp !== "" ? <SelectCounty state={state} county={county} setCounty={setCounty}/> : null}
         </ComponentGroup>
     )
@@ -145,7 +144,7 @@ export const Menu = styled.div<{ isFullScreen: boolean; }>`
     height: 85vh;
 `;
 
-export function QueryMenu({isFullScreen, changeYear, setChangeYear, state, setState, county, setCounty} : {isFullScreen: boolean, changeYear: ChangeYear, setChangeYear: any, state: State, setState: any, county: County, setCounty: any}) {
+export function QueryMenu({data, isFullScreen, changeYear, setChangeYear, state, setState, county, setCounty} : {data: GeoJSON.FeatureCollection, isFullScreen: boolean, changeYear: ChangeYear, setChangeYear: any, state: State, setState: any, county: County, setCounty: any}) {
 
     return(
         <Menu isFullScreen={isFullScreen}>
@@ -154,7 +153,7 @@ export function QueryMenu({isFullScreen, changeYear, setChangeYear, state, setSt
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
                 </PageDescription>
                 <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
-                <SelectGeography state={state} setState={setState} county={county} setCounty={setCounty} />
+                <SelectGeography data={data} state={state} setState={setState} county={county} setCounty={setCounty} />
             </div>
         </Menu>
     )

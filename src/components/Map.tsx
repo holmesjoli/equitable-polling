@@ -1,13 +1,10 @@
 // Libraries
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap } from "react-leaflet";
 
-// Components
-import { formattedGeoJSON } from "../utils/DM";
-
 // Data
-import geoData from "../data/geoData.json";
+import stateCounty from "../data/stateCounty.json";
 
-import { style} from "../utils/Global";
+import { style } from "../utils/Global";
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -22,10 +19,7 @@ export function mouseOut(event: any) {
     layer.setStyle(style);
 }
 
-// Data Management
-const data = formattedGeoJSON() ;
-
-export default function Map({ setFullScreen, setState, setBounds }: { setFullScreen: any, setState: any, setBounds: any }): JSX.Element {
+export default function Map({ data, setFullScreen, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, setState: any, setBounds: any }): JSX.Element {
 
     function onEachFeature(_: any, layer: any) {
         layer.on({
@@ -38,7 +32,11 @@ export default function Map({ setFullScreen, setState, setBounds }: { setFullScr
     function onClick(event: any) {
         var layer = event.target;
         setFullScreen(false);
-        setState(geoData.find(d => d.stfp === layer.feature.properties.stfp) as any);
+
+        console.log(layer.feature.properties);
+        setState(data.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties as any);
+
+        console.log(data);
 
         const innerBounds = event.target.getBounds();
         setBounds(innerBounds);
