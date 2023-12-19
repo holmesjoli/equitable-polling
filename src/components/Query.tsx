@@ -3,9 +3,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-import { State, County, ChangeYear } from '../utils/Types';
+import { State, County, ChangeYear, EquityIndicator } from '../utils/Types';
 import geoData from '../data/geoData.json';
-import { changeYearData } from "../utils/Global";
+import { changeYearData, equityIndicatorData } from "../utils/Global";
 
 import styled from "styled-components";
 
@@ -121,7 +121,7 @@ function SelectChangeYear({changeYear, setChangeYear} : {changeYear: ChangeYear,
                     onChange={handleChange}
                     >
                     {changeYearData.map((changeYear: ChangeYear) => (
-                        <MenuItem key={changeYear.id} value={changeYear.id}>{changeYear.changeYear}</MenuItem>
+                        <MenuItem key={changeYear.id} value={changeYear.id}>{changeYear.descr}</MenuItem>
                     ))}
                     </Select>
                 </FormControl>
@@ -129,15 +129,6 @@ function SelectChangeYear({changeYear, setChangeYear} : {changeYear: ChangeYear,
         </ComponentGroup>
     )
 }
-
-// <StyledPaper open={open} />    
-
-// ...
-
-// const StyledPaper = styled(Paper)<{ open: boolean }>`
-//    top: ${p => (p.open ? 0 : 100)}%;
-// `;
-
 
 export const Menu = styled.div<{ isFullScreen: boolean; }>`
     // resize: vertical;
@@ -157,7 +148,6 @@ export const Menu = styled.div<{ isFullScreen: boolean; }>`
 export function QueryMenu({isFullScreen, changeYear, setChangeYear, state, setState, county, setCounty} : {isFullScreen: boolean, changeYear: ChangeYear, setChangeYear: any, state: State, setState: any, county: County, setCounty: any}) {
 
     return(
-
         <Menu isFullScreen={isFullScreen}>
             <div className="Query">
                 <PageDescription>
