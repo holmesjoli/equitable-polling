@@ -1,8 +1,7 @@
 // Libraries
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap } from "react-leaflet";
 
-// Data
-import stateCounty from "../data/stateCounty.json";
+import { State } from "../utils/Types";
 
 import { style } from "../utils/Global";
 
@@ -32,11 +31,7 @@ export default function Map({ data, setFullScreen, setState, setBounds }: { data
     function onClick(event: any) {
         var layer = event.target;
         setFullScreen(false);
-
-        console.log(layer.feature.properties);
-        setState(data.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties as any);
-
-        console.log(data);
+        setState(data.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties as State);
 
         const innerBounds = event.target.getBounds();
         setBounds(innerBounds);
