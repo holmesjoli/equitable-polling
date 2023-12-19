@@ -21,7 +21,7 @@ export function mouseOut(event: any) {
 }
 
 
-function MyComponent({ data, setFullScreen, state, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setBounds: any }) {
+function MapComponent({ data, setFullScreen, state, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setBounds: any }) {
     const map = useMap();
 
     useEffect(() => {
@@ -41,7 +41,7 @@ function MyComponent({ data, setFullScreen, state, setState, setBounds }: { data
         setFullScreen(false);
         setState(data.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties as State);
 
-        const innerBounds = event.target.getBounds();
+        const innerBounds = layer.getBounds();
         console.log(event);
         console.log(innerBounds);
         setBounds(innerBounds);
@@ -67,7 +67,7 @@ export default function Map({ data, setFullScreen, state, setState, setBounds }:
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <MyComponent data={data} setFullScreen={setFullScreen} state={state} setState={setState} setBounds={setBounds}/>
+            <MapComponent data={data} setFullScreen={setFullScreen} state={state} setState={setState} setBounds={setBounds}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );
