@@ -469,9 +469,3 @@ ggplot(states, aes(long, lat, group = group)) +
 
 ggsave("usa.svg")
 
-states_geo <- tigris::states(cb = T) %>% 
-  filter(STATEFP %in% c("13", "45", "28", "55")) %>% 
-  select(NAME, STATEFP, geometry) %>% 
-  rename(stfp = STATEFP,
-         name = NAME) %>%
-  sf::write_sf("../data/states.geojson")
