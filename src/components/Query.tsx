@@ -7,6 +7,8 @@ import { State, County, ChangeYear } from '../utils/Types';
 import geoData from '../data/geoData.json';
 import { changeYearData } from "../utils/Global";
 
+import styled from "styled-components";
+
 export function ComponentGroupInner({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
 
     return(
@@ -128,16 +130,42 @@ function SelectChangeYear({changeYear, setChangeYear} : {changeYear: ChangeYear,
     )
 }
 
+// <StyledPaper open={open} />    
 
-export function QueryMenu({changeYear, setChangeYear, state, setState, county, setCounty} : {changeYear: ChangeYear, setChangeYear: any, state: State, setState: any, county: County, setCounty: any}) {
+// ...
+
+// const StyledPaper = styled(Paper)<{ open: boolean }>`
+//    top: ${p => (p.open ? 0 : 100)}%;
+// `;
+
+
+export const Menu = styled.div<{ isFullScreen: boolean; }>`
+    // resize: vertical;
+    z-index: +9;
+    position: absolute;
+    top: 10vh;
+    // left: '0vw';
+    left: ${props => props.isFullScreen ? '-100vw;' : '0vw;'};
+    width: 20rem;
+    padding: .625rem;
+    background-color: #FAF6F0;
+    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    overflow-y: auto;
+    height: 85vh;
+`;
+
+export function QueryMenu({isFullScreen, changeYear, setChangeYear, state, setState, county, setCounty} : {isFullScreen: boolean, changeYear: ChangeYear, setChangeYear: any, state: State, setState: any, county: County, setCounty: any}) {
 
     return(
-        <div className="Query">
-            <PageDescription>
-                <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
-            </PageDescription>
-            <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
-            <SelectGeography state={state} setState={setState} county={county} setCounty={setCounty} />
-        </div>
+
+        <Menu isFullScreen={isFullScreen}>
+            <div className="Query">
+                <PageDescription>
+                    <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
+                </PageDescription>
+                <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
+                <SelectGeography state={state} setState={setState} county={county} setCounty={setCounty} />
+            </div>
+        </Menu>
     )
 }

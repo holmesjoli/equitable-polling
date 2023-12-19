@@ -1,5 +1,5 @@
 // Libraries
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
 import * as d3 from 'd3';
 
@@ -18,17 +18,25 @@ const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2
 
 export default function Home({}): JSX.Element {
 
-    const [state, setState] = React.useState({'stname':'', 'stfp':'', 'counties':[]});
-    const [county, setCounty] = React.useState({'cntyname':'', 'cntyfp':'', 'cntygeoid':''});
-    const [changeYear, setChangeYear] = React.useState(changeYearData[0]);
+    const [state, setState] = useState({'stname':'', 'stfp':'', 'counties':[]});
+    const [county, setCounty] = useState({'cntyname':'', 'cntyfp':'', 'cntygeoid':''});
+    const [changeYear, setChangeYear] = useState(changeYearData[0]);
+    const [isFullScreen, setFullScreen] = useState(true);
+    const [geographicView, setGeographicView] = useState("US");
 
     var mapRef = useRef(null);
-    const [geographicView, setGeographicView] = React.useState("US");
 
     // var maxBounds = [
     //     [5.499550, -167.276413], //Southwest
     //     [83.162102, -52.233040]  //Northeast
     // ];
+
+    const handleFullScreen = () => {
+        // if (isFullScreen) {
+        // } else {
+        // }
+        setFullScreen(!isFullScreen);
+      };
 
     const data: GeoJSON.FeatureCollection = {
         type: 'FeatureCollection',
@@ -62,12 +70,13 @@ export default function Home({}): JSX.Element {
         setGeographicView("State");
         console.log(geoData.find(d => d.stfp === layer.feature.properties.stfp));
         // setState(geoData.find(d => d.stfp === layer.feature.properties.stfp) as State)
+        setFullScreen(false);
     }
 
     return(
         <Main>
             {geographicView === "US"? <USStatus /> : <StateStatus />}
-            {/* {geographicView === "US"? <></> : <QueryMenu changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>} */}
+            <QueryMenu isFullScreen={isFullScreen} changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>
             <MapContainer
                 className="home-map"
                 center={[39.97, -86.19]}

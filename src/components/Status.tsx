@@ -30,7 +30,7 @@ export function StateStatus() {
   );
 }
 
-export default function Status ({children}: {children: any}) {
+export default function Status ({children}: {children: React.ReactNode}) {
 
     return (
       <Draggable bounds="body">
