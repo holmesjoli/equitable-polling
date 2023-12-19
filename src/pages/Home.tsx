@@ -1,20 +1,17 @@
 // Libraries
-import { useRef, useState } from "react";
-import { MapContainer, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
+import { useRef, useState, useMemo } from "react";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap } from "react-leaflet";
 
 // Components
 import Main from '../components/Main';
 import { StateStatus, USStatus } from '../components/Status';
 import { QueryMenu } from "../components/Query";
+import { mouseOver, mouseOut } from "../components/Map";
 
 // Data 
-import { changeYearData, equityIndicatorData } from "../utils/Global";
+import { style, changeYearData, equityIndicatorData } from "../utils/Global";
 import states from "../data/states.json";
 import geoData from "../data/geoData.json";
-
-// Types
-
-const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2 };
 
 // Setup data for GeoJSON
 const features = [] as GeoJSON.Feature[];
@@ -27,6 +24,10 @@ states.forEach((d: any) => {
 
 const featuresCollection = {type: 'FeatureCollection', features: features} as GeoJSON.FeatureCollection;
 
+const outerBounds = [
+    [5.499550, -167.276413], //Southwest
+    [83.162102, -52.233040]  //Northeast
+];
 
 export default function Home({}): JSX.Element {
 
@@ -35,13 +36,21 @@ export default function Home({}): JSX.Element {
     const [changeYear, setChangeYear] = useState(changeYearData[0]);
     const [equityIndicator, setEquityIndicator] = useState(equityIndicatorData[0]);
     const [isFullScreen, setFullScreen] = useState(true);
+    const [bounds, setBounds] = useState(outerBounds);
 
-    var mapRef = useRef(null);
+    console.log(bounds);
 
-    // var maxBounds = [
-    //     [5.499550, -167.276413], //Southwest
-    //     [83.162102, -52.233040]  //Northeast
-    // ];
+    // const map = useMap();
+
+    // const innerHandlers = useMemo(
+    //     () => ({
+    //       click() {
+    //         setBounds(innerBounds)
+    //         map.fitBounds(innerBounds)
+    //       },
+    //     }),
+    //     [map],
+    //   )
 
     const handleFullScreen = () => {
         // if (isFullScreen) {
@@ -58,23 +67,22 @@ export default function Home({}): JSX.Element {
         });
     }
 
-    function mouseOver(event: any) {
-        var layer = event.target;
-        layer.setStyle({
-            color: "#047391",
-            fillOpacity: 0.7
-        });
-    }
-
-    function mouseOut(event: any) {
-        var layer = event.target;
-        layer.setStyle(style);
-    }
-
     function onClick(event: any) {
         var layer = event.target;
         setFullScreen(false);
         setState(geoData.find(d => d.stfp === layer.feature.properties.stfp) as any);
+
+        const innerBounds = event.target.getBounds();
+        setBounds(innerBounds);
+
+        console.log(bounds)
+        // map.fitBounds(innerBounds)
+    }
+
+    function MyComponent() {
+        const map = useMap()
+        console.log('map center:', map.getCenter())
+        return null
     }
 
     return(
@@ -86,7 +94,7 @@ export default function Home({}): JSX.Element {
                 center={[39.97, -86.19]}
                 zoom={5}
                 maxZoom={18}
-                ref={mapRef}
+                scrollWheelZoom={false}
                 >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

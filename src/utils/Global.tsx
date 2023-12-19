@@ -8,3 +8,5 @@ export const equityIndicatorData = [{id: '0', descr: 'None'},
                                     {id: '1', descr: '% Black Voters'},
                                     {id: '2', descr: 'Age demographics'},
                                     {id: '3', descr: 'Nearest time to poll'}];
+
+export const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2 };
