@@ -68,12 +68,13 @@ export default function Home({}): JSX.Element {
 
     function onClick(event: any) {
         var layer = event.target;
-        // console.log(e.target.getBounds());
         setGeographicView("State");
         console.log(geoData.find(d => d.stfp === layer.feature.properties.stfp));
-        // setState(geoData.find(d => d.stfp === layer.feature.properties.stfp));
-        // setState(geoData.find(d => d.stfp === event.target.feature.properties.stfp) as State);
+
+        const result: any = geoData.find(d => d.stfp === layer.feature.properties.stfp);
+
         setFullScreen(false);
+        setState(result);
     }
 
     return(
