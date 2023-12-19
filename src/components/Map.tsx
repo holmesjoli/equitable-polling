@@ -1,8 +1,10 @@
 // Libraries
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap } from "react-leaflet";
 
+// Components
+import { formattedGeoJSON } from "../utils/DM";
+
 // Data
-import states from "../data/states.json";
 import geoData from "../data/geoData.json";
 
 import { style} from "../utils/Global";
@@ -20,16 +22,8 @@ export function mouseOut(event: any) {
     layer.setStyle(style);
 }
 
-const features = [] as GeoJSON.Feature[];
-
-states.forEach((d: any) => {
-    features.push({type: 'Feature', 
-                   properties: {name: d.name, stfp: d.stfp, centroid: {lat: d.Y, long: d.X}}, 
-                   geometry: d.geometry})
-});
-
-const featuresCollection = {type: 'FeatureCollection', features: features} as GeoJSON.FeatureCollection;
-
+// Data Management
+const data = formattedGeoJSON() ;
 
 export default function Map({ setFullScreen, setState, setBounds }: { setFullScreen: any, setState: any, setBounds: any }): JSX.Element {
 
@@ -71,7 +65,7 @@ export default function Map({ setFullScreen, setState, setBounds }: { setFullScr
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <GeoJSON data={featuresCollection} style={style} onEachFeature={onEachFeature}/>
+            <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );
