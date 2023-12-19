@@ -1,12 +1,11 @@
 // Libraries
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
 import * as d3 from 'd3';
 
 // Components
 import Main from '../components/Main';
-import Status from '../components/Status';
-import { PageDescription } from "../components/Query";
+import { StateStatus, USStatus } from '../components/Status';
 import states from "../data/states.json";
 
 const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2 };
@@ -14,6 +13,7 @@ const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2
 export default function Home({}): JSX.Element {
 
     var mapRef = useRef(null);
+    const [geographicView, setGeographicView] = React.useState("US");
 
     // var maxBounds = [
     //     [5.499550, -167.276413], //Southwest
@@ -50,23 +50,12 @@ export default function Home({}): JSX.Element {
         // var layer = e.target;
         // console.log(layer);
         // console.log(e.target.getBounds());
-
-        d3.select(".View").remove();
+        setGeographicView("State");
     }
 
     return(
         <Main>
-            <Status>
-                <div className="View">
-                    <PageDescription>
-                        <p>The goal of the Polling Equity Dashboard is to help users assess which communities could
-                            benefit from additional access to polling locations. The dashboard was designed by the 
-                            <a href="https://www.newdata.org/" target="_blank">Center for New Data</a>, a 
-                            non-partisan non-profit interested in using data to strengthen our democracy. <b>Select 
-                            a <span className="focus">highlighted</span> state to get started.</b></p>
-                    </PageDescription>
-                </div>
-            </Status>
+            {geographicView === "US"? <USStatus /> : <StateStatus />}
             <MapContainer
                 className="home-map"
                 center={[39.97, -86.19]}

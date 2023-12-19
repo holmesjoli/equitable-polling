@@ -7,15 +7,34 @@ import { State, County, ChangeYear } from '../utils/Types';
 import geoData from '../data/geoData.json';
 import { changeYearData } from "../utils/Global";
 
+export function ComponentGroupInner({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
+
+    return(
+        <div className="ComponentGroupInner">
+            <h3>{title}</h3>
+            {children}
+        </div>
+    )
+}
+
+export function ComponentGroup({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
+
+    return(
+        <div className="ComponentGroup">
+            <h3>{title}</h3>
+            {children}
+        </div>
+    )
+}
+
 export function PageDescription({children}: {children: React.ReactNode}):  JSX.Element {
 
     return(
-        <div className="QueryGroup">
-             <h3>Description</h3>
-                <div id="PageDescription" className="QueryComponent">
+        <ComponentGroup title="Description">
+            <div id="PageDescription" className="QueryComponent">
                 {children}
             </div>
-        </div>
+        </ComponentGroup>
     )
 }
 
@@ -74,11 +93,10 @@ function SelectCounty({state, county, setCounty} : {state: State, county: County
 export function SelectGeography({state, setState, county, setCounty} : {state: State, setState: any, county: County, setCounty: any}) : JSX.Element {
 
     return(
-        <div className="QueryGroup">
-            <h3>Select geography</h3>
+        <ComponentGroup title="Select geography">
             <SelectState state={state} setState={setState}/>
             {state.stfp !== "" ? <SelectCounty state={state} county={county} setCounty={setCounty}/> : null}
-        </div>
+        </ComponentGroup>
     )
 }
 
@@ -89,24 +107,23 @@ export function SelectChangeYear({changeYear, setChangeYear} : {changeYear: Chan
     };
 
     return(
-        <div className="QueryGroup">
-            <h3>Select year</h3>
-                <div id="SelectChangeYear" className="QueryComponent">
-                    <FormControl fullWidth size="small">
-                        <InputLabel id="select-change-year-label">Year</InputLabel>
-                        <Select
-                        labelId="select-change-year-label"
-                        id="select-change-year"
-                        value={changeYear.id}
-                        label="county"
-                        onChange={handleChange}
-                        >
-                        {changeYearData.map((changeYear: ChangeYear) => (
-                            <MenuItem key={changeYear.id} value={changeYear.id}>{changeYear.changeYear}</MenuItem>
-                        ))}
-                        </Select>
-                    </FormControl>
-                </div>
-        </div>
+        <ComponentGroup title="Select year">
+            <div id="SelectChangeYear" className="QueryComponent">
+                <FormControl fullWidth size="small">
+                    <InputLabel id="select-change-year-label">Year</InputLabel>
+                    <Select
+                    labelId="select-change-year-label"
+                    id="select-change-year"
+                    value={changeYear.id}
+                    label="county"
+                    onChange={handleChange}
+                    >
+                    {changeYearData.map((changeYear: ChangeYear) => (
+                        <MenuItem key={changeYear.id} value={changeYear.id}>{changeYear.changeYear}</MenuItem>
+                    ))}
+                    </Select>
+                </FormControl>
+            </div>
+        </ComponentGroup>
     )
 }

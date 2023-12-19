@@ -7,8 +7,12 @@
     padding-bottom: $appPadding;
 }
 
-.QueryGroup {
+.ComponentGroupInner,
+.ComponentGroup {
     border-bottom: 1px solid #F4DFC8;
+}
+
+.ComponentGroup {
     padding: $appPadding;
     margin: 0 $appMargin;
 }
