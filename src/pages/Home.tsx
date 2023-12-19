@@ -1,9 +1,6 @@
-import { useRef } from "react";
-
-import { useNavigate } from "react-router-dom";
-
 // Libraries
-import { MapContainer, TileLayer, Polygon, GeoJSON } from "react-leaflet";
+import { useRef } from "react";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
 
 // Components
 import Main from '../components/Main';
@@ -15,11 +12,7 @@ const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2
 
 export default function Home({}): JSX.Element {
 
-    let navigate = useNavigate(); 
-    const routeNext = () => {
-      let path = `/Map`; 
-      navigate(path);
-    }
+    var mapRef = useRef(null);
 
     // var maxBounds = [
     //     [5.499550, -167.276413], //Southwest
@@ -56,6 +49,7 @@ export default function Home({}): JSX.Element {
     function onClick(e: any) {
         var layer = e.target;
         console.log(layer);
+        console.log(e.target.getBounds());
         // routeNext();
     }
 
@@ -66,8 +60,8 @@ export default function Home({}): JSX.Element {
                     <p>The goal of the Polling Equity Dashboard is to help users assess which communities could
                          benefit from additional access to polling locations. The dashboard was designed by the 
                          <a href="https://www.newdata.org/" target="_blank">Center for New Data</a>, a 
-                         non-partisan non-profit interested in using data to strengthen our democracy. 
-                         <b>Select a <span className="focus">highlighted</span> state to get started.</b></p>
+                         non-partisan non-profit interested in using data to strengthen our democracy. <b>Select 
+                         a <span className="focus">highlighted</span> state to get started.</b></p>
                 </PageDescription>
             </Status>
             <Main> 
@@ -76,12 +70,14 @@ export default function Home({}): JSX.Element {
                     center={[39.97, -86.19]}
                     zoom={5}
                     maxZoom={18}
+                    ref={mapRef}
                     >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
                 <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
+                <ZoomControl position="bottomright" />
             </MapContainer>
         </Main>
     </div>
