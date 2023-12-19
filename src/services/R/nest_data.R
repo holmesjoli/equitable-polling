@@ -38,11 +38,10 @@ states_geo <- tigris::states(cb = T) %>%
 states_geo <- states_geo %>% 
   bind_cols(states_geo %>% 
                  sf::st_centroid() %>% 
-                 select(geometry) %>% 
-                 rename(centroid = geometry))
+                 sf::st_coordinates())
 
 exportJSON <- toJSON(states_geo)
-write(exportJSON, "../data/states.json")
+write(exportJSON, "../data/states2.json")
 
 
 # sf::write_sf("../data/states.geojson")

@@ -13,9 +13,20 @@ import states from "../data/states.json";
 import geoData from "../data/geoData.json";
 
 // Types
-import { State } from "../utils/Types";
 
 const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2 };
+
+// Setup data for GeoJSON
+const features = [] as GeoJSON.Feature[];
+
+states.forEach((d: any) => {
+    features.push({type: 'Feature', 
+                   properties: {name: d.name, stfp: d.stfp, centroid: {lat: d.Y, long: d.X}}, 
+                   geometry: d.geometry})
+});
+
+const featuresCollection = {type: 'FeatureCollection', features: features} as GeoJSON.FeatureCollection;
+
 
 export default function Home({}): JSX.Element {
 
@@ -37,11 +48,6 @@ export default function Home({}): JSX.Element {
         // } else {
         // }
         setFullScreen(!isFullScreen);
-      };
-
-    const data: GeoJSON.FeatureCollection = {
-        type: 'FeatureCollection',
-        features: states.features as GeoJSON.Feature[]
     };
 
     function onEachFeature(_: any, layer: any) {
@@ -86,7 +92,7 @@ export default function Home({}): JSX.Element {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
-                <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
+                <GeoJSON data={featuresCollection} style={style} onEachFeature={onEachFeature}/>
                 <ZoomControl position="bottomright" />
             </MapContainer>
     </Main>
