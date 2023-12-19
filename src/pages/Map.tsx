@@ -1,7 +1,7 @@
 import React from "react";
 
 // Components
-import { PageNavigation } from "../components/Navigation";
+import { Navigation } from "../components/Navigation";
 import { PageDescription, SelectGeography, SelectChangeYear } from "../components/Query";
 import Footer from "../components/Footer";
 
@@ -16,7 +16,7 @@ export default function Map({}): JSX.Element {
     return(
         <div className="Main">
             <div className="Content">
-                <PageNavigation />
+                <Navigation />
                 <div className="Query">
                     <PageDescription>
                         <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>

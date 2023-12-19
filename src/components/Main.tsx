@@ -1,11 +1,11 @@
-import { MainNavigation } from '../components/Navigation';
+import { Navigation } from '../components/Navigation';
 import  Footer from '../components/Footer';
 
 export default function Main({children}: {children: any}): JSX.Element {
 
     return(
         <div>
-            <MainNavigation />
+            <Navigation />
             {children}
             <Footer />
         </div>
