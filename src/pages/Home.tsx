@@ -1,6 +1,7 @@
 // Libraries
 import { useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
+import * as d3 from 'd3';
 
 // Components
 import Main from '../components/Main';
@@ -29,7 +30,6 @@ export default function Home({}): JSX.Element {
           mouseover: mouseOver,
           mouseout: mouseOut,
           click: onClick
-        //   click: onDrillDown
         });
     }
 
@@ -47,39 +47,40 @@ export default function Home({}): JSX.Element {
     }
 
     function onClick(e: any) {
-        var layer = e.target;
-        console.log(layer);
-        console.log(e.target.getBounds());
-        // routeNext();
+        // var layer = e.target;
+        // console.log(layer);
+        // console.log(e.target.getBounds());
+
+        d3.select(".View").remove();
     }
 
     return(
-        <div>
+        <Main>
             <Status>
-                <PageDescription>
-                    <p>The goal of the Polling Equity Dashboard is to help users assess which communities could
-                         benefit from additional access to polling locations. The dashboard was designed by the 
-                         <a href="https://www.newdata.org/" target="_blank">Center for New Data</a>, a 
-                         non-partisan non-profit interested in using data to strengthen our democracy. <b>Select 
-                         a <span className="focus">highlighted</span> state to get started.</b></p>
-                </PageDescription>
+                <div className="View">
+                    <PageDescription>
+                        <p>The goal of the Polling Equity Dashboard is to help users assess which communities could
+                            benefit from additional access to polling locations. The dashboard was designed by the 
+                            <a href="https://www.newdata.org/" target="_blank">Center for New Data</a>, a 
+                            non-partisan non-profit interested in using data to strengthen our democracy. <b>Select 
+                            a <span className="focus">highlighted</span> state to get started.</b></p>
+                    </PageDescription>
+                </div>
             </Status>
-            <Main> 
-                <MapContainer
-                    className="home-map"
-                    center={[39.97, -86.19]}
-                    zoom={5}
-                    maxZoom={18}
-                    ref={mapRef}
-                    >
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
-                />
-                <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
-                <ZoomControl position="bottomright" />
-            </MapContainer>
-        </Main>
-    </div>
+            <MapContainer
+                className="home-map"
+                center={[39.97, -86.19]}
+                zoom={5}
+                maxZoom={18}
+                ref={mapRef}
+                >
+            <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
+            />
+            <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
+            <ZoomControl position="bottomright" />
+        </MapContainer>
+    </Main>
     )
 }
