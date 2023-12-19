@@ -2,6 +2,7 @@
 import statesGeo from "../data/stateGeoJSON.json";
 import stateCounty from "../data/stateCounty.json";
 import { State } from "./Types";
+import { LatLng } from "leaflet";
 
 export function formattedGeoJSON() {
 
@@ -11,7 +12,7 @@ export function formattedGeoJSON() {
         features.push({type: 'Feature', 
                        properties: {stname: d.stname, 
                                     stfp: d.stfp, 
-                                    centroid: {lat: d.Y, long: d.X}, 
+                                    latlng: {lat: d.Y, lng: d.X} as LatLng, 
                                     counties: stateCounty.find((e: any) => e.stfp === d.stfp)!.counties} as State, 
                        geometry: d.geometry})
     });

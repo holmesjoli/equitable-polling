@@ -1,3 +1,4 @@
+import { LatLng } from "leaflet";
 
 export const changeYearData = [{id: '0', descr: 'Overall 2012-2022', baseYear: 2022},
                                {id: '1', descr: 'Overall 2018-2020', baseYear: 2020},
@@ -10,3 +11,5 @@ export const equityIndicatorData = [{id: '0', descr: 'None'},
                                     {id: '3', descr: 'Nearest time to poll'}];
 
 export const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2 };
+
+export const centerUS = {lat: 39.97, lng: -86.19} as LatLng;

@@ -1,9 +1,11 @@
+import { useState, useEffect } from "react";
+
 // Libraries
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap } from "react-leaflet";
 
 import { State } from "../utils/Types";
 
-import { style } from "../utils/Global";
+import { style, centerUS } from "../utils/Global";
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -19,8 +21,12 @@ export function mouseOut(event: any) {
 }
 
 
-function MyComponent({ data, setFullScreen, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, setState: any, setBounds: any }) {
+function MyComponent({ data, setFullScreen, state, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setBounds: any }) {
     const map = useMap();
+
+    useEffect(() => {
+        map.flyTo(state.latlng, map.getZoom())
+    }, [state])
 
     function onEachFeature(_: any, layer: any) {
         layer.on({
@@ -36,6 +42,8 @@ function MyComponent({ data, setFullScreen, setState, setBounds }: { data: GeoJS
         setState(data.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties as State);
 
         const innerBounds = event.target.getBounds();
+        console.log(event);
+        console.log(innerBounds);
         setBounds(innerBounds);
         map.fitBounds(innerBounds);
     }
@@ -43,15 +51,14 @@ function MyComponent({ data, setFullScreen, setState, setBounds }: { data: GeoJS
     return(
         <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
     )
-
 }
 
-export default function Map({ data, setFullScreen, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, setState: any, setBounds: any }): JSX.Element {
+export default function Map({ data, setFullScreen, state, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setBounds: any }): JSX.Element {
 
     return(
         <MapContainer
             className="home-map"
-            center={[39.97, -86.19]}
+            center={[centerUS.lat, centerUS.lng]}
             zoom={5}
             maxZoom={18}
             scrollWheelZoom={false}
@@ -60,7 +67,7 @@ export default function Map({ data, setFullScreen, setState, setBounds }: { data
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <MyComponent data={data} setFullScreen={setFullScreen} setState={setState} setBounds={setBounds}/>
+            <MyComponent data={data} setFullScreen={setFullScreen} state={state} setState={setState} setBounds={setBounds}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );
