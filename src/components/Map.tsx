@@ -18,7 +18,9 @@ export function mouseOut(event: any) {
     layer.setStyle(style);
 }
 
-export default function Map({ data, setFullScreen, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, setState: any, setBounds: any }): JSX.Element {
+
+function MyComponent({ data, setFullScreen, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, setState: any, setBounds: any }) {
+    const map = useMap();
 
     function onEachFeature(_: any, layer: any) {
         layer.on({
@@ -35,16 +37,16 @@ export default function Map({ data, setFullScreen, setState, setBounds }: { data
 
         const innerBounds = event.target.getBounds();
         setBounds(innerBounds);
-
-        // console.log(bounds)
-        // map.fitBounds(innerBounds)
+        map.fitBounds(innerBounds);
     }
 
-    // function MyComponent() {
-    //     const map = useMap()
-    //     console.log('map center:', map.getCenter())
-    //     return null
-    // }
+    return(
+        <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
+    )
+
+}
+
+export default function Map({ data, setFullScreen, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, setState: any, setBounds: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -58,7 +60,7 @@ export default function Map({ data, setFullScreen, setState, setBounds }: { data
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
+            <MyComponent data={data} setFullScreen={setFullScreen} setState={setState} setBounds={setBounds}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );
