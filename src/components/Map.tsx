@@ -62,6 +62,7 @@ export default function Map({ data, setFullScreen, state, setState, setBounds }:
             zoom={5}
             maxZoom={18}
             scrollWheelZoom={false}
+            zoomControl={false}
             >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
