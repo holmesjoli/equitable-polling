@@ -8,9 +8,17 @@ import Main from '../components/Main';
 import { StateStatus, USStatus } from '../components/Status';
 import states from "../data/states.json";
 
+// Data 
+import { changeYearData } from "../utils/Global";
+import { QueryMenu } from "../components/Query";
+
 const style = { color: '#4FA5BC', pointer: 'cursor', fillOpacity: 0.4, weight: 2 };
 
 export default function Home({}): JSX.Element {
+
+    const [state, setState] = React.useState({'stname':'', 'stfp':'', 'counties':[]});
+    const [county, setCounty] = React.useState({'cntyname':'', 'cntyfp':'', 'cntygeoid':''});
+    const [changeYear, setChangeYear] = React.useState(changeYearData[0]);
 
     var mapRef = useRef(null);
     const [geographicView, setGeographicView] = React.useState("US");
@@ -56,6 +64,7 @@ export default function Home({}): JSX.Element {
     return(
         <Main>
             {geographicView === "US"? <USStatus /> : <StateStatus />}
+            {/* {geographicView === "US"? <></> : <QueryMenu changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>} */}
             <MapContainer
                 className="home-map"
                 center={[39.97, -86.19]}
@@ -63,13 +72,13 @@ export default function Home({}): JSX.Element {
                 maxZoom={18}
                 ref={mapRef}
                 >
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
-            />
-            <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
-            <ZoomControl position="bottomright" />
-        </MapContainer>
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
+                />
+                <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
+                <ZoomControl position="bottomright" />
+            </MapContainer>
     </Main>
     )
 }

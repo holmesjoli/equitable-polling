@@ -90,7 +90,7 @@ function SelectCounty({state, county, setCounty} : {state: State, county: County
     );
 }
 
-export function SelectGeography({state, setState, county, setCounty} : {state: State, setState: any, county: County, setCounty: any}) : JSX.Element {
+function SelectGeography({state, setState, county, setCounty} : {state: State, setState: any, county: County, setCounty: any}) : JSX.Element {
 
     return(
         <ComponentGroup title="Select geography">
@@ -100,7 +100,7 @@ export function SelectGeography({state, setState, county, setCounty} : {state: S
     )
 }
 
-export function SelectChangeYear({changeYear, setChangeYear} : {changeYear: ChangeYear, setChangeYear: any}) : JSX.Element {
+function SelectChangeYear({changeYear, setChangeYear} : {changeYear: ChangeYear, setChangeYear: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
         setChangeYear(changeYearData.find(d => d.id === event.target.value) as ChangeYear);
@@ -125,5 +125,19 @@ export function SelectChangeYear({changeYear, setChangeYear} : {changeYear: Chan
                 </FormControl>
             </div>
         </ComponentGroup>
+    )
+}
+
+
+export function QueryMenu({changeYear, setChangeYear, state, setState, county, setCounty} : {changeYear: ChangeYear, setChangeYear: any, state: State, setState: any, county: County, setCounty: any}) {
+
+    return(
+        <div className="Query">
+            <PageDescription>
+                <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
+            </PageDescription>
+            <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
+            <SelectGeography state={state} setState={setState} county={county} setCounty={setCounty} />
+        </div>
     )
 }
