@@ -45,7 +45,7 @@ function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIn
 export function USStatus() {
     return (
       <Status>
-        <ComponentGroup title="Legend">
+        <ComponentGroup title="Description">
           <p>The goal of the Polling Equity Dashboard is to help users assess which communities could
                 benefit from additional access to polling locations. The dashboard was designed by 
                 the <a href="https://www.newdata.org/" target="_blank">Center for New Data</a>, a 

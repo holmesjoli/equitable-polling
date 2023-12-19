@@ -24,7 +24,6 @@ export default function Home({}): JSX.Element {
     const [changeYear, setChangeYear] = useState(changeYearData[0]);
     const [equityIndicator, setEquityIndicator] = useState(equityIndicatorData[0]);
     const [isFullScreen, setFullScreen] = useState(true);
-    const [geographicView, setGeographicView] = useState("US");
 
     var mapRef = useRef(null);
 
@@ -68,18 +67,13 @@ export default function Home({}): JSX.Element {
 
     function onClick(event: any) {
         var layer = event.target;
-        setGeographicView("State");
-        console.log(geoData.find(d => d.stfp === layer.feature.properties.stfp));
-
-        const result: any = geoData.find(d => d.stfp === layer.feature.properties.stfp);
-
         setFullScreen(false);
-        setState(result);
+        setState(geoData.find(d => d.stfp === layer.feature.properties.stfp) as any);
     }
 
     return(
         <Main>
-            {geographicView === "US"? <USStatus /> : <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} />}
+            {isFullScreen? <USStatus /> : <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} />}
             <QueryMenu isFullScreen={isFullScreen} changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>
             <MapContainer
                 className="home-map"
