@@ -4,7 +4,7 @@ import { LatLng } from "leaflet";
 
 export type County = {cntyname: string, cntyfp: string, cntygeoid: string};
 
-export type State = {stname: string, stfp: string, counties: County[], latlng: LatLng};
+export type State = {stname: string, stfp: string, counties: County[], latlng: LatLng, zoom: number};
 
 export type ChangeYear = {id: string, descr: string, baseYear: number};
 

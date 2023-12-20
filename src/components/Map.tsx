@@ -18,11 +18,11 @@ export function mouseOut(event: any) {
     layer.setStyle(layersStyle.default);
 }
 
-function LayersComponent({ data, setFullScreen, state, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setBounds: any }) {
+function LayersComponent({ data, setFullScreen, state, setState }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any }) {
     const map = useMap();
 
     useEffect(() => {
-        map.flyTo(state.latlng, map.getZoom())
+        map.flyTo(state.latlng, state.zoom);
     }, [state])
 
     function onEachFeature(_: any, layer: any) {
@@ -36,13 +36,10 @@ function LayersComponent({ data, setFullScreen, state, setState, setBounds }: { 
     function onClick(event: any) {
         var layer = event.target;
         setFullScreen(false);
-        setState(data.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties as State);
+        const clickedState = data.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
+        setState(clickedState as State);
 
-        const innerBounds = layer.getBounds();
-        console.log(event);
-        console.log(innerBounds);
-        setBounds(innerBounds);
-        map.fitBounds(innerBounds);
+        map.flyTo(clickedState!.latlng, clickedState!.zoom);
     }
 
     return(
@@ -52,7 +49,7 @@ function LayersComponent({ data, setFullScreen, state, setState, setBounds }: { 
     )
 }
 
-export default function Map({ data, setFullScreen, state, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setBounds: any }): JSX.Element {
+export default function Map({ data, setFullScreen, state, setState }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -69,7 +66,7 @@ export default function Map({ data, setFullScreen, state, setState, setBounds }:
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} />
-            <LayersComponent data={data} setFullScreen={setFullScreen} state={state} setState={setState} setBounds={setBounds}/>
+            <LayersComponent data={data} setFullScreen={setFullScreen} state={state} setState={setState} />
             <ZoomControl position="bottomright" />
         </MapContainer>
     );

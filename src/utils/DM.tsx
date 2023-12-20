@@ -14,7 +14,8 @@ export function formattedStateGeoJSON() {
                        properties: {stname: d.stname, 
                                     stfp: d.stfp, 
                                     latlng: {lat: d.Y, lng: d.X} as LatLng, 
-                                    counties: stateCounty.find((e: any) => e.stfp === d.stfp)!.counties} as State, 
+                                    counties: stateCounty.find((e: any) => e.stfp === d.stfp)!.counties,
+                                    zoom: d.stfp == "45" ? 8: 7} as State, 
                        geometry: d.geometry as GeoJSON.Geometry})
     });
 

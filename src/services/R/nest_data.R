@@ -41,13 +41,3 @@ states_geo <- states_geo %>%
 
 exportJSON <- toJSON(states_geo)
 write(exportJSON, "../data/stateGeoJSON.json")
-
-us_geo <- tigris::states(cb = T) %>%
-  filter(!(STATEFP %in% stfp)) %>% 
-  select(NAME, STATEFP, geometry) %>% 
-  rename(stfp = STATEFP,
-         stname = NAME)
-
-exportJSON <- toJSON(us_geo)
-write(exportJSON, "../data/usGeoJSON.json")
-
