@@ -23,10 +23,10 @@ function legendHeight(data: any[]) {
 
 function initSizeLegend() {
 
-    const data = [{'rSize': 3, 'label': '0' },
-                  {'rSize': 10, 'label': "Between 0 and 10" },
-                  {'rSize': 20, 'label': "Between 10 and 20" },
-                  {'rSize': 30, 'label': "Greater than 20" }];
+    const data = [{'rSize': 2, 'label': '0' },
+                  {'rSize': 5, 'label': "Between 1 and 5" },
+                  {'rSize': 15, 'label': "Between 15 and 30" },
+                  {'rSize': 30, 'label': "Greater than 30" }];
 
     initLegend(sizeLegendId);
   
