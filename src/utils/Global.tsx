@@ -9,9 +9,13 @@ export const equityIndicatorData = [{id: '0', descr: 'None'},
                                     {id: '2', descr: 'Age demographics'},
                                     {id: '3', descr: 'Nearest time to poll'}];
 
-export const layersStyle = {defaultStyle: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 2 },
-                            highlightStyle: { color: "#047391", fillColor: "#047391"},
-                            greyOutStyle: { color: '#D7D7D7', fillOpacity: 0.7, weight: 0 }
+export const layersStyle = {default: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 2 },
+                            highlight: { color: "#047391", fillColor: "#047391"},
+                            greyOut: { color: '#D7D7D7', fillOpacity: 0.6, weight: 0 }
 }
+
+export const outerBounds: [number, number][] = 
+    [[5.499550, -167.276413], //Southwest
+    [83.162102, -52.233040]] //Northeast
 
 export const centerUS = {lat: 39.97, lng: -86.19} as LatLng;

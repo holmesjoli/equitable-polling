@@ -1,5 +1,5 @@
 // Libraries
-import { useRef, useState, useMemo } from "react";
+import { useState } from "react";
 
 // Components
 import Main from '../components/Main';
@@ -14,14 +14,8 @@ import { changeYearData, equityIndicatorData } from "../utils/Global";
 //Types
 import { State, County } from "../utils/Types";
 
-import { centerUS } from "../utils/Global";
-
-// Setup data for GeoJSON
-
-const outerBounds = [
-    [5.499550, -167.276413], //Southwest
-    [83.162102, -52.233040]  //Northeast
-];
+// Globals
+import { centerUS, outerBounds } from "../utils/Global";
 
 // Data Management
 const data = formattedStateGeoJSON();
