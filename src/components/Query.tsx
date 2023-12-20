@@ -68,8 +68,10 @@ function SelectState({data, state, setState} : {data: GeoJSON.FeatureCollection,
 function SelectCounty({state, county, setCounty} : {state: State, county: County, setCounty: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
-        setCounty(state.counties.find(d => d.cntyfp === event.target.value) as County);
+        setCounty(state.counties.features.find(county => county.properties!.cntyfp === event.target.value)?.properties as County);
     };
+
+    console.log(county);
 
     return (
         <div id="SelectCounty" className="QueryComponent">
@@ -82,8 +84,8 @@ function SelectCounty({state, county, setCounty} : {state: State, county: County
                 label="county"
                 onChange={handleChange}
                 >
-                {state.counties.map((county: County) => (
-                    <MenuItem key={county.cntyfp} value={county.cntyfp}>{county.cntyname}</MenuItem>
+                {state.counties.features.map((county: GeoJSON.Feature) => (
+                    <MenuItem key={county.properties!.cntyfp} value={county.properties!.cntyfp}>{county.properties!.cntyname}</MenuItem>
                 ))}
                 </Select>
             </FormControl>

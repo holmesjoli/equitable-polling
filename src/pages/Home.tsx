@@ -22,8 +22,8 @@ const data = formattedStateGeoJSON();
 
 export default function Home({}): JSX.Element {
 
-    const [state, setState] = useState({'stname':'', 'stfp':'', 'counties':[], latlng: centerUS, zoom: 5} as State);
-    const [county, setCounty] = useState({'cntyname':'', 'cntyfp':'', 'cntygeoid':''} as County);
+    const [state, setState] = useState({'stname':'', 'stfp':'', 'counties': {} as GeoJSON.FeatureCollection, latlng: centerUS, zoom: 5} as State);
+    const [county, setCounty] = useState({'stfp': '', 'cntyname':'', 'cntyfp':'', 'cntygeoid':'', latlng: {lat: 0, lng: 0}} as County);
     const [changeYear, setChangeYear] = useState(selectVariable.changeYear[0]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
