@@ -1,9 +1,10 @@
-// Components
-import { ComponentGroupInner } from "./Query";
-
 // Libraries
 import { useEffect } from 'react';
 import * as d3 from 'd3';
+
+// Components
+import { ComponentGroupInner } from "./Query";
+import { fillColorScale, strokeColorScale, rScale } from "../utils/Global";
 
 const sizeLegendId = 'Size-Legend';
 const colorLegendId = 'Color-Legend';
@@ -23,9 +24,9 @@ function legendHeight(data: any[]) {
 function initSizeLegend() {
 
     const data = [{'rSize': 3, 'label': '0' },
-                  {'rSize': 5, 'label': "Between 0 and 10" },
-                  {'rSize': 10, 'label': "Between 10 and 20" },
-                  {'rSize': 15, 'label': "Greater than 20" }];
+                  {'rSize': 10, 'label': "Between 0 and 10" },
+                  {'rSize': 20, 'label': "Between 10 and 20" },
+                  {'rSize': 30, 'label': "Greater than 20" }];
 
     initLegend(sizeLegendId);
   
@@ -38,7 +39,7 @@ function initSizeLegend() {
       .join(
         enter => enter
           .append('circle')
-          .attr('r', d => d.rSize)
+          .attr('r', d => rScale(d.rSize))
           .attr('transform', function (d, i) {
             return 'translate(' + 17 + ', ' + (i * 27 + 15) + ')';
           })
@@ -67,16 +68,7 @@ function initSizeLegend() {
         //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
         // exit => exit.remove()
       );
-
 }
-
-let strokeColor = d3.scaleOrdinal()
-  .domain(["increase", "nochange", "decrease"] )
-  .range(["#610063", "#757575", "#E45729"] );
-
-let fillColor = d3.scaleOrdinal()
-  .domain(['-3', '-2', '-1', '0', '1', '2', '3'] )
-  .range(["#E45729", "#F28559", "#FBB18A", "#C6C6C6", "#C498A6", "#935485", "#610063"] );
 
 function initColorLegend() {
 
@@ -103,8 +95,8 @@ function initColorLegend() {
         .attr('transform', function (d, i) {
           return 'translate(' + 17 + ', ' + (i * 23 + 15) + ')';
         })
-        .attr('fill', (d: any) => fillColor(d.id) as string) // Add type assertion
-        .attr("stroke", (d: any) => strokeColor(d.overall) as string) // Add type assertion
+        .attr('fill', (d: any) => fillColorScale(d.id) as string) // Add type assertion
+        .attr("stroke", (d: any) => strokeColorScale(d.overall) as string) // Add type assertion
         .attr('stroke-width', 1)
       //   ,
       // update => update

@@ -1,3 +1,5 @@
+// Libraries
+import * as d3 from 'd3';
 import { LatLng } from "leaflet";
 
 export const selectVariable = {
@@ -22,3 +24,16 @@ export const outerBounds: [number, number][] =
     [83.162102, -52.233040]] //Northeast
 
 export const centerUS = {lat: 39.97, lng: -86.19} as LatLng;
+
+// Scales
+export const strokeColorScale = d3.scaleOrdinal()
+  .domain(["increase", "nochange", "decrease"] )
+  .range(["#610063", "#757575", "#E45729"] );
+
+export const fillColorScale = d3.scaleOrdinal()
+  .domain(['-3', '-2', '-1', '0', '1', '2', '3'] )
+  .range(["#E45729", "#F28559", "#FBB18A", "#C6C6C6", "#C498A6", "#935485", "#610063"] );
+
+export const rScale = d3.scaleSqrt()
+  .domain([1, 30] )
+  .range([3, 15] );
