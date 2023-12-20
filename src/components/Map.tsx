@@ -1,27 +1,29 @@
-import { useState, useEffect } from "react";
-
 // Libraries
+import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap } from "react-leaflet";
 
+// Data Management
+import { formattedUSGeoJSON } from "../utils/DM";
+
+// Types
 import { State } from "../utils/Types";
 
-import { style, centerUS } from "../utils/Global";
+// Global
+import { layersStyle, centerUS } from "../utils/Global";
+
+const usData = formattedUSGeoJSON();
 
 export function mouseOver(event: any) {
     var layer = event.target;
-    layer.setStyle({
-        color: "#047391",
-        fillOpacity: 0.7
-    });
+    layer.setStyle(layersStyle.highlightStyle);
 }
 
 export function mouseOut(event: any) {
     var layer = event.target;
-    layer.setStyle(style);
+    layer.setStyle(layersStyle.defaultStyle);
 }
 
-
-function MapComponent({ data, setFullScreen, state, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setBounds: any }) {
+function LayersComponent({ data, setFullScreen, state, setState, setBounds }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setBounds: any }) {
     const map = useMap();
 
     useEffect(() => {
@@ -49,7 +51,9 @@ function MapComponent({ data, setFullScreen, state, setState, setBounds }: { dat
     }
 
     return(
-        <GeoJSON data={data} style={style} onEachFeature={onEachFeature}/>
+        <div className="Layers">
+            <GeoJSON data={data} style={layersStyle.defaultStyle} onEachFeature={onEachFeature}/> 
+        </div>
     )
 }
 
@@ -68,7 +72,7 @@ export default function Map({ data, setFullScreen, state, setState, setBounds }:
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <MapComponent data={data} setFullScreen={setFullScreen} state={state} setState={setState} setBounds={setBounds}/>
+            <LayersComponent data={data} setFullScreen={setFullScreen} state={state} setState={setState} setBounds={setBounds}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );

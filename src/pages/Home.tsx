@@ -6,13 +6,12 @@ import Main from '../components/Main';
 import { StateStatus, USStatus } from '../components/Status';
 import { QueryMenu } from "../components/Query";
 import Map from "../components/Map";
-import { formattedGeoJSON } from "../utils/DM";
+import { formattedStateGeoJSON } from "../utils/DM";
 
 // Data 
 import { changeYearData, equityIndicatorData } from "../utils/Global";
 
 //Types
-import { LatLng } from "leaflet";
 import { State, County } from "../utils/Types";
 
 import { centerUS } from "../utils/Global";
@@ -25,7 +24,7 @@ const outerBounds = [
 ];
 
 // Data Management
-const data = formattedGeoJSON();
+const data = formattedStateGeoJSON();
 
 export default function Home({}): JSX.Element {
 

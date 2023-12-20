@@ -21,7 +21,7 @@ const theme = createTheme({
         main: "#047391"
       },
       secondary: {
-        main: "#757575"
+        main: "#047391"
       }
     }
 })
