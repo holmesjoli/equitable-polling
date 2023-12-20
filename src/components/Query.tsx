@@ -3,8 +3,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-import { State, County, ChangeYear } from '../utils/Types';
-import { changeYearData } from "../utils/Global";
+import { State, County, ChangeYear, Indicator } from '../utils/Types';
+import { selectVariable } from "../utils/Global";
 
 import styled from "styled-components";
 
@@ -104,7 +104,7 @@ function SelectGeography({data, state, setState, county, setCounty} : {data: Geo
 function SelectChangeYear({changeYear, setChangeYear} : {changeYear: ChangeYear, setChangeYear: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
-        setChangeYear(changeYearData.find(d => d.id === event.target.value) as ChangeYear);
+        setChangeYear(selectVariable.changeYear.find(d => d.id === event.target.value) as ChangeYear);
     };
 
     return(
@@ -119,8 +119,36 @@ function SelectChangeYear({changeYear, setChangeYear} : {changeYear: ChangeYear,
                     label="county"
                     onChange={handleChange}
                     >
-                    {changeYearData.map((changeYear: ChangeYear) => (
+                    {selectVariable.changeYear.map((changeYear: ChangeYear) => (
                         <MenuItem key={changeYear.id} value={changeYear.id}>{changeYear.descr}</MenuItem>
+                    ))}
+                    </Select>
+                </FormControl>
+            </div>
+        </ComponentGroup>
+    )
+}
+
+function SelectIndicator({indicator, setIndicator} : {indicator: Indicator, setIndicator: any}) : JSX.Element {
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setIndicator(selectVariable.indicator.find(d => d.id === event.target.value) as Indicator);
+    };
+
+    return(
+        <ComponentGroup title="Select indicator">
+            <div id="SelectIndicator" className="QueryComponent">
+                <FormControl fullWidth size="small">
+                    <InputLabel id="select-indicator-label">Indicator</InputLabel>
+                    <Select
+                    labelId="select-indicator-label"
+                    id="select-indicator"
+                    value={indicator.id}
+                    label="indicator"
+                    onChange={handleChange}
+                    >
+                    {selectVariable.indicator.map((indicator: Indicator) => (
+                        <MenuItem key={indicator.id} value={indicator.id}>{indicator.descr}</MenuItem>
                     ))}
                     </Select>
                 </FormControl>
@@ -144,7 +172,8 @@ export const Menu = styled.div<{ isFullScreen: boolean; }>`
     height: 85vh;
 `;
 
-export function QueryMenu({data, isFullScreen, changeYear, setChangeYear, state, setState, county, setCounty} : {data: GeoJSON.FeatureCollection, isFullScreen: boolean, changeYear: ChangeYear, setChangeYear: any, state: State, setState: any, county: County, setCounty: any}) {
+export function QueryMenu({data, isFullScreen, indicator, setIndicator, changeYear, setChangeYear, state, setState, county, setCounty} : 
+                          {data: GeoJSON.FeatureCollection, isFullScreen: boolean, indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, state: State, setState: any, county: County, setCounty: any}) {
 
     return(
         <Menu isFullScreen={isFullScreen}>
@@ -152,6 +181,7 @@ export function QueryMenu({data, isFullScreen, changeYear, setChangeYear, state,
                 <PageDescription>
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
                 </PageDescription>
+                <SelectIndicator indicator={changeYear} setIndicator={setChangeYear} />
                 <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
                 <SelectGeography data={data} state={state} setState={setState} county={county} setCounty={setCounty} />
             </div>

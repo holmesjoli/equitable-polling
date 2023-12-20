@@ -9,3 +9,5 @@ export type State = {stname: string, stfp: string, counties: County[], latlng: L
 export type ChangeYear = {id: string, descr: string, baseYear: number};
 
 export type EquityIndicator = {id: string, descr: string};
+
+export type Indicator = {id: string, descr: string};

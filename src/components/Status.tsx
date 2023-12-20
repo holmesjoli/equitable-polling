@@ -10,7 +10,7 @@ import { ComponentGroup } from "./Query";
 import { StateLegend } from "./Legend";
 
 // Data
-import { equityIndicatorData } from "../utils/Global";
+import { selectVariable } from "../utils/Global";
 
 // Types
 import { EquityIndicator } from '../utils/Types';
@@ -18,7 +18,7 @@ import { EquityIndicator } from '../utils/Types';
 function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIndicator: EquityIndicator, setEquityIndicator: any}) : JSX.Element {
 
   const handleChange = (event: SelectChangeEvent) => {
-      setEquityIndicator(equityIndicatorData.find(d => d.id === event.target.value) as EquityIndicator);
+      setEquityIndicator(selectVariable.equityIndicator.find(d => d.id === event.target.value) as EquityIndicator);
   };
 
   return (
@@ -32,7 +32,7 @@ function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIn
                   label="Equity Indicator"
                   onChange={handleChange}
               >
-              {equityIndicatorData.map((equityIndicator: EquityIndicator) => (
+              {selectVariable.equityIndicator.map((equityIndicator: EquityIndicator) => (
                   <MenuItem key={equityIndicator.id} value={equityIndicator.id}>{equityIndicator.descr}</MenuItem>
               ))}
               </Select>
