@@ -80,15 +80,13 @@ a {
   cursor: pointer;
 }
 
-a:hover {
+a:hover,
+.focus,
+a:hover h3 {
   color: $appColorFocus;
+  font-weight: 600;
 }
 
 img {
   max-width: 100%;
-}
-
-.focus {
-  color: $appColorFocus;
-  font-weight: 600;
 }
