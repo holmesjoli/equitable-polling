@@ -6,7 +6,7 @@ import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle } from
 import { State } from "../utils/Types";
 
 // Global
-import { layersStyle, centerUS, outerBounds } from "../utils/Global";
+import { layersStyle, centerUS, outerBounds, defaultCounty } from "../utils/Global";
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -18,7 +18,7 @@ export function mouseOut(event: any) {
     layer.setStyle(layersStyle.default);
 }
 
-function LayersComponent({ data, setFullScreen, state, setState }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any }) {
+function LayersComponent({ data, setFullScreen, state, setState, setCounty }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setCounty: any }) {
     const map = useMap();
 
     useEffect(() => {
@@ -38,6 +38,7 @@ function LayersComponent({ data, setFullScreen, state, setState }: { data: GeoJS
         setFullScreen(false);
         const clickedState = data.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
         setState(clickedState as State);
+        setCounty(defaultCounty);
 
         map.flyTo(clickedState!.latlng, clickedState!.zoom);
     }
@@ -49,7 +50,7 @@ function LayersComponent({ data, setFullScreen, state, setState }: { data: GeoJS
     )
 }
 
-export default function Map({ data, setFullScreen, state, setState }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any }): JSX.Element {
+export default function Map({ data, setFullScreen, state, setState, setCounty }: { data: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setCounty: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -66,7 +67,7 @@ export default function Map({ data, setFullScreen, state, setState }: { data: Ge
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} />
-            <LayersComponent data={data} setFullScreen={setFullScreen} state={state} setState={setState} />
+            <LayersComponent data={data} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );

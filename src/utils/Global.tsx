@@ -1,6 +1,7 @@
 // Libraries
 import * as d3 from 'd3';
 import { LatLng } from "leaflet";
+import { County } from "./Types"
 
 export const selectVariable = {
     changeYear: [{id: '0', descr: 'Overall 2012-2022', baseYear: 2022},
@@ -37,3 +38,6 @@ export const fillColorScale = d3.scaleOrdinal()
 export const rScale = d3.scaleSqrt()
   .domain([1, 30] )
   .range([3, 15] );
+
+
+export const defaultCounty = {'stfp': '', 'cntyname':'', 'cntyfp':'', 'cntygeoid':'', latlng: {lat: 0, lng: 0}} as County;

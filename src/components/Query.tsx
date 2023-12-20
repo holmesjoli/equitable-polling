@@ -4,7 +4,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import { State, County, ChangeYear, Indicator } from '../utils/Types';
-import { selectVariable } from "../utils/Global";
+import { selectVariable, defaultCounty } from "../utils/Global";
 
 import styled from "styled-components";
 
@@ -39,10 +39,11 @@ export function PageDescription({children}: {children: React.ReactNode}):  JSX.E
     )
 }
 
-function SelectState({data, state, setState} : {data: GeoJSON.FeatureCollection, state: State, setState: any}) : JSX.Element {
+function SelectState({data, state, setState, county, setCounty} : {data: GeoJSON.FeatureCollection, state: State, setState: any, county: County, setCounty: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
         setState(data.features.find(d => d.properties!.stfp === event.target.value)!.properties as State);
+        setCounty(defaultCounty);
     };
 
     return (
@@ -71,8 +72,6 @@ function SelectCounty({state, county, setCounty} : {state: State, county: County
         setCounty(state.counties.features.find(county => county.properties!.cntyfp === event.target.value)?.properties as County);
     };
 
-    console.log(county);
-
     return (
         <div id="SelectCounty" className="QueryComponent">
             <FormControl fullWidth size="small">
@@ -97,7 +96,7 @@ function SelectGeography({data, state, setState, county, setCounty} : {data: Geo
 
     return(
         <ComponentGroup title="Select geography">
-            <SelectState data={data} state={state} setState={setState}/>
+            <SelectState data={data} state={state} setState={setState} county={county} setCounty={setCounty}/>
             {state.stfp !== "" ? <SelectCounty state={state} county={county} setCounty={setCounty}/> : null}
         </ComponentGroup>
     )
