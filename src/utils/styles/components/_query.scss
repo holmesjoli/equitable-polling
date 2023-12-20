@@ -6,11 +6,12 @@
     padding-bottom: $appPadding;
 }
 
-.ComponentGroupInner,
-.ComponentGroup {
+.ComponentGroupInner {
     border-bottom: 1px solid #F4DFC8;
+    padding-top: $appPadding;
 }
 
 .ComponentGroup {
     padding: $appPadding;
+    margin: $appMargin;
 }

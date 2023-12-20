@@ -41,7 +41,6 @@ function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIn
   );
 }
 
-
 export function USStatus() {
     return (
       <Status>

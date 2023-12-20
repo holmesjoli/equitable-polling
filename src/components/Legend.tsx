@@ -7,7 +7,7 @@ import * as d3 from 'd3';
 
 const sizeLegendId = 'Size-Legend';
 const colorLegendId = 'Color-Legend';
-const width = 216;
+const width = 200;
 
 function initLegend(selector: string) {
     d3.select(`.Legend #${selector}`)
@@ -16,7 +16,7 @@ function initLegend(selector: string) {
 }
 
 function legendHeight(data: any[]) {
-    const height = 25 + (data.length) * 20;
+    const height = 25 + (data.length) * 21;
     return height;
 }
 
@@ -25,7 +25,7 @@ function initSizeLegend() {
     const data = [{'rSize': 3, 'label': '0' },
                   {'rSize': 5, 'label': "Between 0 and 10" },
                   {'rSize': 10, 'label': "Between 10 and 20" },
-                  {'rSize': 15, 'label': "Between 20 and 20" }];
+                  {'rSize': 15, 'label': "Greater than 20" }];
 
     initLegend(sizeLegendId);
   
@@ -99,9 +99,9 @@ function initColorLegend() {
     .join(
       enter => enter
         .append('circle')
-        .attr('r', d => 5)
+        .attr('r', 6)
         .attr('transform', function (d, i) {
-          return 'translate(' + 17 + ', ' + (i * 27 + 15) + ')';
+          return 'translate(' + 17 + ', ' + (i * 23 + 15) + ')';
         })
         .attr('fill', (d: any) => fillColor(d.id) as string) // Add type assertion
         .attr("stroke", (d: any) => strokeColor(d.overall) as string) // Add type assertion
@@ -119,7 +119,7 @@ function initColorLegend() {
       enter => enter
         .append('text')
         .attr('x', 35)
-        .attr('y', (d, i) => i * 27 + 20)
+        .attr('y', (d, i) => i * 23 + 20)
         .text(d => d.label)
         .attr('font-size', 13)
         .attr('fill', "#757575")
@@ -156,10 +156,8 @@ export function StateLegend () {
 
     return (
         <div className="Legend">
-            <div className="inner">
-                <SizeType />
-                <ColorType />
-            </div>
+          <SizeType />
+          <ColorType />
         </div>
     );
 }
