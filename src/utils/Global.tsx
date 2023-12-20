@@ -14,9 +14,9 @@ export const selectVariable = {
                 {id: '1', descr: '# polls'}],
 }
 
-export const layersStyle = {default: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 2 },
+export const layersStyle = {default: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 1 },
                             highlight: { color: "#047391", fillColor: "#047391"},
-                            greyOut: { color: '#D7D7D7', fillOpacity: 0.6, weight: 0 }
+                            greyOut: { color: '#EAEAEA', fillOpacity: 0.75, weight: 0 }
 }
 
 export const outerBounds: [number, number][] = 

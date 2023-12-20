@@ -170,7 +170,7 @@ export const Menu = styled.div<{ isFullScreen: boolean; }>`
     transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     overflow-y: auto;
     height: 85vh;
-    border-right: 1px solid #F4DFC8;
+    border-right: 1px solid #B7B7B7;
 `;
 
 export function QueryMenu({data, isFullScreen, indicator, setIndicator, changeYear, setChangeYear, state, setState, county, setCounty} : 
