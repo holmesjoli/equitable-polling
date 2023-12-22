@@ -81,10 +81,16 @@ a {
 }
 
 a:hover,
-.focus,
-a:hover h3 {
+.focus {
   color: $appColorFocus;
   font-weight: 600;
+}
+
+a:hover h3 {
+  background-color: #FFFFFF;
+  border: 1px solid $appColor;
+  border-radius: 5px;
+  color: $appColor;
 }
 
 img {
