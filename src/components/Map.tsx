@@ -1,6 +1,6 @@
 // Libraries
 import { useEffect, useMemo } from "react";
-import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, Tooltip } from "react-leaflet";
 
 // Types
 import { State } from "../utils/Types";
@@ -64,7 +64,9 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState,
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState}/>
+            <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState}> 
+                <Tooltip sticky>{state.stname}</Tooltip>
+            </GeoJSON>
             {isFullScreen ? <></> : <GeoJSON data={countyDataAll} style={layersStyle.default.county} /> }
         </div>
     )
