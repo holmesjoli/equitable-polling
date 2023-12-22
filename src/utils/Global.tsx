@@ -44,12 +44,12 @@ export const rScale = d3.scaleSqrt()
 
 
 export const defaultCounty = {'stfp': '', 
-                              'cntyname':'', 
+                              'name':'', 
                               'cntyfp':'', 
                               'cntygeoid':'', 
                               latlng: {lat: 0, lng: 0}} as County;
 
-export const defaultState = {'stname':'', 
+export const defaultState = {'name':'', 
                              'stfp':'', 
                              'counties': {} as GeoJSON.FeatureCollection, 
                              latlng: centerUS, 

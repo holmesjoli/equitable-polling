@@ -14,7 +14,7 @@ import { layersStyle, centerUS, outerBounds, defaultCounty } from "../utils/Glob
 export function mouseOver(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.highlight);
-    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, layer.feature.properties.stname);
+    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, layer.feature.properties.name);
 }
 
 export function mouseOut(event: any) {
@@ -54,6 +54,15 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState,
         map.flyTo(clickedState!.latlng, clickedState!.zoom);
     }
 
+    function onEachCounty(_: any, layer: any) {
+        layer.on({
+          mouseover: mouseOver,
+          mouseout: mouseOut,
+          click: onClickState
+        });
+    }
+
+
     // React Hooks ---------------------------------------------------
 
     // on Click Rectange - Resets the zoom and full screen to the us map
@@ -75,7 +84,7 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState,
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState} /> 
-            {isFullScreen ? <></> : <GeoJSON data={countyDataAll} style={layersStyle.default.county} /> }
+            {isFullScreen ? <></> : <GeoJSON data={countyDataAll} style={layersStyle.default.county} onEachFeature={onEachCounty}/> }
         </div>
     )
 }
