@@ -36,7 +36,7 @@ export default function Home({}): JSX.Element {
         <Main>
             {isFullScreen? <USStatus /> : <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} />}
             <QueryMenu usData={usData} isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>
-            <Map usData={usData} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
+            <Map usData={usData} isFullScreen={isFullScreen} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
         </Main>
     )
 }

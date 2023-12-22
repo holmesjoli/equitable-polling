@@ -18,16 +18,24 @@ export function mouseOut(event: any) {
     layer.setStyle(layersStyle.default);
 }
 
-function LayersComponent({ usData, setFullScreen, state, setState, setCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setCounty: any }) {
+function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState, setCounty }: { usData: GeoJSON.FeatureCollection, isFullScreen: boolean, setFullScreen: any, state: State, setState: any, setCounty: any }) {
     const map = useMap();
 
-    console.log(usData);
+    const countyDataAll = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
+
+    usData.features.forEach((d: any) => {
+
+        d.properties.counties.features.forEach((e: any) => {
+            countyDataAll.features.push(e);
+        });
+
+    });
 
     useEffect(() => {
         map.flyTo(state.latlng, state.zoom);
-    }, [state])
+    }, [state]);
 
-    function onEachFeature(_: any, layer: any) {
+    function onEachState(_: any, layer: any) {
         layer.on({
           mouseover: mouseOver,
           mouseout: mouseOut,
@@ -53,17 +61,18 @@ function LayersComponent({ usData, setFullScreen, state, setState, setCounty }: 
           },
         }),
         [map]
-    )
+    );
 
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            <GeoJSON data={usData} style={layersStyle.default} onEachFeature={onEachFeature}/>
+            <GeoJSON data={usData} style={layersStyle.default} onEachFeature={onEachState}/>
+            {isFullScreen ? <></> : <GeoJSON data={countyDataAll} style={layersStyle.default} /> }
         </div>
     )
 }
 
-export default function Map({ usData, setFullScreen, state, setState, setCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setCounty: any }): JSX.Element {
+export default function Map({ usData, isFullScreen, setFullScreen, state, setState, setCounty }: { usData: GeoJSON.FeatureCollection, isFullScreen: boolean, setFullScreen: any, state: State, setState: any, setCounty: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -79,7 +88,7 @@ export default function Map({ usData, setFullScreen, state, setState, setCounty 
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent usData={usData} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
+            <LayersComponent usData={usData} isFullScreen={isFullScreen} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );
