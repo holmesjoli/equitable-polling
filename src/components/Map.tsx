@@ -34,9 +34,7 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState,
         });
     });
 
-    useEffect(() => {
-        map.flyTo(state.latlng, state.zoom);
-    }, [state]);
+    // Functions ---------------------------------------------------
 
     function onEachState(_: any, layer: any) {
         layer.on({
@@ -56,6 +54,9 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState,
         map.flyTo(clickedState!.latlng, clickedState!.zoom);
     }
 
+    // React Hooks ---------------------------------------------------
+
+    // on Click Rectange - Resets the zoom and full screen to the us map
     const onClickRect = useMemo(
         () => ({
           click() {
@@ -64,7 +65,11 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState,
           },
         }),
         [map]
-    );
+    ); 
+
+    useEffect(() => {
+        map.flyTo(state.latlng, state.zoom);
+    }, [state]);
 
     return(
         <div className="Layers">
