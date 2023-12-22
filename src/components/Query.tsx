@@ -39,7 +39,7 @@ export function PageDescription({children}: {children: React.ReactNode}):  JSX.E
     )
 }
 
-function SelectState({stateData, state, setState, county, setCounty} : {stateData: GeoJSON.FeatureCollection, state: State, setState: any, county: County, setCounty: any}) : JSX.Element {
+function SelectState({stateData, state, setState, setCounty} : {stateData: GeoJSON.FeatureCollection, state: State, setState: any, setCounty: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
         setState(stateData.features.find(d => d.properties!.stfp === event.target.value)!.properties as State);
@@ -96,7 +96,7 @@ function SelectGeography({stateData, state, setState, county, setCounty} : {stat
 
     return(
         <ComponentGroup title="Select geography">
-            <SelectState stateData={stateData} state={state} setState={setState} county={county} setCounty={setCounty}/>
+            <SelectState stateData={stateData} state={state} setState={setState} setCounty={setCounty}/>
             {state.stfp !== "" ? <SelectCounty state={state} county={county} setCounty={setCounty}/> : null}
         </ComponentGroup>
     )
