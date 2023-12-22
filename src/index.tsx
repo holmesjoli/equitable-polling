@@ -23,6 +23,15 @@ const theme = createTheme({
       secondary: {
         main: "#047391"
       }
+    },
+    components: {
+      MuiFormControl: {
+        styleOverrides: {
+          root :{
+            backgroundColor: "#FFFFFF"
+          }
+        }
+      }
     }
 })
 
