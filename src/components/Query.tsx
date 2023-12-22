@@ -57,8 +57,8 @@ function SelectState({stateData, state, setState, setCounty} : {stateData: GeoJS
                 label="State"
                 onChange={handleChange}
                 >
-                {stateData.features.map((state: any) => (
-                    <MenuItem key={state.properties.stfp} value={state.properties.stfp}>{state.properties.stname}</MenuItem>
+                {stateData.features.map((state: GeoJSON.Feature) => (
+                    <MenuItem key={state.properties!.stfp} value={state.properties!.stfp}>{state.properties!.stname}</MenuItem>
                 ))}
                 </Select>
             </FormControl>
@@ -159,14 +159,12 @@ function SelectIndicator({indicator, setIndicator} : {indicator: Indicator, setI
 }
 
 export const Menu = styled.div<{ isFullScreen: boolean; }>`
-    // resize: vertical;
     z-index: +9;
     position: absolute;
     top: 10vh;
-    // left: '0vw';
     left: ${props => props.isFullScreen ? '-100vw;' : '0vw;'};
     width: 20rem;
-    padding: .625rem;
+    // padding: .625rem;
     background-color: #FAF6F0;
     transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     overflow-y: auto;
