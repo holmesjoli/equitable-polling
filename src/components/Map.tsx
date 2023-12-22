@@ -15,7 +15,7 @@ export function mouseOver(event: any) {
 
 export function mouseOut(event: any) {
     var layer = event.target;
-    layer.setStyle(layersStyle.default);
+    layer.setStyle(layersStyle.default.state);
 }
 
 function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState, setCounty }: { usData: GeoJSON.FeatureCollection, isFullScreen: boolean, setFullScreen: any, state: State, setState: any, setCounty: any }) {
@@ -64,8 +64,8 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState,
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            <GeoJSON data={usData} style={layersStyle.default} onEachFeature={onEachState}/>
-            {isFullScreen ? <></> : <GeoJSON data={countyDataAll} style={layersStyle.default} /> }
+            <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState}/>
+            {isFullScreen ? <></> : <GeoJSON data={countyDataAll} style={layersStyle.default.county} /> }
         </div>
     )
 }

@@ -15,7 +15,10 @@ export const selectVariable = {
                 {id: '1', descr: '# polls'}],
 }
 
-export const layersStyle = {default: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 1 },
+export const layersStyle = {default: {
+                              state: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 2 },
+                              county: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0, weight: 1 }
+                            },
                             highlight: { color: "#047391", fillColor: "#047391"},
                             greyOut: { color: '#EAEAEA', fillOpacity: 0.75, weight: 0 }
 }
