@@ -58,10 +58,13 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState,
         layer.on({
           mouseover: mouseOver,
           mouseout: mouseOut,
-          click: onClickState
+          click: onClickCounty
         });
     }
 
+    function onClickCounty(event: any) {
+        var layer = event.target;
+    }
 
     // React Hooks ---------------------------------------------------
 
