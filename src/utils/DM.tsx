@@ -29,7 +29,8 @@ export function formattedStateGeoJSON() {
                          stfp: e.stfp, 
                          latlng: {lat: e.Y, lng: e.X} as LatLng, 
                          counties: countyData,
-                         zoom: e.zoom} as State, 
+                         zoom: e.zoom,
+                         selected: false} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
 
     });

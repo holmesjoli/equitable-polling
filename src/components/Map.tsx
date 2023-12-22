@@ -1,6 +1,9 @@
 // Libraries
 import { useEffect, useMemo } from "react";
-import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle } from "react-leaflet";
+
+// Components
+import * as Tooltip from "./Tooltip";
 
 // Types
 import { State } from "../utils/Types";
@@ -11,11 +14,13 @@ import { layersStyle, centerUS, outerBounds, defaultCounty } from "../utils/Glob
 export function mouseOver(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.highlight);
+    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, layer.feature.properties.stname);
 }
 
 export function mouseOut(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.default.state);
+    Tooltip.pointerOut();
 }
 
 function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState, setCounty }: { usData: GeoJSON.FeatureCollection, isFullScreen: boolean, setFullScreen: any, state: State, setState: any, setCounty: any }) {
@@ -64,9 +69,7 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState,
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState}> 
-                <Tooltip sticky>{state.stname}</Tooltip>
-            </GeoJSON>
+            <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState} /> 
             {isFullScreen ? <></> : <GeoJSON data={countyDataAll} style={layersStyle.default.county} /> }
         </div>
     )

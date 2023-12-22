@@ -1,5 +1,5 @@
 // Libraries
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Components
 import Main from '../components/Main';
@@ -7,6 +7,7 @@ import { StateStatus, USStatus } from '../components/Status';
 import { QueryMenu } from "../components/Query";
 import Map from "../components/Map";
 import { formattedStateGeoJSON } from "../utils/DM";
+import * as Tooltip from "../components/Tooltip";
 
 // Data 
 import { selectVariable, defaultCounty, defaultState } from "../utils/Global";
@@ -31,6 +32,10 @@ export default function Home({}): JSX.Element {
         // }
         setFullScreen(!isFullScreen);
     };
+
+    useEffect(() => {
+        Tooltip.init();
+    }, [])
 
     return(
         <Main>
