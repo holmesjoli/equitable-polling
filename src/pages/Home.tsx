@@ -18,7 +18,7 @@ import { State } from "../utils/Types";
 import { centerUS } from "../utils/Global";
 
 // Data Management
-const data = formattedStateGeoJSON();
+const stateData = formattedStateGeoJSON();
 
 export default function Home({}): JSX.Element {
 
@@ -41,8 +41,8 @@ export default function Home({}): JSX.Element {
     return(
         <Main>
             {isFullScreen? <USStatus /> : <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} />}
-            <QueryMenu data={data} isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>
-            <Map data={data} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
+            <QueryMenu stateData={stateData} isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>
+            <Map stateData={stateData} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
         </Main>
     )
 }
