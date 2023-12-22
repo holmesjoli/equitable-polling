@@ -1,5 +1,5 @@
 // Libraries
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle } from "react-leaflet";
 
 // Types
@@ -29,11 +29,11 @@ function LayersComponent({ data, setFullScreen, state, setState, setCounty }: { 
         layer.on({
           mouseover: mouseOver,
           mouseout: mouseOut,
-          click: onClick
+          click: onClickState
         });
     }
 
-    function onClick(event: any) {
+    function onClickState(event: any) {
         var layer = event.target;
         setFullScreen(false);
         const clickedState = data.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
@@ -43,8 +43,19 @@ function LayersComponent({ data, setFullScreen, state, setState, setCounty }: { 
         map.flyTo(clickedState!.latlng, clickedState!.zoom);
     }
 
+    const onClickRect = useMemo(
+        () => ({
+          click() {
+            map.flyTo(centerUS, 5);
+            setFullScreen(true);
+          },
+        }),
+        [map]
+    )
+
     return(
         <div className="Layers">
+            <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             <GeoJSON data={data} style={layersStyle.default} onEachFeature={onEachFeature}/> 
         </div>
     )
@@ -66,7 +77,6 @@ export default function Map({ data, setFullScreen, state, setState, setCounty }:
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} />
             <LayersComponent data={data} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
