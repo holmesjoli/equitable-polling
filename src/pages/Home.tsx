@@ -9,20 +9,14 @@ import Map from "../components/Map";
 import { formattedStateGeoJSON } from "../utils/DM";
 
 // Data 
-import { selectVariable, defaultCounty } from "../utils/Global";
-
-//Types
-import { State } from "../utils/Types";
-
-// Globals
-import { centerUS } from "../utils/Global";
+import { selectVariable, defaultCounty, defaultState } from "../utils/Global";
 
 // Data Management
-const stateData = formattedStateGeoJSON();
+const usData = formattedStateGeoJSON();
 
 export default function Home({}): JSX.Element {
 
-    const [state, setState] = useState({'stname':'', 'stfp':'', 'counties': {} as GeoJSON.FeatureCollection, latlng: centerUS, zoom: 5} as State);
+    const [state, setState] = useState(defaultState);
     const [county, setCounty] = useState(defaultCounty);
     const [changeYear, setChangeYear] = useState(selectVariable.changeYear[0]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
@@ -41,8 +35,8 @@ export default function Home({}): JSX.Element {
     return(
         <Main>
             {isFullScreen? <USStatus /> : <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} />}
-            <QueryMenu stateData={stateData} isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>
-            <Map stateData={stateData} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
+            <QueryMenu usData={usData} isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>
+            <Map usData={usData} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
         </Main>
     )
 }

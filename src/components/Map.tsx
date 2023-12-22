@@ -18,8 +18,10 @@ export function mouseOut(event: any) {
     layer.setStyle(layersStyle.default);
 }
 
-function LayersComponent({ stateData, setFullScreen, state, setState, setCounty }: { stateData: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setCounty: any }) {
+function LayersComponent({ usData, setFullScreen, state, setState, setCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setCounty: any }) {
     const map = useMap();
+
+    console.log(usData);
 
     useEffect(() => {
         map.flyTo(state.latlng, state.zoom);
@@ -36,7 +38,7 @@ function LayersComponent({ stateData, setFullScreen, state, setState, setCounty 
     function onClickState(event: any) {
         var layer = event.target;
         setFullScreen(false);
-        const clickedState = stateData.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
+        const clickedState = usData.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
         setState(clickedState as State);
         setCounty(defaultCounty);
 
@@ -56,12 +58,12 @@ function LayersComponent({ stateData, setFullScreen, state, setState, setCounty 
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            <GeoJSON data={stateData} style={layersStyle.default} onEachFeature={onEachFeature}/> 
+            <GeoJSON data={usData} style={layersStyle.default} onEachFeature={onEachFeature}/>
         </div>
     )
 }
 
-export default function Map({ stateData, setFullScreen, state, setState, setCounty }: { stateData: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setCounty: any }): JSX.Element {
+export default function Map({ usData, setFullScreen, state, setState, setCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, state: State, setState: any, setCounty: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -77,7 +79,7 @@ export default function Map({ stateData, setFullScreen, state, setState, setCoun
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent stateData={stateData} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
+            <LayersComponent usData={usData} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );

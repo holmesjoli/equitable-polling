@@ -1,7 +1,7 @@
 // Libraries
 import * as d3 from 'd3';
 import { LatLng } from "leaflet";
-import { County } from "./Types"
+import { County, State } from "./Types"
 
 export const selectVariable = {
     changeYear: [{id: '0', descr: 'Overall 2012-2022', baseYear: 2022},
@@ -41,3 +41,5 @@ export const rScale = d3.scaleSqrt()
 
 
 export const defaultCounty = {'stfp': '', 'cntyname':'', 'cntyfp':'', 'cntygeoid':'', latlng: {lat: 0, lng: 0}} as County;
+
+export const defaultState = {'stname':'', 'stfp':'', 'counties': {} as GeoJSON.FeatureCollection, latlng: centerUS, zoom: 5} as State;
