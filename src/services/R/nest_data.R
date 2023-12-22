@@ -1,6 +1,7 @@
 library(tigris)
 library(jsonlite)
 library(dplyr)
+library(magrittr)
 
 stfp <- c("13", "45", "28", "55")
 
@@ -14,7 +15,8 @@ states_geo <- tigris::states(cb = T) %>%
 states_geo <- states_geo %>% 
   bind_cols(states_geo %>% 
                  sf::st_centroid() %>% 
-                 sf::st_coordinates())
+                 sf::st_coordinates()) %>% 
+  rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
 
 exportJSON <- toJSON(states_geo)
 write(exportJSON, "../data/stateGeoJSON.json")
@@ -31,7 +33,8 @@ county_geo <- county_geo %>%
   bind_cols(county_geo %>% 
               sf::st_centroid() %>% 
               sf::st_coordinates()) %>% 
-  arrange(stfp, cntyname)
+  arrange(stfp, cntyname) %>% 
+  rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
 
 exportJSON <- toJSON(county_geo)
 write(exportJSON, "../data/countyGeoJSON.json")

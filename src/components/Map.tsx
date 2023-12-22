@@ -24,11 +24,9 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, state, setState,
     const countyDataAll = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 
     usData.features.forEach((d: any) => {
-
         d.properties.counties.features.forEach((e: any) => {
             countyDataAll.features.push(e);
         });
-
     });
 
     useEffect(() => {
