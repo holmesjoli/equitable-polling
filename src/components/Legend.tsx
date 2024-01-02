@@ -10,6 +10,10 @@ const sizeLegendId = 'Size-Legend';
 const colorLegendId = 'Color-Legend';
 const width = 200;
 
+const circleStart = 17;
+
+const textStart = circleStart + 20;
+
 function initLegend(selector: string) {
     d3.select(`.Legend #${selector}`)
       .append('svg')
@@ -17,7 +21,7 @@ function initLegend(selector: string) {
 }
 
 function legendHeight(data: any[]) {
-    const height = 25 + (data.length) * 21;
+    const height = 27 + (data.length) * 21;
     return height;
 }
 
@@ -41,7 +45,10 @@ function initSizeLegend() {
           .append('circle')
           .attr('r', d => rScale(d.rSize))
           .attr('transform', function (d, i) {
-            return 'translate(' + 17 + ', ' + (i * 27 + 15) + ')';
+
+            let x = data.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
+
+            return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.rSize) + 8) + ')';
           })
           .attr('fill', "#C6C6C6")
           .attr("stroke", "#757575")
@@ -58,11 +65,16 @@ function initSizeLegend() {
       .join(
         enter => enter
           .append('text')
-          .attr('x', 35)
-          .attr('y', (d, i) => i * 27 + 20)
+          .attr('x', textStart)
+          .attr('y', function(d, i) { 
+
+            let x = data.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
+            
+            return i * 16 + x + rScale(d.rSize) + 8})
           .text(d => d.label)
           .attr('font-size', 13)
           .attr('fill', "#757575")
+          .attr('dominant-baseline', 'middle')
           // ,
         // update => update
         //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
@@ -93,7 +105,7 @@ function initColorLegend() {
         .append('circle')
         .attr('r', 6)
         .attr('transform', function (d, i) {
-          return 'translate(' + 17 + ', ' + (i * 23 + 15) + ')';
+          return 'translate(' + circleStart + ', ' + (i * 23 + 15) + ')';
         })
         .attr('fill', (d: any) => fillColorScale(d.id) as string) // Add type assertion
         .attr("stroke", (d: any) => strokeColorScale(d.overall) as string) // Add type assertion
@@ -110,7 +122,7 @@ function initColorLegend() {
     .join(
       enter => enter
         .append('text')
-        .attr('x', 35)
+        .attr('x', textStart)
         .attr('y', (d, i) => i * 23 + 20)
         .text(d => d.label)
         .attr('font-size', 13)
