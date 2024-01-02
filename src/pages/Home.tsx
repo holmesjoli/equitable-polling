@@ -17,14 +17,14 @@ const usData = formattedStateGeoJSON();
 
 export default function Home({}): JSX.Element {
 
-    const [state, setState] = useState(defaultState);
+    const [selectedState, setState] = useState(defaultState);
     const [county, setCounty] = useState(defaultCounty);
     const [changeYear, setChangeYear] = useState(selectVariable.changeYear[0]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
     const [isFullScreen, setFullScreen] = useState(true);
 
-    console.log(state);
+    console.log(selectedState);
 
     // console.log(bounds);
 
@@ -42,8 +42,8 @@ export default function Home({}): JSX.Element {
     return(
         <Main>
             {isFullScreen? <USStatus /> : <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} />}
-            <QueryMenu usData={usData} isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} state={state} setState={setState} county={county} setCounty={setCounty}/>
-            <Map usData={usData} isFullScreen={isFullScreen} setFullScreen={setFullScreen} state={state} setState={setState} setCounty={setCounty}/>
+            <QueryMenu usData={usData} isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setState={setState} county={county} setCounty={setCounty}/>
+            <Map usData={usData} isFullScreen={isFullScreen} setFullScreen={setFullScreen} selectedState={selectedState} setState={setState} setCounty={setCounty}/>
         </Main>
     )
 }
