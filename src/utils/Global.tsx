@@ -16,8 +16,11 @@ export const selectVariable = {
 }
 
 export const layersStyle = {default: {
-                              state: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 2 },
-                              county: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0, weight: 1 }
+                              state: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 1 },
+                              county: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 1 }
+                            },
+                            selected: {
+                              state: { color: '#757575', fillColor: "#FAF6F0", pointer: 'default', fillOpacity: 0, weight: 2 },
                             },
                             highlight: { color: "#047391", fillColor: "#047391"},
                             greyOut: { color: '#EAEAEA', fillOpacity: 0.75, weight: 0 }
@@ -41,7 +44,6 @@ export const fillColorScale = d3.scaleOrdinal()
 export const rScale = d3.scaleSqrt()
   .domain([1, 30] )
   .range([3, 15] );
-
 
 export const defaultCounty = {'stfp': '', 
                               'name':'', 

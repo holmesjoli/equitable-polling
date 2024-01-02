@@ -86,15 +86,14 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
         map.flyTo(selectedState.latlng, selectedState.zoom);
     }, [selectedState]);
 
-    console.log(selectedState);
-
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             {/* {selectedState.stfp === "" ?  : <></>} */}
-            {selectedState.stfp === "" ? <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState} /> : 
+            {selectedState.stfp === "" ? 
+                <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState} /> : 
                 <>
-                    <GeoJSON data={usData} style={layersStyle.default.state}/>
+                    <GeoJSON data={usData} style={layersStyle.selected.state}/>
                     <GeoJSON data={countyDataAll} style={layersStyle.default.county} onEachFeature={onEachCounty}/>
                 </>
             }
