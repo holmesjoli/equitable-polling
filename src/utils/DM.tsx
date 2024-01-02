@@ -15,9 +15,9 @@ export function formattedStateGeoJSON() {
 
         countiesGeo.filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
             countyFeatures.push({type: 'Feature', 
-                properties: {name: d.cntyname, 
-                             cntyfp: d.cntyfp, 
-                             cntygeoid: d.cntygeoid, 
+                properties: {name: d.name,
+                             cntyfp: d.cntyfp,
+                             geoid: d.geoid,
                              latlng: {lat: d.Y, lng: d.X} as LatLng} as County, 
                 geometry: d.geometry as GeoJSON.Geometry})
         });
@@ -25,9 +25,9 @@ export function formattedStateGeoJSON() {
         const countyData = {type: 'FeatureCollection', features: countyFeatures} as GeoJSON.FeatureCollection;
 
         stateFeatures.push({type: 'Feature', 
-            properties: {name: e.stname, 
-                         stfp: e.stfp, 
-                         latlng: {lat: e.Y, lng: e.X} as LatLng, 
+            properties: {name: e.name,
+                         stfp: e.stfp,
+                         latlng: {lat: e.Y, lng: e.X} as LatLng,
                          counties: countyData,
                          zoom: e.zoom} as State, 
             geometry: e.geometry as GeoJSON.Geometry})

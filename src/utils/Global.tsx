@@ -48,7 +48,7 @@ export const rScale = d3.scaleSqrt()
 export const defaultCounty = {'stfp': '', 
                               'name':'', 
                               'cntyfp':'', 
-                              'cntygeoid':'', 
+                              'geoid':'', 
                               latlng: {lat: 0, lng: 0}} as County;
 
 export const defaultState = {'name':'', 

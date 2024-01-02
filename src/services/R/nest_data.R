@@ -9,7 +9,7 @@ states_geo <- tigris::states(cb = T) %>%
   filter(STATEFP %in% stfp) %>% 
   select(NAME, STATEFP, geometry) %>% 
   rename(stfp = STATEFP,
-         stname = NAME) %>% 
+         name = NAME) %>% 
   mutate(zoom = ifelse(stfp == "45", 8, 7))
 
 states_geo <- states_geo %>% 
@@ -27,18 +27,19 @@ county_geo <- tigris::counties(cb = T) %>%
   select(STATEFP, NAME, COUNTYFP, GEOID, geometry) %>% 
   rename(stfp = STATEFP,
          cntyfp = COUNTYFP,
-         cntyname = NAME,
-         cntygeoid = GEOID)
+         name = NAME,
+         geoid = GEOID)
 
 county_geo <- county_geo %>% 
   bind_cols(county_geo %>% 
               sf::st_centroid() %>% 
               sf::st_coordinates()) %>% 
-  arrange(stfp, cntyname) 
+  arrange(stfp, name) 
 
 # %>% 
 #   rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
 
 exportJSON <- toJSON(county_geo)
 write(exportJSON, "../data/countyGeoJSON.json")
+
 
