@@ -45,6 +45,7 @@ export const defaultCounty = {'stfp': '',
                               'cntyfp':'', 
                               'geoid':'', 
                               'tracts': {} as GeoJSON.FeatureCollection,
+                              'adjacencies': [] as string[],
                               latlng: {lat: 0, lng: 0}} as County;
 
 export const defaultState = {'name':'', 

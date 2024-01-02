@@ -13,6 +13,12 @@ import { defaultState } from "../utils/Global";
 // Global
 import { layersStyle, centerUS, outerBounds, defaultCounty } from "../utils/Global";
 
+// Data management
+const countyDataAll = {type: 'FeatureCollection', 
+                       features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
+const tractDataAll = {type: 'FeatureCollection', 
+                      features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
+
 export function mouseOver(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.highlight);
@@ -28,17 +34,9 @@ export function mouseOut(event: any) {
 function LayersComponent({ usData, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any }) {
     const map = useMap();
 
-    const countyDataAll = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
-    const tractDataAll = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
-
     usData.features.forEach((e: any) => {
         e.properties.counties.features.forEach((d: any) => {
             countyDataAll.features.push(d);
-            if (e.properties.stfp === selectedState.stfp) {
-                d.properties.tracts.features.forEach((c: any) => {
-                    tractDataAll.features.push(c);
-                });
-            }
         });
     });
 
@@ -106,11 +104,22 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
     useEffect(() => {
         // if else add otherwise react finds the center of the world map in Africa
         if (selectedCounty.stfp !== "") {
+
+            countyDataAll.features.filter((d: any) => d.properties.adjacencies.includes(selectedCounty.geoid))
+            .forEach((d: any) => {
+                d.properties.tracts.features.forEach((e: any) => {
+                    tractDataAll.features.push(e);
+                }); 
+            });
+            console.log(tractDataAll);
+
             map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
         } else {
             map.flyTo(selectedState.latlng, selectedState.zoom);
         }
     }, [selectedCounty]);
+
+    console.log(tractDataAll);
 
     return(
         <div className="Layers">
@@ -118,14 +127,11 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
             {selectedState.stfp === "" ?
                 <GeoJSON data={usData} style={layersStyle.default} onEachFeature={onEachState} /> : 
                 <>
+                    <GeoJSON data={usData} style={layersStyle.selected}/>
                     {selectedCounty.cntyfp === "" ? 
-                        <>
-                            <GeoJSON data={usData} style={layersStyle.selected}/>
-                            <GeoJSON data={countyDataAll} style={layersStyle.default} onEachFeature={onEachCounty}/>
-                        </>
+                        <GeoJSON data={countyDataAll} style={layersStyle.default} onEachFeature={onEachCounty}/>
                     :
                         <>
-                            <GeoJSON data={usData} style={layersStyle.selected}/>
                             <GeoJSON data={countyDataAll} style={layersStyle.selected}/>
                             <GeoJSON data={tractDataAll} style={layersStyle.default} onEachFeature={onEachTract}/>
                         </>

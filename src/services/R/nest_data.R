@@ -3,7 +3,7 @@ library(jsonlite)
 library(dplyr)
 library(magrittr)
 
-stfp <- c("13", "45", "28", "55")
+stfp <- c("13", "45", "28", "55") #state fips codes
 
 states_geo <- tigris::states(cb = T) %>% 
   filter(STATEFP %in% stfp) %>% 
@@ -20,7 +20,7 @@ states_geo <- states_geo %>%
 #   rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
 
 exportJSON <- toJSON(states_geo)
-write(exportJSON, "../data/stateGeoJSON.json")
+write(exportJSON, "../data/processed/stateGeoJSON.json")
 
 county_geo <- tigris::counties(cb = T) %>% 
   filter(STATEFP %in% stfp) %>% 
@@ -40,7 +40,7 @@ county_geo <- county_geo %>%
 #   rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
 
 exportJSON <- toJSON(county_geo)
-write(exportJSON, "../data/countyGeoJSON.json")
+write(exportJSON, "../data/processed/countyGeoJSON.json")
 
 tract_geo <- tigris::tracts(cb = T) %>% 
   filter(STATEFP %in% stfp) %>% 
@@ -54,9 +54,19 @@ tract_geo <- tigris::tracts(cb = T) %>%
 tract_geo <- tract_geo %>% 
   bind_cols(tract_geo %>% 
               sf::st_centroid() %>% 
-              sf::st_coordinates()) %>%
-  rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
+              sf::st_coordinates()) 
+# %>%
+#   rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
 
 exportJSON <- toJSON(tract_geo)
-write(exportJSON, "../data/tractGeoJSON.json")
+write(exportJSON, "../data/processed/tractGeoJSON.json")
+
+adj <- readr::read_delim("../data/raw/county_adjacency.txt", delim = "|") %>% 
+  rename(geoid = `County GEOID`,
+         neighborGeoid = `Neighbor GEOID`) %>%
+  select(geoid, neighborGeoid) %>% 
+  filter(geoid %in% (county_geo %>% pull(geoid)))
+
+exportJSON <- toJSON(adj)
+write(exportJSON, "../data/processed/countyAdjacency.json")
 

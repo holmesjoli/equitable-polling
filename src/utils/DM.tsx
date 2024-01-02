@@ -1,7 +1,8 @@
 // Data Management Step
-import stateGeo from "../data/stateGeoJSON.json";
-import countyGeo from "../data/countyGeoJSON.json";  
-import tractGeo from "../data/tractGeoJSON.json";  
+import stateGeo from "../data/processed/stateGeoJSON.json";
+import countyGeo from "../data/processed/countyGeoJSON.json";  
+import tractGeo from "../data/processed/tractGeoJSON.json";
+import countyAdj from "../data/processed/countyAdjacency.json";
 
 import { State, County, Tract } from "./Types";
 import { LatLng } from "leaflet";
@@ -40,6 +41,7 @@ export function formattedStateGeoJSON() {
                              geoid: d.geoid,
                              latlng: {lat: d.Y, lng: d.X} as LatLng,
                              tracts: tractData,
+                             adjacencies: countyAdj.filter((a: any) => a.geoid === d.geoid).map((a: any) => a.neighborGeoid),
                              zoom: 10} as County, 
                 geometry: d.geometry as GeoJSON.Geometry})
         });

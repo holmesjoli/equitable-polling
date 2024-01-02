@@ -5,6 +5,11 @@ This respository contains code that produces the equitable polling locations int
 public/
 src/
 
+## Data sources
+
+1. County Adjacency File: https://www2.census.gov/geo/docs/reference/county_adjacency/county_adjacency2023.txt
+2. Shape files: TIGRIS package in R
+
 ## To update data
 
 1. To add a new state's geographies update line 6 in `/src/services/R/nest_data.R` to include the new state's fips code. For example, if you want to add Texas, you would change line 6 to `stfp <- c("13", "45", "28", "55", "48")`. 
