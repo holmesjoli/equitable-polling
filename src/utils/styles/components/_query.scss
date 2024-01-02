@@ -12,6 +12,10 @@
 }
 
 .ComponentGroup {
-    padding: $appPadding;
     margin: $appMargin;
+}
+
+.Status,
+.Query {
+    padding: $appPadding;
 }
