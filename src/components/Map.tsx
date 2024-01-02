@@ -105,6 +105,8 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
         // if else add otherwise react finds the center of the world map in Africa
         if (selectedCounty.stfp !== "") {
             map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
+        } else {
+            map.flyTo(selectedState.latlng, selectedState.zoom);
         }
     }, [selectedCounty]);
 

@@ -69,7 +69,12 @@ function SelectState({usData, selectedState, setSelectedState, setSelectedCounty
 function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {selectedState: State, selectedCounty: County, setSelectedCounty: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
-        setSelectedCounty(selectedState.counties.features.find(county => county.properties!.cntyfp === event.target.value)?.properties as County);
+
+        if (event.target.value === '000') {
+            setSelectedCounty(defaultCounty);
+        } else {
+            setSelectedCounty(selectedState.counties.features.find(county => county.properties!.cntyfp === event.target.value)?.properties as County);
+        }  
     };
 
     return (
@@ -83,6 +88,7 @@ function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {sele
                 label="county"
                 onChange={handleChange}
                 >
+                <MenuItem key='000' value='000'>All</MenuItem>
                 {selectedState.counties.features.map((county: GeoJSON.Feature) => (
                     <MenuItem key={county.properties!.cntyfp} value={county.properties!.cntyfp}>{county.properties!.name}</MenuItem>
                 ))}
