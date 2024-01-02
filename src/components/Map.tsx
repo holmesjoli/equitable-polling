@@ -21,7 +21,7 @@ export function mouseOver(event: any) {
 
 export function mouseOut(event: any) {
     var layer = event.target;
-    layer.setStyle(layersStyle.default.state);
+    layer.setStyle(layersStyle.default);
     Tooltip.pointerOut();
 }
 
@@ -112,11 +112,12 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             {selectedState.stfp === "" ? 
-                <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState} /> : 
+                <GeoJSON data={usData} style={layersStyle.default} onEachFeature={onEachState} /> : 
                 <>
-                    <GeoJSON data={usData} style={layersStyle.selected.state}/>
-                    {/* {selectedCounty.cntyfp === "" ?  */}
-                    <GeoJSON data={countyDataAll} style={layersStyle.default.county} onEachFeature={onEachCounty}/>:
+                    <GeoJSON data={usData} style={layersStyle.selected}/>
+                    {selectedCounty.cntyfp === "" ? 
+                        <GeoJSON data={countyDataAll} style={layersStyle.default} onEachFeature={onEachCounty}/>:
+                        <GeoJSON data={countyDataAll} style={layersStyle.selected}/>}
                     {/* <>
                         <GeoJSON data={countyDataAll} style={layersStyle.selected.county}/>
                         <GeoJSON data={tractDataAll} style={layersStyle.default.county} onEachFeature={onEachTract}/>
