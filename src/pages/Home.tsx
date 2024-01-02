@@ -24,7 +24,7 @@ export default function Home({}): JSX.Element {
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
     const [isFullScreen, setFullScreen] = useState(true);
 
-    console.log(selectedState);
+    console.log(selectedCounty);
 
     // console.log(bounds);
 

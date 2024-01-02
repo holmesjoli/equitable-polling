@@ -44,21 +44,20 @@ write(exportJSON, "../data/countyGeoJSON.json")
 
 tract_geo <- tigris::tracts(cb = T) %>% 
   filter(STATEFP %in% stfp) %>% 
-  select(NAMELSADCO, COUNTYFP, TRACTCE, NAME, GEOID, geometry) %>% 
-  rename(stfp = STATEFP,
-         cntyfp = COUNTYFP,
+  select(COUNTYFP, TRACTCE, NAME, GEOID, geometry) %>% 
+  rename(cntyfp = COUNTYFP,
          name = NAME,
-         cntygeoid = GEOID)
+         tractfp = TRACTCE,
+         geoid = GEOID)
 
-county_geo <- county_geo %>% 
-  bind_cols(county_geo %>% 
+tract_geo <- tract_geo %>% 
+  bind_cols(tract_geo %>% 
               sf::st_centroid() %>% 
-              sf::st_coordinates()) %>% 
-  arrange(stfp, cntyname) 
+              sf::st_coordinates())
 
 # %>% 
 #   rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
 
-exportJSON <- toJSON(county_geo)
-write(exportJSON, "../data/countyGeoJSON.json")
+exportJSON <- toJSON(tract_geo)
+write(exportJSON, "../data/tractGeoJSON.json")
 
