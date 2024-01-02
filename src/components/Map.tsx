@@ -23,7 +23,7 @@ export function mouseOut(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ usData, isFullScreen, setFullScreen, selectedState, setState, setCounty }: { usData: GeoJSON.FeatureCollection, isFullScreen: boolean, setFullScreen: any, selectedState: State, setState: any, setCounty: any }) {
+function LayersComponent({ usData, isFullScreen, setFullScreen, selectedState, setSelectedState, setCounty }: { usData: GeoJSON.FeatureCollection, isFullScreen: boolean, setFullScreen: any, selectedState: State, setSelectedState: any, setCounty: any }) {
     const map = useMap();
 
     const countyDataAll = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
@@ -48,7 +48,7 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, selectedState, s
         var layer = event.target;
         setFullScreen(false);
         const clickedState = usData.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
-        setState(clickedState as State);
+        setSelectedState(clickedState as State);
         setCounty(defaultCounty);
 
         map.flyTo(clickedState!.latlng, clickedState!.zoom);
@@ -92,7 +92,7 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, selectedState, s
     )
 }
 
-export default function Map({ usData, isFullScreen, setFullScreen, selectedState, setState, setCounty }: { usData: GeoJSON.FeatureCollection, isFullScreen: boolean, setFullScreen: any, selectedState: State, setState: any, setCounty: any }): JSX.Element {
+export default function Map({ usData, isFullScreen, setFullScreen, selectedState, setSelectedState, setCounty }: { usData: GeoJSON.FeatureCollection, isFullScreen: boolean, setFullScreen: any, selectedState: State, setSelectedState: any, setCounty: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -108,7 +108,7 @@ export default function Map({ usData, isFullScreen, setFullScreen, selectedState
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent usData={usData} isFullScreen={isFullScreen} setFullScreen={setFullScreen} selectedState={selectedState} setState={setState} setCounty={setCounty}/>
+            <LayersComponent usData={usData} isFullScreen={isFullScreen} setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} setCounty={setCounty}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );
