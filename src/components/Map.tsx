@@ -34,9 +34,11 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
     usData.features.forEach((e: any) => {
         e.properties.counties.features.forEach((d: any) => {
             countyDataAll.features.push(d);
-            d.properties.tracts.features.forEach((c: any) => {
-                tractDataAll.features.push(c);
-            });
+            if (e.properties.stfp === selectedState.stfp) {
+                d.properties.tracts.features.forEach((c: any) => {
+                    tractDataAll.features.push(c);
+                });
+            }
         });
     });
 
@@ -116,8 +118,18 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
             {selectedState.stfp === "" ?
                 <GeoJSON data={usData} style={layersStyle.default} onEachFeature={onEachState} /> : 
                 <>
-                    <GeoJSON data={usData} style={layersStyle.selected}/>
-                    <GeoJSON data={countyDataAll} style={layersStyle.default} onEachFeature={onEachCounty}/>
+                    {selectedCounty.cntyfp === "" ? 
+                        <>
+                            <GeoJSON data={usData} style={layersStyle.selected}/>
+                            <GeoJSON data={countyDataAll} style={layersStyle.default} onEachFeature={onEachCounty}/>
+                        </>
+                    :
+                        <>
+                            <GeoJSON data={usData} style={layersStyle.selected}/>
+                            <GeoJSON data={countyDataAll} style={layersStyle.selected}/>
+                            <GeoJSON data={tractDataAll} style={layersStyle.default} onEachFeature={onEachTract}/>
+                        </>
+                    }
                 </>
             }
         </div>

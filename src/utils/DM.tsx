@@ -22,6 +22,7 @@ export function formattedStateGeoJSON() {
 
                 tractFeatures.push({type: 'Feature', 
                     properties: {name: c.name,
+                                 stfp: c.stfp, 
                                  cntyfp: c.cntyfp,
                                  tractfp: c.tractfp,
                                  geoid: c.geoid,

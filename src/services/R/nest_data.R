@@ -44,8 +44,9 @@ write(exportJSON, "../data/countyGeoJSON.json")
 
 tract_geo <- tigris::tracts(cb = T) %>% 
   filter(STATEFP %in% stfp) %>% 
-  select(COUNTYFP, TRACTCE, NAME, GEOID, geometry) %>% 
+  select(COUNTYFP, STATEFP, TRACTCE, NAME, GEOID, geometry) %>% 
   rename(cntyfp = COUNTYFP,
+         stfp = STATEFP,
          name = NAME,
          tractfp = TRACTCE,
          geoid = GEOID)
