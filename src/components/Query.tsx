@@ -39,11 +39,11 @@ export function PageDescription({children}: {children: React.ReactNode}):  JSX.E
     )
 }
 
-function SelectState({usData, selectedState, setSelectedState, setCounty} : {usData: GeoJSON.FeatureCollection, selectedState: State, setSelectedState: any, setCounty: any}) : JSX.Element {
+function SelectState({usData, selectedState, setSelectedState, setSelectedCounty} : {usData: GeoJSON.FeatureCollection, selectedState: State, setSelectedState: any, setSelectedCounty: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
         setSelectedState(usData.features.find(d => d.properties!.stfp === event.target.value)!.properties as State);
-        setCounty(defaultCounty);
+        setSelectedCounty(defaultCounty);
     };
 
     return (
@@ -66,10 +66,10 @@ function SelectState({usData, selectedState, setSelectedState, setCounty} : {usD
     );
 }
 
-function SelectCounty({selectedState, selectedCounty, setCounty} : {selectedState: State, selectedCounty: County, setCounty: any}) : JSX.Element {
+function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {selectedState: State, selectedCounty: County, setSelectedCounty: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
-        setCounty(selectedState.counties.features.find(county => county.properties!.cntyfp === event.target.value)?.properties as County);
+        setSelectedCounty(selectedState.counties.features.find(county => county.properties!.cntyfp === event.target.value)?.properties as County);
     };
 
     return (
@@ -92,12 +92,12 @@ function SelectCounty({selectedState, selectedCounty, setCounty} : {selectedStat
     );
 }
 
-function SelectGeography({usData, selectedState, setSelectedState, selectedCounty, setCounty} : {usData: GeoJSON.FeatureCollection, selectedState: State, setSelectedState: any, selectedCounty: County, setCounty: any}) : JSX.Element {
+function SelectGeography({usData, selectedState, setSelectedState, selectedCounty, setSelectedCounty} : {usData: GeoJSON.FeatureCollection, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) : JSX.Element {
 
     return(
         <ComponentGroup title="Select geography">
-            <SelectState usData={usData} selectedState={selectedState} setSelectedState={setSelectedState} setCounty={setCounty}/>
-            {selectedState.stfp !== "" ? <SelectCounty selectedState={selectedState} selectedCounty={selectedCounty} setCounty={setCounty}/> : null}
+            <SelectState usData={usData} selectedState={selectedState} setSelectedState={setSelectedState} setSelectedCounty={setSelectedCounty}/>
+            {selectedState.stfp !== "" ? <SelectCounty selectedState={selectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/> : null}
         </ComponentGroup>
     )
 }
@@ -172,8 +172,8 @@ export const Menu = styled.div<{ $isfullscreen: boolean; }>`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({usData, isFullScreen, indicator, setIndicator, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setCounty} : 
-                          {usData: GeoJSON.FeatureCollection, isFullScreen: boolean, indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setCounty: any}) {
+export function QueryMenu({usData, isFullScreen, indicator, setIndicator, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty} : 
+                          {usData: GeoJSON.FeatureCollection, isFullScreen: boolean, indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) {
 
     return(
         <Menu $isfullscreen={isFullScreen}>
@@ -183,7 +183,7 @@ export function QueryMenu({usData, isFullScreen, indicator, setIndicator, change
                 </PageDescription>
                 <SelectIndicator indicator={indicator} setIndicator={setIndicator} />
                 <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
-                <SelectGeography usData={usData} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setCounty={setCounty} />
+                <SelectGeography usData={usData} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} />
             </div>
         </Menu>
     );
