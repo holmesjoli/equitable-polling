@@ -86,7 +86,7 @@ function LayersComponent({ usData, isFullScreen, setFullScreen, selectedState, s
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState} /> 
+            {isFullScreen ? <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState} /> : <></>}
             {isFullScreen ? <></> : <GeoJSON data={countyDataAll} style={layersStyle.default.county} onEachFeature={onEachCounty}/> }
         </div>
     )
