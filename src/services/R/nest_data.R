@@ -53,10 +53,8 @@ tract_geo <- tigris::tracts(cb = T) %>%
 tract_geo <- tract_geo %>% 
   bind_cols(tract_geo %>% 
               sf::st_centroid() %>% 
-              sf::st_coordinates())
-
-# %>% 
-#   rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
+              sf::st_coordinates()) %>%
+  rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
 
 exportJSON <- toJSON(tract_geo)
 write(exportJSON, "../data/tractGeoJSON.json")

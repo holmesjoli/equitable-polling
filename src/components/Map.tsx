@@ -29,10 +29,14 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
     const map = useMap();
 
     const countyDataAll = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
+    const tractDataAll = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 
-    usData.features.forEach((d: any) => {
-        d.properties.counties.features.forEach((e: any) => {
-            countyDataAll.features.push(e);
+    usData.features.forEach((e: any) => {
+        e.properties.counties.features.forEach((d: any) => {
+            countyDataAll.features.push(d);
+            d.properties.tracts.features.forEach((c: any) => {
+                tractDataAll.features.push(c);
+            });
         });
     });
 
@@ -72,6 +76,13 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
         map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
     }
 
+    function onEachTract(_: any, layer: any) {
+        layer.on({
+          mouseover: mouseOver,
+          mouseout: mouseOut
+        });
+    }
+
     // React Hooks ---------------------------------------------------
 
     // on Click Rectange - Resets the zoom and full screen to the us map
@@ -91,7 +102,6 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
     }, [selectedState]);
 
     useEffect(() => {
-
         // if else add otherwise react finds the center of the world map in Africa
         if (selectedCounty.stfp !== "") {
             map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
@@ -105,7 +115,13 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
                 <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState} /> : 
                 <>
                     <GeoJSON data={usData} style={layersStyle.selected.state}/>
-                    <GeoJSON data={countyDataAll} style={layersStyle.default.county} onEachFeature={onEachCounty}/>
+                    {/* {selectedCounty.cntyfp === "" ?  */}
+                    <GeoJSON data={countyDataAll} style={layersStyle.default.county} onEachFeature={onEachCounty}/>:
+                    {/* <>
+                        <GeoJSON data={countyDataAll} style={layersStyle.selected.county}/>
+                        <GeoJSON data={tractDataAll} style={layersStyle.default.county} onEachFeature={onEachTract}/>
+                    </>
+                    } */}
                 </>
             }
         </div>

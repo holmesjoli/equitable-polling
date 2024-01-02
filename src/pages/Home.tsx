@@ -24,17 +24,6 @@ export default function Home({}): JSX.Element {
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
     const [isFullScreen, setFullScreen] = useState(true);
 
-    console.log(selectedCounty);
-
-    // console.log(bounds);
-
-    const handleFullScreen = () => {
-        // if (isFullScreen) {
-        // } else {
-        // }
-        setFullScreen(!isFullScreen);
-    };
-
     useEffect(() => {
         Tooltip.init();
     }, [])

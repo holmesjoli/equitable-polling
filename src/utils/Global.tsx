@@ -20,7 +20,8 @@ export const layersStyle = {default: {
                               county: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.5, weight: 1 }
                             },
                             selected: {
-                              state: { color: '#757575', fillColor: "#FAF6F0", pointer: 'default', fillOpacity: 0, weight: 2 },
+                              state: { color: '#000000', fillColor: "#FAF6F0", pointer: 'default', fillOpacity: 0, weight: 2 },
+                              county: { color: '#000000', fillColor: "#FAF6F0", pointer: 'default', fillOpacity: 0, weight: 2 },
                             },
                             highlight: { color: "#047391", fillColor: "#047391"},
                             greyOut: { color: '#EAEAEA', fillOpacity: 0.75, weight: 0 }
