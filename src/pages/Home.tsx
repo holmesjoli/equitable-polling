@@ -24,6 +24,8 @@ export default function Home({}): JSX.Element {
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
     const [isFullScreen, setFullScreen] = useState(true);
 
+    console.log(state);
+
     // console.log(bounds);
 
     const handleFullScreen = () => {
