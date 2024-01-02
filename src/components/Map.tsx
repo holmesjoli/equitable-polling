@@ -25,7 +25,7 @@ export function mouseOut(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ usData, setFullScreen, selectedState, setSelectedState, setSelectedCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, selectedState: State, setSelectedState: any, setSelectedCounty: any }) {
+function LayersComponent({ usData, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any }) {
     const map = useMap();
 
     const countyDataAll = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
@@ -90,6 +90,14 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
         map.flyTo(selectedState.latlng, selectedState.zoom);
     }, [selectedState]);
 
+    useEffect(() => {
+
+        // if else add otherwise react finds the center of the world map in Africa
+        if (selectedCounty.stfp !== "") {
+            map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
+        }
+    }, [selectedCounty]);
+
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
@@ -104,7 +112,7 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
     )
 }
 
-export default function Map({ usData, setFullScreen, selectedState, setSelectedState, setSelectedCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, selectedState: State, setSelectedState: any, setSelectedCounty: any }): JSX.Element {
+export default function Map({ usData, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -120,7 +128,7 @@ export default function Map({ usData, setFullScreen, selectedState, setSelectedS
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent usData={usData} setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} setSelectedCounty={setSelectedCounty}/>
+            <LayersComponent usData={usData} setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );
