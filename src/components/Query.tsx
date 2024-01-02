@@ -158,11 +158,11 @@ function SelectIndicator({indicator, setIndicator} : {indicator: Indicator, setI
     )
 }
 
-export const Menu = styled.div<{ $isfullscreen: string; }>`
+export const Menu = styled.div<{ $isfullscreen: boolean; }>`
     z-index: +9;
     position: absolute;
     top: 10vh;
-    left: ${props => props.$isfullscreen === "true" ? '-100vw;' : '0vw;'};
+    left: ${props => props.$isfullscreen ? '-100vw;' : '0vw;'};
     width: 20rem;
     // padding: .625rem;
     background-color: #FAF6F0;
@@ -176,7 +176,7 @@ export function QueryMenu({usData, isFullScreen, indicator, setIndicator, change
                           {usData: GeoJSON.FeatureCollection, isFullScreen: boolean, indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, state: State, setState: any, county: County, setCounty: any}) {
 
     return(
-        <Menu $isfullscreen={isFullScreen.toString()}>
+        <Menu $isfullscreen={isFullScreen}>
             <div className="Query">
                 <PageDescription>
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
