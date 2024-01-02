@@ -6,7 +6,7 @@ import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle } from
 import * as Tooltip from "./Tooltip";
 
 // Types
-import { State } from "../utils/Types";
+import { State, County } from "../utils/Types";
 
 import { defaultState } from "../utils/Global";
 
@@ -66,6 +66,10 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
 
     function onClickCounty(event: any) {
         var layer = event.target;
+        const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
+        setSelectedCounty(clickedCounty as County);
+
+        map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
     }
 
     // React Hooks ---------------------------------------------------
@@ -89,7 +93,6 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            {/* {selectedState.stfp === "" ?  : <></>} */}
             {selectedState.stfp === "" ? 
                 <GeoJSON data={usData} style={layersStyle.default.state} onEachFeature={onEachState} /> : 
                 <>

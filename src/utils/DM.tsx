@@ -18,7 +18,8 @@ export function formattedStateGeoJSON() {
                 properties: {name: d.name,
                              cntyfp: d.cntyfp,
                              geoid: d.geoid,
-                             latlng: {lat: d.Y, lng: d.X} as LatLng} as County, 
+                             latlng: {lat: d.Y, lng: d.X} as LatLng,
+                             zoom: 9} as County, 
                 geometry: d.geometry as GeoJSON.Geometry})
         });
         
