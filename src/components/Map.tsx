@@ -111,18 +111,11 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            {selectedState.stfp === "" ? 
+            {selectedState.stfp === "" ?
                 <GeoJSON data={usData} style={layersStyle.default} onEachFeature={onEachState} /> : 
                 <>
                     <GeoJSON data={usData} style={layersStyle.selected}/>
-                    {selectedCounty.cntyfp === "" ? 
-                        <GeoJSON data={countyDataAll} style={layersStyle.default} onEachFeature={onEachCounty}/>:
-                        <GeoJSON data={countyDataAll} style={layersStyle.selected}/>}
-                    {/* <>
-                        <GeoJSON data={countyDataAll} style={layersStyle.selected.county}/>
-                        <GeoJSON data={tractDataAll} style={layersStyle.default.county} onEachFeature={onEachTract}/>
-                    </>
-                    } */}
+                    <GeoJSON data={countyDataAll} style={layersStyle.default} onEachFeature={onEachCounty}/>
                 </>
             }
         </div>
