@@ -84,7 +84,7 @@ function SelectCounty({state, county, setCounty} : {state: State, county: County
                 onChange={handleChange}
                 >
                 {state.counties.features.map((county: GeoJSON.Feature) => (
-                    <MenuItem key={county.properties!.cntyfp} value={county.properties!.cntyfp}>{county.properties!.cntyname}</MenuItem>
+                    <MenuItem key={county.properties!.cntyfp} value={county.properties!.cntyfp}>{county.properties!.name}</MenuItem>
                 ))}
                 </Select>
             </FormControl>
