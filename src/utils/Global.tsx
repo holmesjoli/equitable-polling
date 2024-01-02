@@ -16,8 +16,8 @@ export const selectVariable = {
 }
 
 export const layersStyle = {default: {
-                              state: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 1 },
-                              county: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.7, weight: 1 }
+                              state: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.5, weight: 1 },
+                              county: { color: '#757575', fillColor: "#FAF6F0", pointer: 'cursor', fillOpacity: 0.5, weight: 1 }
                             },
                             selected: {
                               state: { color: '#757575', fillColor: "#FAF6F0", pointer: 'default', fillOpacity: 0, weight: 2 },
