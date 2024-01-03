@@ -12,7 +12,7 @@ import { State, County } from "../utils/Types";
 import { layersStyle, centerUS, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { unnestedTractData, unnestedCountyData, nestedStateData } from "../utils/DM";
+import { unnestedTracts, unnestedCountyData, nestedStateData } from "../utils/DM";
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -101,6 +101,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         }
     }, [selectedCounty]);
 
+    console.log(unnestedTracts(selectedState));
 
     return(
         <div className="Layers">
@@ -114,7 +115,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                     :
                         <>
                             <GeoJSON data={unnestedCountyData} style={layersStyle.selected}/>
-                            <GeoJSON data={unnestedTractData} style={layersStyle.default} onEachFeature={onEachTract}/>
+                            <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.default} onEachFeature={onEachTract}/>
                         </>
                     }
                 </>

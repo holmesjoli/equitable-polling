@@ -14,7 +14,6 @@ const stateData = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]}
 
 export const nestedStateData = formattedStateGeoJSON();
 export const unnestedCountyData = unnestedCounties();
-export const unnestedTractData = unnestedTracts();
 
 function formattedStateGeoJSON() {
 
@@ -47,6 +46,7 @@ function formattedStateGeoJSON() {
             countyFeatures.push({type: 'Feature', 
                 properties: {name: d.name,
                              cntyfp: d.cntyfp,
+                             stfp: d.stfp,
                              geoid: d.geoid,
                              latlng: {lat: d.Y, lng: d.X} as LatLng,
                              tracts: tractData,
@@ -87,11 +87,15 @@ export function unnestedCounties() {
 }
 
 // Returns an unnested list of all the counties for the project
-export function unnestedTracts() {
+export function unnestedTracts(selectedState: State) {
 
     const features: Feature[] = [];
 
-    unnestedCountyData.features.forEach((e: any) => {
+    console.log(unnestedCountyData.features);
+
+    unnestedCountyData.features
+    .filter((d: any) => d.properties.stfp === selectedState.stfp)
+    .forEach((e: any) => {
         e.properties.tracts.features.forEach((d: any) => {
             features.push(d);
         });
