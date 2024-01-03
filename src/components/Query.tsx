@@ -99,8 +99,7 @@ function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {sele
             options={allOpt.concat(selectedState.counties.features as GeoJSON.Feature[]) }
             getOptionLabel={(option) => option.properties?.name}
             onChange = {(_, value) => {
-                console.log(value);
-                
+
                 if (value === null) {
                     return;
                 } else if (value?.properties?.geoid === '0') {
