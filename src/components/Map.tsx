@@ -11,9 +11,10 @@ import { State, County } from "../utils/Types";
 // Global
 import { layersStyle, centerUS, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
-//DM
+// Data
+import { countyDataAll, usData } from "../utils/DM";
 
-import { unnestedCounties } from "../utils/DM";
+console.log(countyDataAll);
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -27,13 +28,10 @@ export function mouseOut(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ usData, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: 
-                         { usData: GeoJSON.FeatureCollection, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) {
-    
-    const map = useMap();
+function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: 
+                         { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) {
 
-    // Data management
-    const countyDataAll = unnestedCounties();
+    const map = useMap();
 
     // Functions ---------------------------------------------------
 
@@ -139,7 +137,8 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
     )
 }
 
-export default function Map({ usData, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any }): JSX.Element {
+export default function Map({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: 
+                            { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -155,7 +154,7 @@ export default function Map({ usData, setFullScreen, selectedState, setSelectedS
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent usData={usData} setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
+            <LayersComponent setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
             <ZoomControl position="bottomright" />
         </MapContainer>
     );

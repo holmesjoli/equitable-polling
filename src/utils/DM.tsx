@@ -11,7 +11,10 @@ import { Feature } from "geojson";
 
 const stateData = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 
-export function formattedStateGeoJSON() {
+export const usData = formattedStateGeoJSON();
+export const countyDataAll = unnestedCounties();
+
+function formattedStateGeoJSON() {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
@@ -67,6 +70,7 @@ export function formattedStateGeoJSON() {
     return stateData;
 }
 
+// Returns an unnested list of all the counties for the project
 export function unnestedCounties() {
 
     const features: Feature[] = [];
@@ -77,9 +81,24 @@ export function unnestedCounties() {
         });
     });
 
-    const countyDataAll = {type: 'FeatureCollection', 
-                           features: features} as GeoJSON.FeatureCollection;
+    return {type: 'FeatureCollection', 
+            features: features} as GeoJSON.FeatureCollection;
+}
 
-    return countyDataAll;
+// Returns the adjacent tracts to the selected county
+// 
+export function getAdjacentTracts(selectedCounty: County) {
 
+    const features: Feature[] = [];
+
+    countyDataAll.features
+            .filter((d: any) => d.properties.adjacencies.includes(selectedCounty.geoid))
+            .forEach((d: any) => {
+                d.properties.tracts.features.forEach((e: any) => {
+                    features.push(e);
+                }); 
+            });
+
+    return {type: 'FeatureCollection', 
+            features: features} as GeoJSON.FeatureCollection;
 }

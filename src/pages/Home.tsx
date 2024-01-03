@@ -6,14 +6,10 @@ import Main from '../components/Main';
 import { StateStatus, USStatus } from '../components/Status';
 import { QueryMenu } from "../components/Query";
 import Map from "../components/Map";
-import { formattedStateGeoJSON } from "../utils/DM";
 import * as Tooltip from "../components/Tooltip";
 
 // Data 
 import { selectVariable, defaultCounty, defaultState } from "../utils/Global";
-
-// Data Management
-const usData = formattedStateGeoJSON();
 
 export default function Home({}): JSX.Element {
 
@@ -33,8 +29,8 @@ export default function Home({}): JSX.Element {
     return(
         <Main>
             {isFullScreen? <USStatus /> : <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} />}
-            <QueryMenu usData={usData} isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
-            <Map usData={usData} setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} />
+            <QueryMenu isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
+            <Map setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} />
         </Main>
     )
 }
