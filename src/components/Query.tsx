@@ -1,3 +1,7 @@
+// React
+import { useEffect, useState } from "react";
+
+// MUI
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -5,9 +9,16 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import TextField from '@mui/material/TextField';
 
+// Types
+import { Feature } from "geojson";
 import { State, County, ChangeYear, Indicator } from '../utils/Types';
+
+// Globals
 import { selectVariable, defaultCounty } from "../utils/Global";
+
+
 
 import styled from "styled-components";
 
@@ -74,41 +85,61 @@ function SelectState({selectedState, setSelectedState, setSelectedCounty} : { se
 
 function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {selectedState: State, selectedCounty: County, setSelectedCounty: any}) : JSX.Element {
 
+    const [textInput, setTextInput] = useState('');
+
+    const [potentialCounties, setPotentialCounties] = useState(selectedState.counties.features);
+    console.log(potentialCounties);
+
+    const handleTextInputChange = (event: any) => {
+        setTextInput(event.target.value.toUpperCase());
+    };
+
+    // Filter counties based on text input
+    useEffect(() => {
+        const features: Feature[] = [];
+
+        potentialCounties.forEach((d: GeoJSON.Feature) => {
+            if (d.properties?.name.toUpperCase().indexOf(textInput) > -1) {
+                features.push(d);
+            }
+
+        setPotentialCounties(features);
+
+        if (textInput === '') {
+            setPotentialCounties(selectedState.counties.features);
+        }
+
+        });
+    }, [textInput]);
+
     const handleChange = (event: SelectChangeEvent) => {
 
-        if (event.target.value === '000') {
+        if (event.target.value === undefined) {
+            return
+        } else if (event.target.value === '000') {
             setSelectedCounty(defaultCounty);
         } else {
             setSelectedCounty(selectedState.counties.features.find(county => county.properties!.cntyfp === event.target.value)?.properties as County);
-        }  
+        }
     };
 
     return (
         <div id="SelectCounty" className="QueryComponent">
             <FormControl fullWidth size="small">
-                <InputLabel id="select-county-label">County</InputLabel>
+                {/* <InputLabel id="select-county-label">County</InputLabel> */}
+                <TextField fullWidth size="small" color="secondary"
+                    id="outlined-search" label="County" type="search" 
+                    onChange={handleTextInputChange}
+                />
                 <Select
-                labelId="select-county-label"
-                id="select-county"
-                value={selectedCounty.cntyfp}
-                label="county"
-                onChange={handleChange}
+                    labelId="select-county-label"
+                    id="select-county"
+                    value={selectedCounty.cntyfp}
+                    label="county"
+                    onChange={handleChange}
                 >
-                <div id="Search">
-                    <OutlinedInput
-                        fullWidth size="small" color="secondary"
-                        id="outlined-search"
-                        endAdornment={<InputAdornment position="end">
-                            <SearchOutlinedIcon />
-                        </InputAdornment>}
-                        aria-describedby="outlined-search-helper-text"
-                        inputProps={{
-                        'aria-label': 'search',
-                        }}
-                    />
-                </div>
                 <MenuItem key='000' value='000'>All</MenuItem>
-                {selectedState.counties.features.map((county: GeoJSON.Feature) => (
+                {potentialCounties.map((county: GeoJSON.Feature) => (
                     <MenuItem key={county.properties!.cntyfp} value={county.properties!.cntyfp}>{county.properties!.name}</MenuItem>
                 ))}
                 </Select>
