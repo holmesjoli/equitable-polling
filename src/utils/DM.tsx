@@ -91,8 +91,6 @@ export function unnestedTracts(selectedState: State) {
 
     const features: Feature[] = [];
 
-    console.log(unnestedCountyData.features);
-
     unnestedCountyData.features
     .filter((d: any) => d.properties.stfp === selectedState.stfp)
     .forEach((e: any) => {
