@@ -87,17 +87,24 @@ function SelectState({selectedState, setSelectedState, setSelectedCounty} : { se
 
 function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {selectedState: State, selectedCounty: County, setSelectedCounty: any}) : JSX.Element {
 
+    const allOpt = [{type: 'Feature', 
+                    properties: {name: 'All counties', geoid: '0'}, 
+                    geometry: {} as GeoJSON.Geometry} as GeoJSON.Feature];
+
     return (
         <div id="SelectCounty" className="QueryComponent">
             <Autocomplete
             id="country-select-demo"
             fullWidth size="small"
-            options={selectedState.counties.features as GeoJSON.Feature[]}
+            options={allOpt.concat(selectedState.counties.features as GeoJSON.Feature[]) }
             getOptionLabel={(option) => option.properties?.name}
             onChange = {(_, value) => {
                 console.log(value);
+                
                 if (value === null) {
                     return;
+                } else if (value?.properties?.geoid === '0') {
+                    setSelectedCounty(defaultCounty);                
                 } else {
                     setSelectedCounty(value?.properties as County)
                 }
