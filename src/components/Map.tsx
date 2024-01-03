@@ -8,16 +8,12 @@ import * as Tooltip from "./Tooltip";
 // Types
 import { State, County } from "../utils/Types";
 
-import { defaultState } from "../utils/Global";
-
 // Global
-import { layersStyle, centerUS, outerBounds, defaultCounty } from "../utils/Global";
+import { layersStyle, centerUS, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
-// Data management
-const countyDataAll = {type: 'FeatureCollection', 
-                       features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
-const tractDataAll = {type: 'FeatureCollection', 
-                      features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
+//DM
+
+import { unnestedCounties } from "../utils/DM";
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -31,14 +27,13 @@ export function mouseOut(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ usData, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: { usData: GeoJSON.FeatureCollection, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any }) {
+function LayersComponent({ usData, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: 
+                         { usData: GeoJSON.FeatureCollection, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) {
+    
     const map = useMap();
 
-    usData.features.forEach((e: any) => {
-        e.properties.counties.features.forEach((d: any) => {
-            countyDataAll.features.push(d);
-        });
-    });
+    // Data management
+    const countyDataAll = unnestedCounties();
 
     // Functions ---------------------------------------------------
 
@@ -105,13 +100,15 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
         // if else add otherwise react finds the center of the world map in Africa
         if (selectedCounty.stfp !== "") {
 
-            countyDataAll.features.filter((d: any) => d.properties.adjacencies.includes(selectedCounty.geoid))
-            .forEach((d: any) => {
-                d.properties.tracts.features.forEach((e: any) => {
-                    tractDataAll.features.push(e);
-                }); 
-            });
-            console.log(tractDataAll);
+            // countyDataAll.features.filter((d: any) => d.properties.adjacencies.includes(selectedCounty.geoid))
+            // .forEach((d: any) => {
+            //     d.properties.tracts.features.forEach((e: any) => {
+            //         adjTracts.features.push(e);
+            //     }); 
+            // });
+            // console.log(adjTracts);
+
+            // setAdjTracts();
 
             map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
         } else {
@@ -119,7 +116,7 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
         }
     }, [selectedCounty]);
 
-    console.log(tractDataAll);
+    // console.log(adjTracts);
 
     return(
         <div className="Layers">
@@ -133,7 +130,7 @@ function LayersComponent({ usData, setFullScreen, selectedState, setSelectedStat
                     :
                         <>
                             <GeoJSON data={countyDataAll} style={layersStyle.selected}/>
-                            <GeoJSON data={tractDataAll} style={layersStyle.default} onEachFeature={onEachTract}/>
+                            {/* <GeoJSON data={adjTracts} style={layersStyle.default} onEachFeature={onEachTract}/> */}
                         </>
                     }
                 </>

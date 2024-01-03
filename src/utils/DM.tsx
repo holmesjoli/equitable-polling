@@ -7,6 +7,10 @@ import countyAdj from "../data/processed/countyAdjacency.json";
 import { State, County, Tract } from "./Types";
 import { LatLng } from "leaflet";
 
+import { Feature } from "geojson";
+
+const stateData = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
+
 export function formattedStateGeoJSON() {
 
     const stateFeatures = [] as GeoJSON.Feature[];
@@ -58,7 +62,24 @@ export function formattedStateGeoJSON() {
 
     });
 
-    const stateData = {type: 'FeatureCollection', features: stateFeatures} as GeoJSON.FeatureCollection;
+    stateData.features = stateFeatures;
 
     return stateData;
+}
+
+export function unnestedCounties() {
+
+    const features: Feature[] = [];
+
+    stateData.features.forEach((e: any) => {
+        e.properties.counties.features.forEach((d: any) => {
+            features.push(d);
+        });
+    });
+
+    const countyDataAll = {type: 'FeatureCollection', 
+                           features: features} as GeoJSON.FeatureCollection;
+
+    return countyDataAll;
+
 }

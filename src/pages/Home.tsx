@@ -19,6 +19,8 @@ export default function Home({}): JSX.Element {
 
     const [selectedState, setSelectedState] = useState(defaultState);
     const [selectedCounty, setSelectedCounty] = useState(defaultCounty);
+    const [adjTracts, setAdjTracts] = useState({type: 'FeatureCollection', 
+                                                features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection);
     const [changeYear, setChangeYear] = useState(selectVariable.changeYear[0]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
@@ -32,7 +34,7 @@ export default function Home({}): JSX.Element {
         <Main>
             {isFullScreen? <USStatus /> : <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} />}
             <QueryMenu usData={usData} isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
-            <Map usData={usData} setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
+            <Map usData={usData} setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} />
         </Main>
     )
 }
