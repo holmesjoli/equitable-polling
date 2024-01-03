@@ -102,14 +102,13 @@ function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {sele
             if (d.properties?.name.toUpperCase().indexOf(textInput) > -1) {
                 features.push(d);
             }
-
-        setPotentialCounties(features);
-
+        });
+        
         if (textInput === '') {
             setPotentialCounties(selectedState.counties.features);
+        } else {
+            setPotentialCounties(features);
         }
-
-        });
     }, [textInput]);
 
     const handleChange = (event: SelectChangeEvent) => {
