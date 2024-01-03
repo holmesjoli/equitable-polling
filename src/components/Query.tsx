@@ -1,10 +1,26 @@
+// React
+import { useEffect, useState } from "react";
+
+// MUI
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
 
+// Types
+import { Feature } from "geojson";
 import { State, County, ChangeYear, Indicator } from '../utils/Types';
+
+// Globals
 import { selectVariable, defaultCounty } from "../utils/Global";
+
+
 
 import styled from "styled-components";
 
@@ -71,32 +87,43 @@ function SelectState({selectedState, setSelectedState, setSelectedCounty} : { se
 
 function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {selectedState: State, selectedCounty: County, setSelectedCounty: any}) : JSX.Element {
 
-    const handleChange = (event: SelectChangeEvent) => {
-
-        if (event.target.value === '000') {
-            setSelectedCounty(defaultCounty);
-        } else {
-            setSelectedCounty(selectedState.counties.features.find(county => county.properties!.cntyfp === event.target.value)?.properties as County);
-        }  
-    };
+    const allOpt = [{type: 'Feature', 
+                    properties: {name: 'All counties', geoid: '0'}, 
+                    geometry: {} as GeoJSON.Geometry} as GeoJSON.Feature];
 
     return (
         <div id="SelectCounty" className="QueryComponent">
-            <FormControl fullWidth size="small">
-                <InputLabel id="select-county-label">County</InputLabel>
-                <Select
-                labelId="select-county-label"
-                id="select-county"
-                value={selectedCounty.cntyfp}
-                label="county"
-                onChange={handleChange}
-                >
-                <MenuItem key='000' value='000'>All</MenuItem>
-                {selectedState.counties.features.map((county: GeoJSON.Feature) => (
-                    <MenuItem key={county.properties!.cntyfp} value={county.properties!.cntyfp}>{county.properties!.name}</MenuItem>
-                ))}
-                </Select>
-            </FormControl>
+            <Autocomplete
+            id="country-select-demo"
+            fullWidth size="small"
+            options={allOpt.concat(selectedState.counties.features as GeoJSON.Feature[]) }
+            getOptionLabel={(option) => option.properties?.name}
+            onChange = {(_, value) => {
+
+                if (value === null) {
+                    return;
+                } else if (value?.properties?.geoid === '0') {
+                    setSelectedCounty(defaultCounty);                
+                } else {
+                    setSelectedCounty(value?.properties as County)
+                }
+                }}
+            renderOption={(props, option) => (
+                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                {option.properties?.name}
+                </Box>
+            )}
+            renderInput={(params) => (
+                <TextField
+                {...params}
+                label="County"
+                inputProps={{
+                    ...params.inputProps,
+                    autoComplete: 'new-password', // disable autocomplete and autofill
+                }}
+                />
+            )}
+            />
         </div>
     );
 }
