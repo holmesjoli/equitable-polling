@@ -96,7 +96,7 @@ function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {sele
             <Autocomplete
             id="country-select-demo"
             fullWidth size="small"
-            options={allOpt.concat(selectedState.counties.features as GeoJSON.Feature[]) }
+            options={selectedCounty.cntyfp === ''? selectedState.counties.features as GeoJSON.Feature[] : allOpt.concat(selectedState.counties.features as GeoJSON.Feature[]) }
             getOptionLabel={(option) => option.properties?.name}
             onChange = {(_, value) => {
 
