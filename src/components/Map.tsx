@@ -12,9 +12,7 @@ import { State, County } from "../utils/Types";
 import { layersStyle, centerUS, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { countyDataAll, nestedStateData } from "../utils/DM";
-
-console.log(countyDataAll);
+import { unnestedTractData, unnestedCountyData, nestedStateData } from "../utils/DM";
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -97,24 +95,12 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     useEffect(() => {
         // if else add otherwise react finds the center of the world map in Africa
         if (selectedCounty.stfp !== "") {
-
-            // countyDataAll.features.filter((d: any) => d.properties.adjacencies.includes(selectedCounty.geoid))
-            // .forEach((d: any) => {
-            //     d.properties.tracts.features.forEach((e: any) => {
-            //         adjTracts.features.push(e);
-            //     }); 
-            // });
-            // console.log(adjTracts);
-
-            // setAdjTracts();
-
             map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
         } else {
             map.flyTo(selectedState.latlng, selectedState.zoom);
         }
     }, [selectedCounty]);
 
-    // console.log(adjTracts);
 
     return(
         <div className="Layers">
@@ -124,11 +110,11 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                 <>
                     <GeoJSON data={nestedStateData} style={layersStyle.selected}/>
                     {selectedCounty.cntyfp === "" ? 
-                        <GeoJSON data={countyDataAll} style={layersStyle.default} onEachFeature={onEachCounty}/>
+                        <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty}/>
                     :
                         <>
-                            <GeoJSON data={countyDataAll} style={layersStyle.selected}/>
-                            {/* <GeoJSON data={adjTracts} style={layersStyle.default} onEachFeature={onEachTract}/> */}
+                            <GeoJSON data={unnestedCountyData} style={layersStyle.selected}/>
+                            <GeoJSON data={unnestedTractData} style={layersStyle.default} onEachFeature={onEachTract}/>
                         </>
                     }
                 </>
@@ -154,7 +140,7 @@ export default function Map({ setFullScreen, selectedState, setSelectedState, se
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
+            <LayersComponent setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} />
             <ZoomControl position="bottomright" />
         </MapContainer>
     );
