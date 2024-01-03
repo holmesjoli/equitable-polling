@@ -1,6 +1,6 @@
 // Libraries
 import { useEffect, useMemo } from "react";
-import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, FeatureGroup } from "react-leaflet";
 
 // Components
 import * as Tooltip from "./Tooltip";
@@ -108,17 +108,17 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             {selectedState.stfp === "" ?
                 <GeoJSON data={nestedStateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
-                <>
+                <FeatureGroup>
                     <GeoJSON data={nestedStateData} style={layersStyle.selected}/>
                     {selectedCounty.cntyfp === "" ? 
                         <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty}/>
                     :
-                        <>
+                        <FeatureGroup>
                             <GeoJSON data={unnestedCountyData} style={layersStyle.selected}/>
                             <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.default} onEachFeature={onEachTract}/>
-                        </>
+                        </FeatureGroup>
                     }
-                </>
+                </FeatureGroup>
             }
         </div>
     )
