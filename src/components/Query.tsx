@@ -2,6 +2,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 import { State, County, ChangeYear, Indicator } from '../utils/Types';
 import { selectVariable, defaultCounty } from "../utils/Global";
@@ -91,6 +94,19 @@ function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {sele
                 label="county"
                 onChange={handleChange}
                 >
+                <div id="Search">
+                    <OutlinedInput
+                        fullWidth size="small" color="secondary"
+                        id="outlined-search"
+                        endAdornment={<InputAdornment position="end">
+                            <SearchOutlinedIcon />
+                        </InputAdornment>}
+                        aria-describedby="outlined-search-helper-text"
+                        inputProps={{
+                        'aria-label': 'search',
+                        }}
+                    />
+                </div>
                 <MenuItem key='000' value='000'>All</MenuItem>
                 {selectedState.counties.features.map((county: GeoJSON.Feature) => (
                     <MenuItem key={county.properties!.cntyfp} value={county.properties!.cntyfp}>{county.properties!.name}</MenuItem>
