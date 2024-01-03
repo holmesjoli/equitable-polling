@@ -4,9 +4,9 @@ import { LatLng } from "leaflet";
 import { County, State } from "./Types"
 
 export const selectVariable = {
-    changeYear: [{id: '0', descr: 'Overall 2012-2022', baseYear: 2022},
-                 {id: '1', descr: '2018-2020', baseYear: 2020},
-                 {id: '2', descr: '2016-2018', baseYear: 2018}],
+    changeYear: [{id: '0', descr: 'Overall 2012 – 2022', baseYear: 2022},
+                 {id: '1', descr: '2018 – 2020', baseYear: 2020},
+                 {id: '2', descr: '2016 – 2018', baseYear: 2018}],
     equityIndicator: [{id: '0', descr: 'None'},
                       {id: '1', descr: '% Black Voters'},
                       {id: '2', descr: 'Age demographics'},
