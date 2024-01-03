@@ -9,7 +9,7 @@ import * as Tooltip from "./Tooltip";
 import { State, County } from "../utils/Types";
 
 // Global
-import { layersStyle, centerUS, outerBounds, defaultCounty, defaultState } from "../utils/Global";
+import { layersStyle, defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
 import { unnestedTracts, unnestedCountyData, nestedStateData } from "../utils/DM";
@@ -80,7 +80,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     const onClickRect = useMemo(
         () => ({
           click() {
-            map.flyTo(centerUS, 5);
+            map.flyTo(defaultMap.center, defaultMap.zoom);
             setFullScreen(true);
             setSelectedState(defaultState);
           },
@@ -101,7 +101,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         }
     }, [selectedCounty]);
 
-    console.log(unnestedTracts(selectedState));
+    // console.log(unnestedTracts(selectedState));
 
     return(
         <div className="Layers">
@@ -130,10 +130,10 @@ export default function Map({ setFullScreen, selectedState, setSelectedState, se
     return(
         <MapContainer
             className="home-map"
-            center={[centerUS.lat, centerUS.lng]}
-            zoom={5}
-            minZoom={4}
-            maxZoom={18}
+            center={[defaultMap.center.lat, defaultMap.center.lng]}
+            zoom={defaultMap.zoom}
+            minZoom={defaultMap.minZoom}
+            maxZoom={defaultMap.maxZoom}
             scrollWheelZoom={false}
             zoomControl={false}
             >

@@ -25,7 +25,10 @@ export const outerBounds: [number, number][] =
     [[5.499550, -167.276413], //Southwest
     [83.162102, -19]] //Northeast
 
-export const centerUS = {lat: 39.97, lng: -86.19} as LatLng;
+export const defaultMap = {zoom: 5, 
+                           center: {lat: 39.97, lng: -86.19} as LatLng,
+                           minZoom: 4,
+                           maxZoom: 18};
 
 // Scales
 export const strokeColorScale = d3.scaleOrdinal()
@@ -51,5 +54,5 @@ export const defaultCounty = {'stfp': '',
 export const defaultState = {'name':'', 
                              'stfp':'', 
                              'counties': {} as GeoJSON.FeatureCollection, 
-                             latlng: centerUS, 
+                             latlng: defaultMap.center, 
                              zoom: 5} as State;
