@@ -1,17 +1,18 @@
-// Data Management Step
+// Raw Data
 import stateGeo from "../data/processed/stateGeoJSON.json";
 import countyGeo from "../data/processed/countyGeoJSON.json";  
 import tractGeo from "../data/processed/tractGeoJSON.json";
 import countyAdj from "../data/processed/countyAdjacency.json";
 
+// Types
 import { State, County, Tract } from "./Types";
 import { LatLng } from "leaflet";
-
 import { Feature } from "geojson";
 
+// Processed Data
 const stateData = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 
-export const usData = formattedStateGeoJSON();
+export const nestedStateData = formattedStateGeoJSON();
 export const countyDataAll = unnestedCounties();
 
 function formattedStateGeoJSON() {
@@ -62,7 +63,6 @@ function formattedStateGeoJSON() {
                          counties: countyData,
                          zoom: e.zoom} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
-
     });
 
     stateData.features = stateFeatures;
@@ -86,7 +86,7 @@ export function unnestedCounties() {
 }
 
 // Returns the adjacent tracts to the selected county
-// 
+// First returns the adjacent counties, then the tracts in those counties
 export function getAdjacentTracts(selectedCounty: County) {
 
     const features: Feature[] = [];

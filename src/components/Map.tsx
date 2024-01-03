@@ -12,7 +12,7 @@ import { State, County } from "../utils/Types";
 import { layersStyle, centerUS, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { countyDataAll, usData } from "../utils/DM";
+import { countyDataAll, nestedStateData } from "../utils/DM";
 
 console.log(countyDataAll);
 
@@ -46,7 +46,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     function onClickState(event: any) {
         var layer = event.target;
         setFullScreen(false);
-        const clickedState = usData.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
+        const clickedState = nestedStateData.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
         setSelectedState(clickedState as State);
         setSelectedCounty(defaultCounty);
 
@@ -120,9 +120,9 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             {selectedState.stfp === "" ?
-                <GeoJSON data={usData} style={layersStyle.default} onEachFeature={onEachState} /> : 
+                <GeoJSON data={nestedStateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
                 <>
-                    <GeoJSON data={usData} style={layersStyle.selected}/>
+                    <GeoJSON data={nestedStateData} style={layersStyle.selected}/>
                     {selectedCounty.cntyfp === "" ? 
                         <GeoJSON data={countyDataAll} style={layersStyle.default} onEachFeature={onEachCounty}/>
                     :
