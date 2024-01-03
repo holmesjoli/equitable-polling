@@ -26,6 +26,23 @@ export function mouseOut(event: any) {
     Tooltip.pointerOut();
 }
 
+function getColor(d: any) {
+    return d ? "#047391" : "#FAF6F0";
+}
+
+// function style(feature: GeoJSON.Feature) {
+
+function style(feature: any) {
+
+    return {
+        fillColor: getColor(feature.properties!.selected),
+        weight: 2,
+        opacity: 1,
+        color: "white",
+        fillOpacity: 0.7
+    };
+}
+
 function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: 
                          { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) {
 
@@ -44,7 +61,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     function onClickState(event: any) {
         var layer = event.target;
         setFullScreen(false);
-        const clickedState = nestedStateData.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
+        const clickedState = nestedStateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
         setSelectedState(clickedState as State);
         setSelectedCounty(defaultCounty);
 
@@ -66,8 +83,18 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         setSelectedCounty(clickedCounty as County);
         Tooltip.pointerOut();
 
+        selectedState.counties.features.forEach((d: GeoJSON.Feature) => {
+            if (d.properties!.cntyfp === layer.feature.properties.cntyfp) {
+                d.properties!.selected = true;
+            } else {
+                d.properties!.selected = false;
+            }
+        });
+
         map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
     }
+
+    // console.log(selectedState.stfp !== "" ?selectedState.counties.features.filter(d => d.properties!.cntyfp === selectedCounty.cntyfp): "no");
 
     function onEachTract(_: any, layer: any) {
         layer.on({
@@ -103,8 +130,6 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         }
     }, [selectedCounty]);
 
-    // console.log(unnestedTracts(selectedState));
-
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
@@ -116,7 +141,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                         <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty}/>
                     :
                         <FeatureGroup>
-                            <GeoJSON data={unnestedCountyData} style={layersStyle.selected}/>
+                            <GeoJSON data={unnestedCountyData} style={style}/>
                             <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.default} onEachFeature={onEachTract}/>
                         </FeatureGroup>
                     }

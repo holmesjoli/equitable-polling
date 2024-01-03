@@ -51,7 +51,8 @@ function formattedStateGeoJSON() {
                              latlng: {lat: d.Y, lng: d.X} as LatLng,
                              tracts: tractData,
                              adjacencies: countyAdj.filter((a: any) => a.geoid === d.geoid).map((a: any) => a.neighborGeoid),
-                             zoom: 10} as County, 
+                             zoom: 10,
+                             selected: false} as County, 
                 geometry: d.geometry as GeoJSON.Geometry})
         });
         
