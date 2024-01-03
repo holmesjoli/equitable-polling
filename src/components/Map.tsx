@@ -57,6 +57,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
           mouseout: mouseOut,
           click: onClickCounty
         });
+        Tooltip.pointerOut();
     }
 
     function onClickCounty(event: any) {
