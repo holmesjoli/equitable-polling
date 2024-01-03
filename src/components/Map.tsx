@@ -63,6 +63,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         var layer = event.target;
         const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
         setSelectedCounty(clickedCounty as County);
+        Tooltip.pointerOut();
 
         map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
     }
