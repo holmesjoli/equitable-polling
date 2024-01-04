@@ -29,6 +29,18 @@ export function mouseOut(event: any) {
     Tooltip.pointerOut();
 }
 
+export function mouseOverTract(event: any) {
+    var layer = event.target;
+    layer.setStyle(layersStyle.highlightTract);
+    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, layer.feature.properties.name);
+}
+
+export function mouseOutTract(event: any) {
+    var layer = event.target;
+    layer.setStyle(layersStyle.defaultTract);
+    Tooltip.pointerOut();
+}
+
 function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: 
                          { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) {
 
@@ -74,8 +86,8 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
     function onEachTract(_: any, layer: any) {
         layer.on({
-          mouseover: mouseOver,
-          mouseout: mouseOut
+          mouseover: mouseOverTract,
+          mouseout: mouseOutTract
         });
     }
 
@@ -127,7 +139,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                     :
                         <FeatureGroup>
                             <GeoJSON data={unnestedCountyData} style={highlightSelectedStyle}/>
-                            <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.default} onEachFeature={onEachTract}/>
+                            <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.defaultTract} onEachFeature={onEachTract}/>
                         </FeatureGroup>
                     }
                 </FeatureGroup>
