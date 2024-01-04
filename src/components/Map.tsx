@@ -30,14 +30,18 @@ function getColor(d: any) {
     return d ? "#047391" : "#FAF6F0";
 }
 
+function getWeight(d: any) {
+    return d ? 6 : 1;
+}
+
 function style(feature: any) {
 
     return {
+        color: getColor(feature.properties!.selected),
         fillColor: getColor(feature.properties!.selected),
-        weight: 2,
+        weight: getWeight(feature.properties!.selected),
         opacity: 1,
-        color: "white",
-        fillOpacity: 0.7
+        fillOpacity: .1
     };
 }
 

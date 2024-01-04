@@ -14,7 +14,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 
 // Types
-import { Feature } from "geojson";
 import { State, County, ChangeYear, Indicator } from '../utils/Types';
 
 // Globals
