@@ -9,10 +9,13 @@ import * as Tooltip from "./Tooltip";
 import { State, County } from "../utils/Types";
 
 // Global
-import { layersStyle, defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
+import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
 import { unnestedTracts, unnestedCountyData, nestedStateData, updateSelectedCounty } from "../utils/DM";
+
+// Styles 
+import { layersStyle, highlightSelectedStyle } from "../utils/Aesthetics";
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -24,25 +27,6 @@ export function mouseOut(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.default);
     Tooltip.pointerOut();
-}
-
-function getColor(d: any) {
-    return d ? "#FAF6F0" : "#757575";
-}
-
-function getWeight(d: any) {
-    return d ? 6 : 1;
-}
-
-function style(feature: any) {
-
-    return {
-        color: "#757575",
-        fillColor: getColor(feature.properties!.selected),
-        weight: getWeight(feature.properties!.selected),
-        opacity: 1,
-        fillOpacity: .15
-    };
 }
 
 function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: 
@@ -133,7 +117,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                         <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty}/>
                     :
                         <FeatureGroup>
-                            <GeoJSON data={unnestedCountyData} style={style}/>
+                            <GeoJSON data={unnestedCountyData} style={highlightSelectedStyle}/>
                             <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.default} onEachFeature={onEachTract}/>
                         </FeatureGroup>
                     }
