@@ -1,18 +1,16 @@
 import * as d3 from 'd3';
 
-const grey = {primary: '#757575', secondary: '#C6C6C6'};
-const backgroundFill = '#FAF6F0';
-const focusColor = '#047391';
-
 export const theme = {
     fontSize: 13,
-    grey: grey
+    grey: {primary: '#757575', secondary: '#C6C6C6', teriary: '#EAEAEA'},
+    backgroundFill: '#FAF6F0',
+    focusColor: '#047391'
 }
 
-export const layersStyle = {default: { color: theme.grey.primary, fillColor: backgroundFill, fillOpacity: 0.5, weight: 1, pointer: 'cursor' },
-                            selected: { color: theme.grey.primary, fillColor: backgroundFill, fillOpacity: 0, weight: 2 },
-                            highlight: { color: focusColor, fillColor: focusColor},
-                            greyOut: { color: '#EAEAEA', fillOpacity: 0.75, weight: 0 }
+export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1, pointer: 'cursor' },
+                            selected: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
+                            highlight: { color: theme.focusColor, fillColor: theme.focusColor},
+                            greyOut: { color: theme.grey.teriary, fillOpacity: 0.75, weight: 0 }
 }
 
 // Scales
@@ -29,7 +27,7 @@ export const rScale = d3.scaleSqrt()
   .range([3, 15]);
 
 function getColor(d: any) {
-    return d ? backgroundFill : theme.grey.primary;
+    return d ? theme.backgroundFill : theme.grey.primary;
 }
 
 function getWeight(d: any) {
