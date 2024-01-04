@@ -91,7 +91,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
           },
         }),
         [map]
-    ); 
+    );
 
     useEffect(() => {
         map.flyTo(selectedState.latlng, selectedState.zoom);
@@ -105,15 +105,14 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
             map.flyTo(selectedState.latlng, selectedState.zoom);
         }
 
+        // Update the color of the county when county is updated
         map.eachLayer((layer) => {
             if ((layer as any).feature) {
                 if ((layer as any).feature.properties.selected) {
-                    console.log((layer as any));
                     (layer as any).setStyle(highlightSelectedStyle((layer as any).feature));
                 }
             }
-         });
-
+        });
     }, [selectedCounty, selectedState]);
 
     return(
