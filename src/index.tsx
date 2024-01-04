@@ -6,9 +6,10 @@ import App from "./App";
 
 // Styles
 import { createTheme, ThemeProvider } from "@mui/material";
-import './utils/styles/styles.scss'
+import './utils/styles/styles.scss';
+import { theme } from './utils/Aesthetics';
 
-const theme = createTheme({
+const muiTheme = createTheme({
     typography: {
         fontFamily: "Inter, sans-serif",
         fontSize: 13
@@ -18,10 +19,10 @@ const theme = createTheme({
         paper: "#ffffff"
       },
       primary: {
-        main: "#047391"
+        main: theme.focusColor
       },
       secondary: {
-        main: "#047391"
+        main: theme.focusColor
       }
     },
     components: {
@@ -37,7 +38,7 @@ const theme = createTheme({
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={muiTheme}>
             <App/>
     </ThemeProvider>
 );

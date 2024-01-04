@@ -21,9 +21,11 @@ import { selectVariable, defaultCounty } from "../utils/Global";
 
 // Styles
 import styled from "styled-components";
+import { theme } from "../utils/Aesthetics";
 
 // Data
 import { nestedStateData, updateSelectedCounty } from "../utils/DM";
+
 
 export function ComponentGroupInner({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
 
@@ -199,7 +201,7 @@ export const Menu = styled.div<{ $isfullscreen: boolean; }>`
     left: ${props => props.$isfullscreen ? '-100vw;' : '0vw;'};
     width: 20rem;
     // padding: .625rem;
-    background-color: #FAF6F0;
+    background-color: ${theme.backgroundFill};
     transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     overflow-y: auto;
     height: 85vh;
