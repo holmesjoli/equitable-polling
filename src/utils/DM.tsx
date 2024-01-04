@@ -121,3 +121,17 @@ export function getAdjacentTracts(selectedCounty: County) {
     return {type: 'FeatureCollection', 
             features: features} as GeoJSON.FeatureCollection;
 }
+
+// Updates the selectedState data with the selected county
+export function updateSelectedCounty(selectedState: State, setSelectedState: any, feature: any) {
+
+    selectedState.counties.features.forEach((d: GeoJSON.Feature) => {
+        if (d.properties!.cntyfp === feature.properties.cntyfp) {
+            d.properties!.selected = true;
+        } else {
+            d.properties!.selected = false;
+        }
+    });
+
+    setSelectedState(selectedState);
+}

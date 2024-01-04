@@ -12,7 +12,7 @@ import { State, County } from "../utils/Types";
 import { layersStyle, defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { unnestedTracts, unnestedCountyData, nestedStateData } from "../utils/DM";
+import { unnestedTracts, unnestedCountyData, nestedStateData, updateSelectedCounty } from "../utils/DM";
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -29,8 +29,6 @@ export function mouseOut(event: any) {
 function getColor(d: any) {
     return d ? "#047391" : "#FAF6F0";
 }
-
-// function style(feature: GeoJSON.Feature) {
 
 function style(feature: any) {
 
@@ -79,22 +77,12 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
     function onClickCounty(event: any) {
         var layer = event.target;
+        updateSelectedCounty(selectedState, setSelectedState, layer.feature);
         const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
         setSelectedCounty(clickedCounty as County);
         Tooltip.pointerOut();
-
-        selectedState.counties.features.forEach((d: GeoJSON.Feature) => {
-            if (d.properties!.cntyfp === layer.feature.properties.cntyfp) {
-                d.properties!.selected = true;
-            } else {
-                d.properties!.selected = false;
-            }
-        });
-
         map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
     }
-
-    // console.log(selectedState.stfp !== "" ?selectedState.counties.features.filter(d => d.properties!.cntyfp === selectedCounty.cntyfp): "no");
 
     function onEachTract(_: any, layer: any) {
         layer.on({
