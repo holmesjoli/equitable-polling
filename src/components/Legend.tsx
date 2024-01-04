@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 
 // Components
 import { ComponentGroupInner } from "./Query";
-import { fillColorScale, strokeColorScale, rScale } from "../utils/Aesthetics";
+import { fillColorScale, strokeColorScale, rScale, grey } from "../utils/Aesthetics";
 
 const sizeLegendId = 'Size-Legend';
 const colorLegendId = 'Color-Legend';
@@ -50,8 +50,8 @@ function initSizeLegend() {
 
             return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.rSize) + 8) + ')';
           })
-          .attr('fill', "#C6C6C6")
-          .attr("stroke", "#757575")
+          .attr('fill', grey.secondary)
+          .attr("stroke", grey.primary)
           .attr('stroke-width', 1)
         //   ,
         // update => update
@@ -73,7 +73,7 @@ function initSizeLegend() {
             return i * 16 + x + rScale(d.rSize) + 8})
           .text(d => d.label)
           .attr('font-size', 13)
-          .attr('fill', "#757575")
+          .attr('fill', grey.primary)
           .attr('dominant-baseline', 'middle')
           // ,
         // update => update
@@ -126,7 +126,7 @@ function initColorLegend() {
         .attr('y', (d, i) => i * 23 + 20)
         .text(d => d.label)
         .attr('font-size', 13)
-        .attr('fill', "#757575")
+        .attr('fill', grey.primary)
         // ,
       // update => update
       //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
