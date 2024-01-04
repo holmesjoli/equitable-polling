@@ -45,7 +45,7 @@ bbox <- lapply(1:nrow(county_geo), function(x) {
 row.names(bbox) <- NULL
 
 county_geo <- county_geo %>% 
-  bind_rows(county_geo)
+  bind_rows(bbox)
 
 county_geo <- county_geo %>% 
   bind_cols(county_geo %>% 
