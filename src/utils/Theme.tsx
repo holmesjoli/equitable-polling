@@ -26,7 +26,7 @@ export const rScale = d3.scaleSqrt()
   .domain([1, 30])
   .range([3, 15]);
 
-function getColor(d: any) {
+export function getColor(d: any) {
     return d ? theme.backgroundFill : theme.grey.primary;
 }
 
@@ -36,10 +36,10 @@ function getWeight(d: any) {
 
 export function highlightSelectedStyle(feature: any) {
     return {
-        color: theme.grey.primary,
-        fillColor: getColor(feature.properties!.selected),
-        weight: getWeight(feature.properties!.selected),
-        opacity: 1,
-        fillOpacity: .15
+      color: theme.grey.primary,
+      fillColor: getColor(feature.properties!.selected),
+      weight: getWeight(feature.properties!.selected),
+      opacity: 1,
+      fillOpacity: .15
     };
 }

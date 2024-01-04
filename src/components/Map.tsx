@@ -15,7 +15,7 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { unnestedTracts, unnestedCountyData, nestedStateData, updateSelectedCounty } from "../utils/DM";
 
 // Styles 
-import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedStyle, getColor } from "../utils/Theme";
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -42,6 +42,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
           mouseout: mouseOut,
           click: onClickState
         });
+        Tooltip.pointerOut();
     }
 
     function onClickState(event: any) {
@@ -60,12 +61,11 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
           mouseout: mouseOut,
           click: onClickCounty
         });
-        Tooltip.pointerOut();
     }
 
     function onClickCounty(event: any) {
         var layer = event.target;
-        updateSelectedCounty(selectedState, setSelectedState, layer.feature);
+        updateSelectedCounty(selectedState, setSelectedState, layer.feature.properties.cntyfp);
         const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
         setSelectedCounty(clickedCounty as County);
         Tooltip.pointerOut();
@@ -81,7 +81,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
     // React Hooks ---------------------------------------------------
 
-    // on Click Rectange - Resets the zoom and full screen to the us map
+    // on Click Rectangle - Resets the zoom and full screen to the us map
     const onClickRect = useMemo(
         () => ({
           click() {
@@ -104,7 +104,17 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         } else {
             map.flyTo(selectedState.latlng, selectedState.zoom);
         }
-    }, [selectedCounty]);
+
+        map.eachLayer((layer) => {
+            if ((layer as any).feature) {
+                if ((layer as any).feature.properties.selected) {
+                    console.log((layer as any));
+                    (layer as any).setStyle(highlightSelectedStyle((layer as any).feature));
+                }
+            }
+         });
+
+    }, [selectedCounty, selectedState]);
 
     return(
         <div className="Layers">

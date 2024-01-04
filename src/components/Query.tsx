@@ -104,7 +104,7 @@ function SelectCounty({selectedState, setSelectedState, selectedCounty, setSelec
                 } else if (feature?.properties?.geoid === '0') {
                     setSelectedCounty(defaultCounty);                
                 } else {
-                    updateSelectedCounty(selectedState, setSelectedState, feature);
+                    updateSelectedCounty(selectedState, setSelectedState, feature.properties!.cntyfp);
                     setSelectedCounty(feature?.properties as County)
                 }
             }}

@@ -30,7 +30,8 @@ function formattedStateGeoJSON() {
             tractGeo.filter((c: any) => c.cntyfp === d.cntyfp).forEach((c: any) => {
 
                 tractFeatures.push({type: 'Feature', 
-                    properties: {name: c.name,
+                    properties: {type: 'Tract',
+                                 name: c.name,
                                  stfp: c.stfp, 
                                  cntyfp: c.cntyfp,
                                  tractfp: c.tractfp,
@@ -44,7 +45,8 @@ function formattedStateGeoJSON() {
             const tractData = {type: 'FeatureCollection', features: tractFeatures} as GeoJSON.FeatureCollection;
 
             countyFeatures.push({type: 'Feature', 
-                properties: {name: d.name,
+                properties: {type: 'County',
+                             name: d.name,
                              cntyfp: d.cntyfp,
                              stfp: d.stfp,
                              geoid: d.geoid,
@@ -59,7 +61,8 @@ function formattedStateGeoJSON() {
         const countyData = {type: 'FeatureCollection', features: countyFeatures} as GeoJSON.FeatureCollection;
 
         stateFeatures.push({type: 'Feature', 
-            properties: {name: e.name,
+            properties: {type: 'State',
+                         name: e.name,
                          stfp: e.stfp,
                          latlng: {lat: e.Y, lng: e.X} as LatLng,
                          counties: countyData,
@@ -123,15 +126,17 @@ export function getAdjacentTracts(selectedCounty: County) {
 }
 
 // Updates the selectedState data with the selected county
-export function updateSelectedCounty(selectedState: State, setSelectedState: any, feature: any) {
+export function updateSelectedCounty(selectedState: State, setSelectedState: any, cntyfp: any) {
 
-    selectedState.counties.features.forEach((d: GeoJSON.Feature) => {
-        if (d.properties!.cntyfp === feature.properties.cntyfp) {
-            d.properties!.selected = true;
-        } else {
-            d.properties!.selected = false;
-        }
-    });
+    if (cntyfp !== '') {
+        selectedState.counties.features.forEach((d: GeoJSON.Feature) => {
+            if (d.properties!.cntyfp === cntyfp) {
+                d.properties!.selected = true;
+            } else {
+                d.properties!.selected = false;
+            }
+        });
 
-    setSelectedState(selectedState);
+        setSelectedState(selectedState);
+    }
 }

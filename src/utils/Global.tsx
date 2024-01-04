@@ -23,7 +23,8 @@ export const defaultMap = {zoom: 5,
                            minZoom: 4,
                            maxZoom: 18};
 
-export const defaultCounty = {'stfp': '', 
+export const defaultCounty = {'type': 'County',
+                              'stfp': '', 
                               'name':'', 
                               'cntyfp':'', 
                               'geoid':'', 
@@ -31,7 +32,8 @@ export const defaultCounty = {'stfp': '',
                               'adjacencies': [] as string[],
                               latlng: {lat: 0, lng: 0}} as County;
 
-export const defaultState = {'name':'', 
+export const defaultState = {'type': 'State',
+                             'name':'', 
                              'stfp':'', 
                              'counties': {} as GeoJSON.FeatureCollection, 
                              latlng: defaultMap.center, 
