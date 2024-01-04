@@ -12,6 +12,22 @@ states_geo <- tigris::states(cb = T) %>%
          name = NAME) %>% 
   mutate(zoom = ifelse(stfp == "45", 8, 7))
 
+bbox <- lapply(1:nrow(states_geo), function(x) {
+  bb <- county_geo %>% 
+    slice(x) %>% 
+    sf::st_bbox()
+  
+  df <- data.frame(xmin = bb[1],
+                   xmax = bb[3],
+                   ymin = bb[2],
+                   ymax = bb[4])
+  return(df)
+}) %>% bind_rows()
+
+row.names(bbox) <- NULL
+
+states_geo <- cbind(states_geo, bbox)
+
 states_geo <- states_geo %>% 
   bind_cols(states_geo %>% 
                  sf::st_centroid() %>% 
@@ -44,8 +60,7 @@ bbox <- lapply(1:nrow(county_geo), function(x) {
 
 row.names(bbox) <- NULL
 
-county_geo <- county_geo %>% 
-  bind_rows(bbox)
+county_geo <- cbind(county_geo, bbox)
 
 county_geo <- county_geo %>% 
   bind_cols(county_geo %>% 

@@ -8,7 +8,8 @@ export type County = {type: string, stfp: string, name: string, cntyfp: string, 
                       adjacencies: string[], latlng: LatLng, zoom: number, selected: boolean,
                       bounds: Bounds};
 
-export type State = {type: string, stfp: string, name: string, counties: GeoJSON.FeatureCollection, latlng: LatLng, zoom: number};
+export type State = {type: string, stfp: string, name: string, counties: GeoJSON.FeatureCollection, latlng: LatLng, zoom: number,
+                     bounds: Bounds};
 
 export type ChangeYear = {id: string, descr: string, baseYear: number};
 

@@ -38,4 +38,5 @@ export const defaultState = {'type': 'State',
                              'stfp':'', 
                              'counties': {} as GeoJSON.FeatureCollection, 
                              latlng: defaultMap.center, 
-                             zoom: defaultMap.zoom} as State;
+                             zoom: defaultMap.zoom,
+                             bounds: {} as Bounds} as State;

@@ -68,7 +68,9 @@ function formattedStateGeoJSON() {
                          stfp: e.stfp,
                          latlng: {lat: e.Y, lng: e.X} as LatLng,
                          counties: countyData,
-                         zoom: e.zoom} as State, 
+                         zoom: e.zoom,
+                         bounds: {northEast: {lat: e.ymax, lng: e.xmin} as LatLng,
+                                  southWest: {lat: e.ymin, lng: e.xmax} as LatLng } as Bounds} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
     });
 
