@@ -5,7 +5,7 @@ import tractGeo from "../data/processed/tractGeoJSON.json";
 import countyAdj from "../data/processed/countyAdjacency.json";
 
 // Types
-import { State, County, Tract } from "./Types";
+import { State, County, Tract, Bounds } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -54,10 +54,12 @@ function formattedStateGeoJSON() {
                              tracts: tractData,
                              adjacencies: countyAdj.filter((a: any) => a.geoid === d.geoid).map((a: any) => a.neighborGeoid),
                              zoom: 10,
-                             selected: false} as County, 
+                             selected: false,
+                             bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
+                                      southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
                 geometry: d.geometry as GeoJSON.Geometry})
         });
-        
+
         const countyData = {type: 'FeatureCollection', features: countyFeatures} as GeoJSON.FeatureCollection;
 
         stateFeatures.push({type: 'Feature', 

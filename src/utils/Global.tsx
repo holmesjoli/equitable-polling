@@ -1,6 +1,6 @@
 // Libraries
-import { LatLng } from "leaflet";
-import { County, State } from "./Types"
+import { LatLng, LatLngBounds } from "leaflet";
+import { County, State, Bounds } from "./Types"
 
 export const selectVariable = {
     changeYear: [{id: '0', descr: 'Overall 2012 – 2022', baseYear: 2022},
@@ -30,7 +30,8 @@ export const defaultCounty = {'type': 'County',
                               'geoid':'', 
                               'tracts': {} as GeoJSON.FeatureCollection,
                               'adjacencies': [] as string[],
-                              latlng: {lat: 0, lng: 0}} as County;
+                              latlng: {lat: 0, lng: 0} as LatLng,
+                              bounds: {} as Bounds} as County;
 
 export const defaultState = {'type': 'State',
                              'name':'', 
