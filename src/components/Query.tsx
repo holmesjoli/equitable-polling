@@ -114,7 +114,7 @@ function SelectCounty({selectedState, setSelectedState, selectedCounty, setSelec
             renderInput={(params) => (
                 <TextField
                 {...params}
-                label="County"
+                label={selectedCounty.cntyfp == ""? "County": selectedCounty.name }
                 inputProps={{
                     ...params.inputProps,
                     autoComplete: 'new-password', // disable autocomplete and autofill
