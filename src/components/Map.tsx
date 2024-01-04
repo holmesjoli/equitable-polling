@@ -15,7 +15,7 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { unnestedTracts, unnestedCountyData, nestedStateData, updateSelectedCounty } from "../utils/DM";
 
 // Styles 
-import { layersStyle, highlightSelectedStyle } from "../utils/Aesthetics";
+import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
 
 export function mouseOver(event: any) {
     var layer = event.target;

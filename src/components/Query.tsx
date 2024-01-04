@@ -21,7 +21,7 @@ import { selectVariable, defaultCounty } from "../utils/Global";
 
 // Styles
 import styled from "styled-components";
-import { theme } from "../utils/Aesthetics";
+import { theme } from "../utils/Theme";
 
 // Data
 import { nestedStateData, updateSelectedCounty } from "../utils/DM";

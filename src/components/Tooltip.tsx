@@ -2,8 +2,7 @@
 import * as d3 from 'd3';
 
 // Styles
-
-import { theme } from '../utils/Aesthetics';
+import { theme } from '../utils/Theme';
 
 const selector = "root";
 

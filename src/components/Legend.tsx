@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 
 // Components
 import { ComponentGroupInner } from "./Query";
-import { fillColorScale, strokeColorScale, rScale, theme } from "../utils/Aesthetics";
+import { fillColorScale, strokeColorScale, rScale, theme } from "../utils/Theme";
 
 const sizeLegendId = 'Size-Legend';
 const colorLegendId = 'Color-Legend';

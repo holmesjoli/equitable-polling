@@ -7,7 +7,7 @@ import App from "./App";
 // Styles
 import { createTheme, ThemeProvider } from "@mui/material";
 import './utils/styles/styles.scss';
-import { theme } from './utils/Aesthetics';
+import { theme } from './utils/Theme';
 
 const muiTheme = createTheme({
     typography: {
