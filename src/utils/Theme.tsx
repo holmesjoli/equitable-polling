@@ -28,7 +28,7 @@ export const rScale = d3.scaleSqrt()
   .domain([1, 30])
   .range([3, 15]);
 
-export function getColor(d: any) {
+function getColor(d: any) {
     return d ? theme.backgroundFill : theme.grey.primary;
 }
 
