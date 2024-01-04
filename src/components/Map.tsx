@@ -9,10 +9,13 @@ import * as Tooltip from "./Tooltip";
 import { State, County } from "../utils/Types";
 
 // Global
-import { layersStyle, defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
+import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { unnestedTracts, unnestedCountyData, nestedStateData } from "../utils/DM";
+import { unnestedTracts, unnestedCountyData, nestedStateData, updateSelectedCounty } from "../utils/DM";
+
+// Styles 
+import { layersStyle, highlightSelectedStyle, getColor } from "../utils/Theme";
 
 export function mouseOver(event: any) {
     var layer = event.target;
@@ -39,12 +42,13 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
           mouseout: mouseOut,
           click: onClickState
         });
+        Tooltip.pointerOut();
     }
 
     function onClickState(event: any) {
         var layer = event.target;
         setFullScreen(false);
-        const clickedState = nestedStateData.features.find(d => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
+        const clickedState = nestedStateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
         setSelectedState(clickedState as State);
         setSelectedCounty(defaultCounty);
 
@@ -57,15 +61,14 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
           mouseout: mouseOut,
           click: onClickCounty
         });
-        Tooltip.pointerOut();
     }
 
     function onClickCounty(event: any) {
         var layer = event.target;
+        updateSelectedCounty(selectedState, setSelectedState, layer.feature.properties.cntyfp);
         const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
         setSelectedCounty(clickedCounty as County);
         Tooltip.pointerOut();
-
         map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
     }
 
@@ -78,7 +81,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
     // React Hooks ---------------------------------------------------
 
-    // on Click Rectange - Resets the zoom and full screen to the us map
+    // on Click Rectangle - Resets the zoom and full screen to the us map
     const onClickRect = useMemo(
         () => ({
           click() {
@@ -88,7 +91,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
           },
         }),
         [map]
-    ); 
+    );
 
     useEffect(() => {
         map.flyTo(selectedState.latlng, selectedState.zoom);
@@ -101,9 +104,16 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         } else {
             map.flyTo(selectedState.latlng, selectedState.zoom);
         }
-    }, [selectedCounty]);
 
-    // console.log(unnestedTracts(selectedState));
+        // Update the color of the county when county is updated
+        map.eachLayer((layer) => {
+            if ((layer as any).feature) {
+                if ((layer as any).feature.properties.selected) {
+                    (layer as any).setStyle(highlightSelectedStyle((layer as any).feature));
+                }
+            }
+        });
+    }, [selectedCounty, selectedState]);
 
     return(
         <div className="Layers">
@@ -116,7 +126,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                         <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty}/>
                     :
                         <FeatureGroup>
-                            <GeoJSON data={unnestedCountyData} style={layersStyle.selected}/>
+                            <GeoJSON data={unnestedCountyData} style={highlightSelectedStyle}/>
                             <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.default} onEachFeature={onEachTract}/>
                         </FeatureGroup>
                     }

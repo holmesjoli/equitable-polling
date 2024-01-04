@@ -1,4 +1,8 @@
+// Libraries
 import * as d3 from 'd3';
+
+// Styles
+import { theme } from '../utils/Theme';
 
 const selector = "root";
 
@@ -16,10 +20,10 @@ export function init() {
             .style('border-radius', '5px')
             .style('background-color', 'rgba(250, 246, 240, .9)')
             .style('font-weight', 'normal')
-            .style('border', '1px solid #757575')
+            .style('border', `1px solid ${theme.grey.primary}`)
             // .style('font-family', Theme.tooltipStyles.fontFamily)
-            .style('font-size', 13)
-            .style('color', '#757575')
+            .style('font-size', theme.fontSize)
+            .style('color', theme.grey.primary)
             // .style('line-height', Theme.tooltipStyles.lineHeight);
 
     return tooltip;

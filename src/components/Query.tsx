@@ -14,18 +14,18 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 
 // Types
-import { Feature } from "geojson";
 import { State, County, ChangeYear, Indicator } from '../utils/Types';
 
 // Globals
 import { selectVariable, defaultCounty } from "../utils/Global";
 
-
-
+// Styles
 import styled from "styled-components";
+import { theme } from "../utils/Theme";
 
 // Data
-import { nestedStateData } from "../utils/DM";
+import { nestedStateData, updateSelectedCounty } from "../utils/DM";
+
 
 export function ComponentGroupInner({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
 
@@ -85,7 +85,7 @@ function SelectState({selectedState, setSelectedState, setSelectedCounty} : { se
     );
 }
 
-function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {selectedState: State, selectedCounty: County, setSelectedCounty: any}) : JSX.Element {
+function SelectCounty({selectedState, setSelectedState, selectedCounty, setSelectedCounty} : {selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) : JSX.Element {
 
     const allOpt = [{type: 'Feature', 
                     properties: {name: 'All counties', geoid: '0'}, 
@@ -98,16 +98,16 @@ function SelectCounty({selectedState, selectedCounty, setSelectedCounty} : {sele
             fullWidth size="small"
             options={selectedCounty.cntyfp === ''? selectedState.counties.features as GeoJSON.Feature[] : allOpt.concat(selectedState.counties.features as GeoJSON.Feature[]) }
             getOptionLabel={(option) => option.properties?.name}
-            onChange = {(_, value) => {
-
-                if (value === null) {
+            onChange = {(_, feature) => {
+                if (feature === null) {
                     return;
-                } else if (value?.properties?.geoid === '0') {
+                } else if (feature?.properties?.geoid === '0') {
                     setSelectedCounty(defaultCounty);                
                 } else {
-                    setSelectedCounty(value?.properties as County)
+                    updateSelectedCounty(selectedState, setSelectedState, feature.properties!.cntyfp);
+                    setSelectedCounty(feature?.properties as County)
                 }
-                }}
+            }}
             renderOption={(props, option) => (
                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
                 {option.properties?.name}
@@ -133,7 +133,7 @@ function SelectGeography({ selectedState, setSelectedState, selectedCounty, setS
     return(
         <ComponentGroup title="Select geography">
             <SelectState selectedState={selectedState} setSelectedState={setSelectedState} setSelectedCounty={setSelectedCounty}/>
-            {selectedState.stfp !== "" ? <SelectCounty selectedState={selectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/> : null}
+            {selectedState.stfp !== "" ? <SelectCounty selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/> : null}
         </ComponentGroup>
     )
 }
@@ -201,7 +201,7 @@ export const Menu = styled.div<{ $isfullscreen: boolean; }>`
     left: ${props => props.$isfullscreen ? '-100vw;' : '0vw;'};
     width: 20rem;
     // padding: .625rem;
-    background-color: #FAF6F0;
+    background-color: ${theme.backgroundFill};
     transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     overflow-y: auto;
     height: 85vh;
