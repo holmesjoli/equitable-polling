@@ -30,6 +30,23 @@ county_geo <- tigris::counties(cb = T) %>%
          name = NAME,
          geoid = GEOID)
 
+bbox <- lapply(1:nrow(county_geo), function(x) {
+  bb <- county_geo %>% 
+    slice(x) %>% 
+    sf::st_bbox()
+  
+  df <- data.frame(xmin = bb[1],
+                   xmax = bb[3],
+                   ymin = bb[2],
+                   ymax = bb[4])
+  return(df)
+}) %>% bind_rows()
+
+row.names(bbox) <- NULL
+
+county_geo <- county_geo %>% 
+  bind_rows(county_geo)
+
 county_geo <- county_geo %>% 
   bind_cols(county_geo %>% 
               sf::st_centroid() %>% 
