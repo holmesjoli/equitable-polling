@@ -27,7 +27,7 @@ export function mouseOut(event: any) {
 }
 
 function getColor(d: any) {
-    return d ? "#047391" : "#FAF6F0";
+    return d ? "#FAF6F0" : "#757575";
 }
 
 function getWeight(d: any) {
@@ -37,11 +37,11 @@ function getWeight(d: any) {
 function style(feature: any) {
 
     return {
-        color: getColor(feature.properties!.selected),
+        color: "#757575",
         fillColor: getColor(feature.properties!.selected),
         weight: getWeight(feature.properties!.selected),
         opacity: 1,
-        fillOpacity: .1
+        fillOpacity: .15
     };
 }
 
