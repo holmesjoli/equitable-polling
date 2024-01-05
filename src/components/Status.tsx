@@ -11,7 +11,7 @@ import Switch from '@mui/material/Switch';
 
 // Components
 import { ComponentGroup } from "./Query";
-import { StateLegend } from "./Legend";
+import { CountyLegend, StateLegend } from "./Legend";
 
 // Data
 import { selectVariable } from "../utils/Global";
@@ -108,7 +108,7 @@ export function CountyStatus({equityIndicator, setEquityIndicator, showPolls, se
           <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
           <PollsSwitch showPolls={showPolls} setShowPolls={setShowPolls}/>
           <VDSwitch showVD={showVD} setShowVD={setShowVD}/>
-          <StateLegend />
+          <CountyLegend />
         </ComponentGroup>
       </Status>
     );

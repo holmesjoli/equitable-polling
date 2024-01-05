@@ -14,6 +14,19 @@ const circleStart = 17;
 
 const textStart = circleStart + 20;
 
+const colorDataState = [{'overall': 'increase', 'label': 'Increase of more than 10', id: '3' },
+                        {'overall': 'increase', 'label': "Increase of 4 to 10", id: '2' },
+                        {'overall': 'increase', 'label': "Increase of 1 to 3" , id: '1' },
+                        {'overall': 'nochange', 'label': "No change", id: '0' },
+                        {'overall': 'decrease', 'label': "Decrease of 1 to 3", id: '-1' },
+                        {'overall': 'decrease', 'label': "Decrease of 4 to 10", id: '-2' },
+                        {'overall': 'decrease', 'label': "Decrease of more than 10", id: '-3' }];
+
+
+const colorDataCounty = [{'overall': 'added', 'label': 'Added', id: '3' },
+                        {'overall': 'nochange', 'label': "No change", id: '0' },
+                        {'overall': 'decrease', 'label': "Removed", id: '-3' }];
+
 function initLegend(selector: string) {
     d3.select(`.Legend #${selector}`)
       .append('svg')
@@ -82,15 +95,7 @@ function initSizeLegend() {
       );
 }
 
-function initColorLegend() {
-
-  const data = [{'overall': 'increase', 'label': 'Increase of more than 10', id: '3' },
-                {'overall': 'increase', 'label': "Increase of 4 to 10", id: '2' },
-                {'overall': 'increase', 'label': "Increase of 1 to 3" , id: '1' },
-                {'overall': 'nochange', 'label': "No change", id: '0' },
-                {'overall': 'decrease', 'label': "Decrease of 1 to 3", id: '-1' },
-                {'overall': 'decrease', 'label': "Decrease of 4 to 10", id: '-2' },
-                {'overall': 'decrease', 'label': "Decrease of more than 10", id: '-3' }];
+function initColorLegend(data: any) {
 
   initLegend(colorLegendId);
 
@@ -124,7 +129,7 @@ function initColorLegend() {
         .append('text')
         .attr('x', textStart)
         .attr('y', (d, i) => i * 23 + 20)
-        .text(d => d.label)
+        .text((d: any) => d.label)
         .attr('font-size', theme.fontSize)
         .attr('fill', theme.grey.primary)
         // ,
@@ -135,7 +140,7 @@ function initColorLegend() {
 
 }
 
-function SizeType () {
+function SizeTypeState () {
     return (
       <ComponentGroupInner title="# of poll location changes">
         <div id={sizeLegendId}></div>
@@ -143,7 +148,7 @@ function SizeType () {
     );
 }
 
-function ColorType () {
+function ColorTypeState () {
     return (
       <ComponentGroupInner title="Net change in # of polls">
         <div id={colorLegendId}></div>
@@ -151,17 +156,38 @@ function ColorType () {
     );
 }
 
+function ColorTypeCounty () {
+  return (
+    <ComponentGroupInner title="Poll status">
+      <div id={colorLegendId}></div>
+    </ComponentGroupInner>
+  );
+}
+
 export function StateLegend () {
     // Initiate legends
     useEffect(() => {
         initSizeLegend();
-        initColorLegend();
+        initColorLegend(colorDataState);
     }, []);
 
     return (
         <div className="Legend">
-          <SizeType />
-          <ColorType />
+          <SizeTypeState />
+          <ColorTypeState />
         </div>
     );
+}
+
+export function CountyLegend () {
+  // Initiate legends
+  useEffect(() => {
+      initColorLegend(colorDataCounty);
+  }, []);
+
+  return (
+      <div className="Legend">
+        <ColorTypeCounty />
+      </div>
+  );
 }
