@@ -23,6 +23,9 @@ export default function Home({}): JSX.Element {
     const [changeYear, setChangeYear] = useState(selectVariable.changeYear[0]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
+    const [showPolls, setShowPolls] = useState(false);
+    const [showVD, setShowVD] = useState(false);
+
     const [isFullScreen, setFullScreen] = useState(true);
 
     useEffect(() => {
@@ -36,9 +39,17 @@ export default function Home({}): JSX.Element {
 
     return(
         <Main>
-            {isFullScreen? <USStatus /> : <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} />}
+            {isFullScreen? 
+                <USStatus /> :
+                <StateStatus equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator} 
+                             showPolls={showPolls} setShowPolls={setShowPolls}
+                             showVD={showVD} setShowVD={setShowVD}/>
+            }
             <QueryMenu isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
-            <Map setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} />
+            <Map setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} 
+                                               selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
+                                               showPolls={showPolls} setShowPolls={setShowPolls}
+                                               showVD={showVD} setShowVD={setShowVD}/>
         </Main>
     )
 }

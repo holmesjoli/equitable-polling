@@ -1,5 +1,5 @@
 // Libraries
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, FeatureGroup } from "react-leaflet";
 
 // Components
@@ -41,8 +41,8 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: 
-                         { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) {
+function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                         { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
     const map = useMap();
 
@@ -148,8 +148,8 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     )
 }
 
-export default function Map({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty }: 
-                            { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any }): JSX.Element {
+export default function Map({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                            { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -165,7 +165,12 @@ export default function Map({ setFullScreen, selectedState, setSelectedState, se
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} />
+            <LayersComponent setFullScreen={setFullScreen} 
+                             selectedState={selectedState} setSelectedState={setSelectedState} 
+                             selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
+                             showPolls={showPolls} setShowPolls={setShowPolls}
+                            showVD={showVD} setShowVD={setShowVD}
+                             />
             <ZoomControl position="bottomright" />
         </MapContainer>
     );
