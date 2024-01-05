@@ -45,7 +45,7 @@ function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIn
   );
 }
 
-function pollsSwitch({showPolls, setShowPolls}: {showPolls: boolean, setShowPolls: any}) : JSX.Element {
+function PollsSwitch({showPolls, setShowPolls}: {showPolls: boolean, setShowPolls: any}) : JSX.Element {
   
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setShowPolls(event.target.checked);
@@ -53,11 +53,24 @@ function pollsSwitch({showPolls, setShowPolls}: {showPolls: boolean, setShowPoll
   
     return (
       <div id="polls-switch" className="QueryComponent">
-        <FormControlLabel control={<Switch checked={showPolls} onChange={handleChange} />} label="Show Polling Locations" />
+        <FormControlLabel control={<Switch checked={showPolls} onChange={handleChange} />} label="Show polls" />
       </div>
     );
-
 }
+
+function VDSwitch({showVD, setShowVD}: {showVD: boolean, setShowVD: any}) : JSX.Element {
+  
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setShowVD(event.target.checked);
+  };
+
+  return (
+    <div id="vd-switch" className="QueryComponent">
+      <FormControlLabel control={<Switch checked={showVD} onChange={handleChange} />} label="Show voting districts" />
+    </div>
+  );
+}
+
 
 export function USStatus() {
     return (
@@ -73,8 +86,8 @@ export function USStatus() {
     );
 }
 
-export function StateStatus({equityIndicator, setEquityIndicator, showPolls, setShowPolls, showVD, setShowVD} : 
-                            {equityIndicator: EquityIndicator, setEquityIndicator: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
+export function StateStatus({equityIndicator, setEquityIndicator} : 
+                            {equityIndicator: EquityIndicator, setEquityIndicator: any}) {
   return (
     <Status>
       <ComponentGroup title="Legend">
@@ -85,8 +98,23 @@ export function StateStatus({equityIndicator, setEquityIndicator, showPolls, set
   );
 }
 
-export default function Status ({children}: {children: React.ReactNode}) {
+export function CountyStatus({equityIndicator, setEquityIndicator, showPolls, setShowPolls, showVD, setShowVD} : 
+                             {equityIndicator: EquityIndicator, setEquityIndicator: any, 
+                              showPolls: boolean, setShowPolls: any, 
+                              showVD: boolean, setShowVD: any}) {
+    return (
+      <Status>
+        <ComponentGroup title="Legend">
+          <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
+          <PollsSwitch showPolls={showPolls} setShowPolls={setShowPolls}/>
+          <VDSwitch showVD={showVD} setShowVD={setShowVD}/>
+          <StateLegend />
+        </ComponentGroup>
+      </Status>
+    );
+}
 
+export default function Status ({children}: {children: React.ReactNode}) {
     return (
       <Draggable bounds="body">
         <div className="Status">
