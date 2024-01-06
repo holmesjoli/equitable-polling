@@ -11,9 +11,6 @@ import * as Tooltip from "../components/Tooltip";
 // Data 
 import { selectVariable, defaultCounty, defaultState } from "../utils/Global";
 
-// Data Management
-import { getAdjacentTracts } from "../utils/DM";
-
 export default function Home({}): JSX.Element {
 
     const [selectedState, setSelectedState] = useState(defaultState);
@@ -31,10 +28,6 @@ export default function Home({}): JSX.Element {
     useEffect(() => {
         Tooltip.init();
     }, []);
-
-    useEffect(() => {
-        setAdjTracts(getAdjacentTracts(selectedCounty));
-    }, [selectedCounty]);
 
     return(
         <Main>
