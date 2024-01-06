@@ -24,11 +24,12 @@ export const defaultMap = {zoom: 5,
                            maxZoom: 18};
 
 export const defaultCounty = {'type': 'County',
-                              'stfp': '', 
-                              'name':'', 
-                              'cntyfp':'', 
-                              'geoid':'', 
+                              'stfp': '',
+                              'name':'',
+                              'cntyfp':'',
+                              'geoid':'',
                               'tracts': {} as GeoJSON.FeatureCollection,
+                              'vtdsts': {} as GeoJSON.FeatureCollection,
                               'adjacencies': [] as string[],
                               latlng: {lat: 0, lng: 0}} as County;
 

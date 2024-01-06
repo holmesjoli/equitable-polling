@@ -3,9 +3,10 @@ import stateGeo from "../data/processed/stateGeoJSON.json";
 import countyGeo from "../data/processed/countyGeoJSON.json";  
 import tractGeo from "../data/processed/tractGeoJSON.json";
 import countyAdj from "../data/processed/countyAdjacency.json";
+import vdGeo from "../data/processed/votingDistrictGeoJSON.json";
 
 // Types
-import { State, County, Tract } from "./Types";
+import { State, County, Tract, VotingDistrict } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -27,7 +28,7 @@ function formattedStateGeoJSON() {
 
             const tractFeatures = [] as GeoJSON.Feature[];
 
-            tractGeo.filter((c: any) => c.cntyfp === d.cntyfp).forEach((c: any) => {
+            (tractGeo as any[]).filter((c: any) => c.cntyfp === d.cntyfp).forEach((c: any) => {
 
                 tractFeatures.push({type: 'Feature', 
                     properties: {type: 'Tract',
@@ -44,6 +45,23 @@ function formattedStateGeoJSON() {
 
             const tractData = {type: 'FeatureCollection', features: tractFeatures} as GeoJSON.FeatureCollection;
 
+            const vdFeatures = [] as GeoJSON.Feature[];
+
+            (vdGeo as any[]).filter((c: any) => c.cntyfp === d.cntyfp).forEach((c: any) => {
+
+                tractFeatures.push({type: 'Feature', 
+                    properties: {type: 'Voting district',
+                                 name: c.name,
+                                 stfp: c.stfp, 
+                                 cntyfp: c.cntyfp,
+                                 geoid: c.geoid,
+                                 vtdst: c.vtdst} as VotingDistrict, 
+                    geometry: c.geometry as GeoJSON.Geometry})
+
+            });
+
+            const vdData = {type: 'FeatureCollection', features: vdFeatures} as GeoJSON.FeatureCollection;
+
             countyFeatures.push({type: 'Feature', 
                 properties: {type: 'County',
                              name: d.name,
@@ -52,12 +70,13 @@ function formattedStateGeoJSON() {
                              geoid: d.geoid,
                              latlng: {lat: d.Y, lng: d.X} as LatLng,
                              tracts: tractData,
+                             vtdsts: vdData,
                              adjacencies: countyAdj.filter((a: any) => a.geoid === d.geoid).map((a: any) => a.neighborGeoid),
                              zoom: 10,
                              selected: false} as County, 
                 geometry: d.geometry as GeoJSON.Geometry})
         });
-        
+
         const countyData = {type: 'FeatureCollection', features: countyFeatures} as GeoJSON.FeatureCollection;
 
         stateFeatures.push({type: 'Feature', 
