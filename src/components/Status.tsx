@@ -10,7 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 
 // Components
-import { ComponentGroup } from "./Query";
+import { ComponentGroup, ComponentGroupInner } from "./Query";
 import { CountyLegend, StateLegend } from "./Legend";
 
 // Data
@@ -26,14 +26,12 @@ function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIn
   };
 
   return (
+    <ComponentGroupInner title="Equity indicator">
       <div id="SelectEquityIndicator" className="QueryComponent">
           <FormControl fullWidth size="small">
-              <InputLabel id="select-equity-indicator-label">Equity Indicator</InputLabel>
               <Select
-                  labelId="select-equity-indicator-label"
                   id="select-equity-indicator"
                   value={equityIndicator.id}
-                  label="Equity Indicator"
                   onChange={handleChange}
               >
               {selectVariable.equityIndicator.map((equityIndicator: EquityIndicator) => (
@@ -42,6 +40,7 @@ function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIn
               </Select>
           </FormControl>
       </div>
+    </ComponentGroupInner>
   );
 }
 
@@ -50,23 +49,23 @@ function PollsSwitch({showPolls, setShowPolls}: {showPolls: boolean, setShowPoll
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setShowPolls(event.target.checked);
     };
-  
+
     return (
-      <div id="polls-switch" className="QueryComponent">
-        <FormControlLabel control={<Switch checked={showPolls} onChange={handleChange} />} label="Show polls" />
+      <div id="polls-switch">
+        <FormControlLabel control={<Switch checked={showPolls} onChange={handleChange} />} label="Show/hide" />
       </div>
     );
 }
 
 function VDSwitch({showVD, setShowVD}: {showVD: boolean, setShowVD: any}) : JSX.Element {
-  
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setShowVD(event.target.checked);
   };
 
   return (
     <div id="vd-switch" className="QueryComponent">
-      <FormControlLabel control={<Switch checked={showVD} onChange={handleChange} />} label="Show voting districts" />
+      <FormControlLabel control={<Switch checked={showVD} onChange={handleChange} />} label="Show/hide" />
     </div>
   );
 }
@@ -105,10 +104,14 @@ export function CountyStatus({equityIndicator, setEquityIndicator, showPolls, se
     return (
       <Status>
         <ComponentGroup title="Legend">
-          <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
-          <PollsSwitch showPolls={showPolls} setShowPolls={setShowPolls}/>
-          <VDSwitch showVD={showVD} setShowVD={setShowVD}/>
-          <CountyLegend />
+            <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
+          <ComponentGroupInner title="Voting districts">
+            <VDSwitch showVD={showVD} setShowVD={setShowVD}/>
+          </ComponentGroupInner>
+          <ComponentGroupInner title="Poll status">
+            <PollsSwitch showPolls={showPolls} setShowPolls={setShowPolls}/>
+            {showPolls ? <CountyLegend /> : <></>}
+          </ComponentGroupInner>
         </ComponentGroup>
       </Status>
     );

@@ -154,7 +154,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                         <FeatureGroup>
                             <GeoJSON data={unnestedCountyData} style={highlightSelectedStyle}/>
                             <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.defaultTract} onEachFeature={onEachTract}/>
-                            {showVD ? <GeoJSON data={vdData} key="vd-geo-layer" ref={geoJsonVdLayer} style={layersStyle.highlightTract} /> : null}
+                            {/* {showVD ? <GeoJSON data={vdData} key="vd-geo-layer" ref={geoJsonVdLayer} style={layersStyle.highlightTract} /> : null} */}
                         </FeatureGroup>
                     }
                 </FeatureGroup>
