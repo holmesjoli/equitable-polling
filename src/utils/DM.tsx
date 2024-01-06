@@ -20,11 +20,11 @@ function formattedStateGeoJSON() {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
-    stateGeo.forEach((e: any) => {
+    (stateGeo as any[]).forEach((e: any) => {
 
         const countyFeatures = [] as GeoJSON.Feature[];
 
-        countyGeo.filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
+        (countyGeo as any[]).filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
 
             const tractFeatures = [] as GeoJSON.Feature[];
 
@@ -40,7 +40,6 @@ function formattedStateGeoJSON() {
                                  latlng: {lat: c.Y, lng: c.X} as LatLng,
                                  zoom: 12} as Tract, 
                     geometry: c.geometry as GeoJSON.Geometry})
-
             });
 
             const tractData = {type: 'FeatureCollection', features: tractFeatures} as GeoJSON.FeatureCollection;
@@ -49,7 +48,7 @@ function formattedStateGeoJSON() {
 
             (vdGeo as any[]).filter((c: any) => c.cntyfp === d.cntyfp).forEach((c: any) => {
 
-                tractFeatures.push({type: 'Feature', 
+                vdFeatures.push({type: 'Feature', 
                     properties: {type: 'Voting district',
                                  name: c.name,
                                  stfp: c.stfp, 
@@ -57,7 +56,6 @@ function formattedStateGeoJSON() {
                                  geoid: c.geoid,
                                  vtdst: c.vtdst} as VotingDistrict, 
                     geometry: c.geometry as GeoJSON.Geometry})
-
             });
 
             const vdData = {type: 'FeatureCollection', features: vdFeatures} as GeoJSON.FeatureCollection;

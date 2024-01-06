@@ -1,5 +1,5 @@
 // Libraries
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, FeatureGroup } from "react-leaflet";
 
 // Components
@@ -19,8 +19,8 @@ import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
 
 export function mouseOver(event: any) {
     var layer = event.target;
-    layer.setStyle(layersStyle.highlight);
-    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, layer.feature.properties.name);
+    layer.setStyle(layersStyle.highlight)
+    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, `${layer.feature.properties.name}`);
 }
 
 export function mouseOut(event: any) {
@@ -32,7 +32,7 @@ export function mouseOut(event: any) {
 export function mouseOverTract(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.highlightTract);
-    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, layer.feature.properties.name);
+    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, `${layer.feature.properties.name}`);
 }
 
 export function mouseOutTract(event: any) {
@@ -41,10 +41,14 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                         { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
+function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, showVD}: 
+                         { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, showVD: boolean }) {
 
     const map = useMap();
+
+    const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>(selectedCounty!.vtdsts);
+    const geoJsonVdLayer = useRef<L.GeoJSON<any, any>>(null);
+    console.log(vdData);
 
     // Functions ---------------------------------------------------
 
@@ -110,6 +114,9 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     }, [selectedState]);
 
     useEffect(() => {
+
+        setVdData(selectedCounty.vtdsts);
+
         // if else add otherwise react finds the center of the world map in Africa
         if (selectedCounty.stfp !== "") {
             map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
@@ -127,6 +134,13 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         });
     }, [selectedCounty, selectedState]);
 
+    useEffect(() => {
+        if (geoJsonVdLayer.current) {
+            geoJsonVdLayer.current?.clearLayers().addData(vdData);
+        }
+    }, [vdData]);
+
+    console.log(showVD);
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
@@ -140,6 +154,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                         <FeatureGroup>
                             <GeoJSON data={unnestedCountyData} style={highlightSelectedStyle}/>
                             <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.defaultTract} onEachFeature={onEachTract}/>
+                            {showVD ? <GeoJSON data={vdData} key="vd-geo-layer" ref={geoJsonVdLayer} style={layersStyle.highlightTract} /> : null}
                         </FeatureGroup>
                     }
                 </FeatureGroup>
@@ -148,8 +163,8 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     )
 }
 
-export default function Map({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                            { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
+export default function Map({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, showVD }: 
+                            { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, showVD: boolean }): JSX.Element {
 
     return(
         <MapContainer
@@ -168,8 +183,7 @@ export default function Map({ setFullScreen, selectedState, setSelectedState, se
             <LayersComponent setFullScreen={setFullScreen} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
                              selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
-                             showPolls={showPolls} setShowPolls={setShowPolls}
-                            showVD={showVD} setShowVD={setShowVD}
+                             showPolls={showPolls} showVD={showVD}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>
