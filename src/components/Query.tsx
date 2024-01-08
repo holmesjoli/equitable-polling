@@ -145,8 +145,12 @@ function SelectGeography({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
 
     return(
         <ComponentGroup title="Select geography">
-            {geoJsonId.type === "US" ? null: <SelectState setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} setSelectedCounty={setSelectedCounty} setGeoJsonBoundaryData={setGeoJsonBoundaryData} setGeoJsonData={setGeoJsonData}/>}
-            {/* {selectedState.stfp !== "" ? <SelectCounty geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/> : null} */}
+            {geoJsonId.type !== "US" ? 
+                <>
+                <SelectState setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} setSelectedCounty={setSelectedCounty} setGeoJsonBoundaryData={setGeoJsonBoundaryData} setGeoJsonData={setGeoJsonData}/>
+                <SelectCounty geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
+                </>: 
+                null}
         </ComponentGroup>
     )
 }
