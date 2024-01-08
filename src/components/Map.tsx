@@ -66,17 +66,22 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             const county = countyData?.features.find(d => d.properties?.geoid === properties.geoid)?.properties as County;
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
-            const tractData = unnestedTracts(county.stfp);
-            setGeoJsonData(tractData);
+
+            // const bounds = mapRef.current.getBounds();
+            // const ne = bounds.getNorthEast();
+            // const sw = bounds.getSouthWest();
+
+            // const tracts = unnestedTracts().features.filter((d: any) => (d.properties.bounds.northEast.lat < ne.lat) && 
+            //                                                                        (d.properties.bounds.northEast.lng < ne.lng) &&
+            //                                                                        (d.properties.bounds.southWest.lat > sw.lat) &&
+            //                                                                        (d.properties.bounds.southWest.lng > sw.lng));
+
+            // console.log(tracts)
+            // setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
+            setGeoJsonData(unnestedTracts(county.stfp));
         }
     }
 
-    // console.log(selectedState);
-    // console.log('data', geoJsonData);
-    // console.log('boundary', geoJsonBoundaryData);
-
-    // console.log('id', geoJsonId);
-    
     useEffect(() => {
         // if (mapRef.current && geoJsonRef.current) {
 
@@ -93,6 +98,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
+
+        // console.log(mapRef.current.getBounds());
+        // if (geoJsonRef.current) {
+        //     console.log(geoJsonRef.current.getBounds());
+        // }
     }, [geoJsonId]);
 
 

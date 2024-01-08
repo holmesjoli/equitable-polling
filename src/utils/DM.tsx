@@ -5,7 +5,7 @@ import tractGeo from "../data/processed/tractGeoJSON.json";
 import countyAdj from "../data/processed/countyAdjacency.json";
 
 // Types
-import { State, County, Tract } from "./Types";
+import { State, County, Tract, Bounds } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -36,7 +36,9 @@ function formattedStateGeoJSON() {
                                  tractfp: c.tractfp,
                                  geoid: c.geoid,
                                  latlng: {lat: c.Y, lng: c.X} as LatLng,
-                                 zoom: 12} as Tract, 
+                                 zoom: 12,
+                                 bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
+                                          southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as Tract, 
                     geometry: c.geometry as GeoJSON.Geometry})
 
             });
@@ -53,7 +55,9 @@ function formattedStateGeoJSON() {
                              tracts: tractData,
                              adjacencies: countyAdj.filter((a: any) => a.geoid === d.geoid).map((a: any) => a.neighborGeoid),
                              zoom: 10,
-                             selected: false} as County, 
+                             selected: false,
+                             bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
+                                      southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
                 geometry: d.geometry as GeoJSON.Geometry})
         });
         
@@ -89,17 +93,27 @@ export function unnestedCounties() {
 }
 
 // Returns an unnested list of all the counties for the project
-export function unnestedTracts(stfp: string) {
+export function unnestedTracts(stfp: string | null = null) {
 
     const features: Feature[] = [];
 
-    countyData.features
-    .filter((d: any) => d.properties.stfp === stfp)
-    .forEach((e: any) => {
-        e.properties.tracts.features.forEach((d: any) => {
-            features.push(d);
+    if (stfp === null) {
+        countyData.features
+        .forEach((e: any) => {
+            e.properties.tracts.features.forEach((d: any) => {
+                features.push(d);
+            });
         });
-    });
+    } else {
+        countyData.features
+        .filter((d: any) => d.properties.stfp === stfp)
+        .forEach((e: any) => {
+            e.properties.tracts.features.forEach((d: any) => {
+                features.push(d);
+            });
+        });
+
+    }
 
     return {type: 'FeatureCollection', 
             features: features} as GeoJSON.FeatureCollection;
