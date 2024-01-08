@@ -41,11 +41,9 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, geoJsonData, setGeoJsonData, geoJsonBoundaryData,  setGeoJsonBoundaryData }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, geoJsonData: GeoJSON.FeatureCollection, setGeoJsonData: any, geoJsonBoundaryData: GeoJSON.FeatureCollection,setGeoJsonBoundaryData: any }) {
 
-    const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
-    const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
@@ -75,7 +73,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             //                                                                        (d.properties.bounds.northEast.lng < ne.lng) &&
             //                                                                        (d.properties.bounds.southWest.lat > sw.lat) &&
             //                                                                        (d.properties.bounds.southWest.lng > sw.lng));
-
             // console.log(tracts)
             // setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
             setGeoJsonData(unnestedTracts(county.stfp));
@@ -213,8 +210,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, geoJsonData, setGeoJsonData, geoJsonBoundaryData,  setGeoJsonBoundaryData }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, geoJsonData: GeoJSON.FeatureCollection, setGeoJsonData: any, geoJsonBoundaryData: GeoJSON.FeatureCollection,setGeoJsonBoundaryData: any }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -239,6 +236,8 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                              selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
                             showVD={showVD} setShowVD={setShowVD}
+                            geoJsonData={geoJsonData} setGeoJsonData={setGeoJsonData}
+                            geoJsonBoundaryData={geoJsonBoundaryData} setGeoJsonBoundaryData={setGeoJsonBoundaryData}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>

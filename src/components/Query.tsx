@@ -24,7 +24,7 @@ import styled from "styled-components";
 import { theme } from "../utils/Theme";
 
 // Data
-import { stateData, updateSelectedCounty } from "../utils/DM";
+import { stateData, countyData, updateSelectedCounty } from "../utils/DM";
 
 
 export function ComponentGroupInner({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
@@ -58,8 +58,8 @@ export function PageDescription({children}: {children: React.ReactNode}):  JSX.E
     )
 }
 
-function SelectState({geoJsonId, setGeoJsonId, selectedState, setSelectedState} : 
-                     { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any}) : JSX.Element {
+function SelectState({setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, setGeoJsonBoundaryData, setGeoJsonData } : 
+                     { setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, setGeoJsonBoundaryData: any, setGeoJsonData: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
 
@@ -71,6 +71,10 @@ function SelectState({geoJsonId, setGeoJsonId, selectedState, setSelectedState} 
 
         setGeoJsonId(geoId as GeoID);
         setSelectedState(stateData?.features.find(d => d.properties?.stfp === event.target.value)?.properties as State);
+        setSelectedCounty(defaultCounty);
+
+        setGeoJsonBoundaryData(stateData);
+        setGeoJsonData(countyData);
     };
 
     return (
@@ -136,11 +140,12 @@ function SelectCounty({geoJsonId, setGeoJsonId, selectedState, setSelectedState,
     );
 }
 
-function SelectGeography({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty} : { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) : JSX.Element {
+function SelectGeography({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonBoundaryData, setGeoJsonData } : 
+                         { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonBoundaryData: any, setGeoJsonData: any}) : JSX.Element {
 
     return(
         <ComponentGroup title="Select geography">
-            {geoJsonId.type === "US" ? null: <SelectState geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState}/>}
+            {geoJsonId.type === "US" ? null: <SelectState setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} setSelectedCounty={setSelectedCounty} setGeoJsonBoundaryData={setGeoJsonBoundaryData} setGeoJsonData={setGeoJsonData}/>}
             {/* {selectedState.stfp !== "" ? <SelectCounty geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/> : null} */}
         </ComponentGroup>
     )
@@ -216,8 +221,8 @@ export const Menu = styled.div<{ $geoJsonId: GeoID; }>`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({ geoJsonId, setGeoJsonId, indicator, setIndicator, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty} : 
-                          { geoJsonId: GeoID, setGeoJsonId: any, indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) {
+export function QueryMenu({ geoJsonId, setGeoJsonId, indicator, setIndicator, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonBoundaryData, setGeoJsonData} : 
+                          { geoJsonId: GeoID, setGeoJsonId: any, indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonBoundaryData: any, setGeoJsonData: any}) {
 
     return(
         <Menu $geoJsonId={geoJsonId}>
@@ -227,7 +232,7 @@ export function QueryMenu({ geoJsonId, setGeoJsonId, indicator, setIndicator, ch
                 </PageDescription>
                 <SelectIndicator indicator={indicator} setIndicator={setIndicator} />
                 <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
-                <SelectGeography geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} />
+                <SelectGeography geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonBoundaryData={setGeoJsonBoundaryData} setGeoJsonData={setGeoJsonData}/>
             </div>
         </Menu>
     );

@@ -17,6 +17,9 @@ import { GeoID } from "../utils/Types";
 // Data Management
 import { getAdjacentTracts } from "../utils/DM";
 
+// Data
+import { stateData } from "../utils/DM";
+
 export default function Home({}): JSX.Element {
 
     const [selectedState, setSelectedState] = useState(defaultState);
@@ -29,6 +32,8 @@ export default function Home({}): JSX.Element {
     const [showPolls, setShowPolls] = useState(true);
     const [showVD, setShowVD] = useState(false);
     const [geoJsonId, setGeoJsonId] = useState<GeoID>(defaultMap);
+    const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
+    const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
     const [isFullScreen, setFullScreen] = useState(true);
 
@@ -62,12 +67,19 @@ export default function Home({}): JSX.Element {
                 )}
                 </>
             }
-            <QueryMenu geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
+            <QueryMenu geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
+                        indicator={indicator} setIndicator={setIndicator} 
+                        changeYear={changeYear} setChangeYear={setChangeYear} 
+                        selectedState={selectedState} setSelectedState={setSelectedState} 
+                        selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
+                        setGeoJsonData={setGeoJsonData} setGeoJsonBoundaryData={setGeoJsonBoundaryData}/>
             <Map geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId}
                  selectedState={selectedState} setSelectedState={setSelectedState} 
-                                               selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
-                                               showPolls={showPolls} setShowPolls={setShowPolls}
-                                               showVD={showVD} setShowVD={setShowVD}/>
+                selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
+                showPolls={showPolls} setShowPolls={setShowPolls}
+                showVD={showVD} setShowVD={setShowVD}
+                geoJsonData={geoJsonData} setGeoJsonData={setGeoJsonData}
+                geoJsonBoundaryData={geoJsonBoundaryData} setGeoJsonBoundaryData={setGeoJsonBoundaryData}/>
         </Main>
     )
 }
