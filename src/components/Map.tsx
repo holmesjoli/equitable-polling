@@ -44,9 +44,7 @@ export function mouseOutTract(event: any) {
 function LayersComponent({ mapRef, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
                          { mapRef: any, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
-
     const [geoJsonId, setGeoJsonId] = useState<GeoID>(defaultMap);
-
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(nestedStateData);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -55,23 +53,25 @@ function LayersComponent({ mapRef, setFullScreen, selectedState, setSelectedStat
         const layer = event.target;
         const properties = layer.feature.properties;
         setGeoJsonId({geoid: properties.geoid, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
+        setGeoJsonData(unnestedCountyData);
     }
 
     console.log(geoJsonId);
     
     useEffect(() => {
-        if (mapRef.current && geoJsonRef.current) {
+        // if (mapRef.current && geoJsonRef.current) {
 
-            console.log(mapRef.current.getBounds());
-            console.log(geoJsonRef.current.getBounds());
+        //     console.log(mapRef.current.getBounds());
+        //     console.log(geoJsonRef.current.getBounds());
     
-            // mapRef.current.fitBounds(
-            //     geoJsonRef.current.getBounds()
-            // );
-        }
+        //     // mapRef.current.fitBounds(
+        //     //     geoJsonRef.current.getBounds()
+        //     // );
+        // }
 
         if (geoJsonId.geoid != '0') {
             mapRef.current.flyTo(geoJsonId!.latlng, geoJsonId!.zoom);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData);
         }
     }, [geoJsonId]);
 
