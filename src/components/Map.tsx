@@ -54,11 +54,18 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         const layer = event.target;
         const properties = layer.feature.properties;
         setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
-        setGeoJsonData(countyData);
-        setGeoJsonBoundaryData(stateData);
 
         if (properties.type === "State") {
             setSelectedState(stateData?.features.find(d => d.properties?.geoid === properties.geoid)?.properties as State);
+            setSelectedCounty(defaultCounty);
+
+            setGeoJsonBoundaryData(stateData);
+            setGeoJsonData(countyData);
+        } else if (properties.type === "County") {
+            setSelectedCounty(countyData?.features.find(d => d.properties?.geoid === properties.geoid)?.properties as County);
+            setGeoJsonBoundaryData(countyData);
+            const tractData = unnestedTracts(selectedState);
+            setGeoJsonData(tractData);
         }
     }
 
@@ -77,15 +84,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
         if (geoJsonId.geoid != '0') {
             mapRef.current.flyTo(geoJsonId!.latlng, geoJsonId!.zoom); // zooms to new map location
-            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
     }, [geoJsonId]);
 
 
     // Functions ---------------------------------------------------
 
-    function onEachState(_: any, layer: any) {
+    function onEachFeature(_: any, layer: any) {
         layer.on({
           mouseover: mouseOver,
           mouseout: mouseOut,
@@ -94,38 +101,38 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         Tooltip.pointerOut();
     }
 
-    function onClickState(event: any) {
-        var layer = event.target;
-        const clickedState = stateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
-        setSelectedState(clickedState as State);
-        setSelectedCounty(defaultCounty);
+    // function onClickState(event: any) {
+    //     var layer = event.target;
+    //     const clickedState = stateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
+    //     setSelectedState(clickedState as State);
+    //     setSelectedCounty(defaultCounty);
 
-        // map.flyTo(clickedState!.latlng, clickedState!.zoom);
-    }
+    //     // map.flyTo(clickedState!.latlng, clickedState!.zoom);
+    // }
 
-    function onEachCounty(_: any, layer: any) {
-        layer.on({
-          mouseover: mouseOver,
-          mouseout: mouseOut,
-          click: onClickCounty
-        });
-    }
+    // function onEachCounty(_: any, layer: any) {
+    //     layer.on({
+    //       mouseover: mouseOver,
+    //       mouseout: mouseOut,
+    //       click: onClickCounty
+    //     });
+    // }
 
-    function onClickCounty(event: any) {
-        var layer = event.target;
-        updateSelectedCounty(selectedState, setSelectedState, layer.feature.properties.cntyfp);
-        const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
-        setSelectedCounty(clickedCounty as County);
-        Tooltip.pointerOut();
-        // map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
-    }
+    // function onClickCounty(event: any) {
+    //     var layer = event.target;
+    //     updateSelectedCounty(selectedState, setSelectedState, layer.feature.properties.cntyfp);
+    //     const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
+    //     setSelectedCounty(clickedCounty as County);
+    //     Tooltip.pointerOut();
+    //     // map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
+    // }
 
-    function onEachTract(_: any, layer: any) {
-        layer.on({
-          mouseover: mouseOverTract,
-          mouseout: mouseOutTract
-        });
-    }
+    // function onEachTract(_: any, layer: any) {
+    //     layer.on({
+    //       mouseover: mouseOverTract,
+    //       mouseout: mouseOutTract
+    //     });
+    // }
 
     // React Hooks ---------------------------------------------------
 
@@ -165,19 +172,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     //     // console.log(map.getBounds());
     // }, [selectedCounty, selectedState]);
 
-
-    // useEffect(() => {
-    //     if (geoJsonTractsLayer.current) {
-    //         geoJsonTractsLayer.current?.clearLayers().addData(tractsData);
-    //     }
-    // }, [tractsData]);
-
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             <FeatureGroup>
-                {/* {geoJsonId.geoid != '0' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null} */}
-                <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachState} ref={geoJsonRef} key="geoJsonAll"/>
+                {geoJsonId.geoid != '0' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
+                <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
             </FeatureGroup>
             {/* {selectedState.stfp === "" ?
                 <GeoJSON data={stateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
