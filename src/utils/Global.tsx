@@ -18,8 +18,10 @@ export const outerBounds: [number, number][] =
     [[5.499550, -167.276413], //Southwest
     [83.162102, -19]] //Northeast
 
-export const defaultMap = {zoom: 5, 
-                           center: {lat: 39.97, lng: -86.19} as LatLng,
+export const defaultMap = {geoid: '0',
+                           type: 'US',
+                           zoom: 5, 
+                           latlng: {lat: 39.97, lng: -86.19} as LatLng,
                            minZoom: 4,
                            maxZoom: 18};
 
@@ -36,5 +38,5 @@ export const defaultState = {'type': 'State',
                              'name':'', 
                              'stfp':'', 
                              'counties': {} as GeoJSON.FeatureCollection, 
-                             latlng: defaultMap.center, 
+                             latlng: defaultMap.latlng, 
                              zoom: 5} as State;

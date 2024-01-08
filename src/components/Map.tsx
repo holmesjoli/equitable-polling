@@ -6,7 +6,7 @@ import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, Featu
 import * as Tooltip from "./Tooltip";
 
 // Types
-import { State, County } from "../utils/Types";
+import { State, County, GeoID } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
@@ -41,13 +41,40 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                         { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
+function LayersComponent({ mapRef, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                         { mapRef: any, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
-    const map = useMap();
 
-    const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection>(unnestedTracts(selectedState));
-    const geoJsonTractsLayer = useRef<L.GeoJSON<any, any>>(null);
+    const [geoJsonId, setGeoJsonId] = useState<GeoID>(defaultMap);
+
+    const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(nestedStateData);
+
+    const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
+
+    const onDrillDown = (event: any) => {
+        const layer = event.target;
+        const properties = layer.feature.properties;
+        setGeoJsonId({geoid: properties.geoid, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
+    }
+
+    console.log(geoJsonId);
+    
+    useEffect(() => {
+        if (mapRef.current && geoJsonRef.current) {
+
+            console.log(mapRef.current.getBounds());
+            console.log(geoJsonRef.current.getBounds());
+    
+            // mapRef.current.fitBounds(
+            //     geoJsonRef.current.getBounds()
+            // );
+        }
+
+        if (geoJsonId.geoid != '0') {
+            mapRef.current.flyTo(geoJsonId!.latlng, geoJsonId!.zoom);
+        }
+    }, [geoJsonId]);
+
 
     // Functions ---------------------------------------------------
 
@@ -55,7 +82,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         layer.on({
           mouseover: mouseOver,
           mouseout: mouseOut,
-          click: onClickState
+          click: onDrillDown
         });
         Tooltip.pointerOut();
     }
@@ -67,7 +94,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         setSelectedState(clickedState as State);
         setSelectedCounty(defaultCounty);
 
-        map.flyTo(clickedState!.latlng, clickedState!.zoom);
+        // map.flyTo(clickedState!.latlng, clickedState!.zoom);
     }
 
     function onEachCounty(_: any, layer: any) {
@@ -84,7 +111,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
         setSelectedCounty(clickedCounty as County);
         Tooltip.pointerOut();
-        map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
+        // map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
     }
 
     function onEachTract(_: any, layer: any) {
@@ -100,65 +127,60 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     const onClickRect = useMemo(
         () => ({
           click() {
-            map.flyTo(defaultMap.center, defaultMap.zoom);
-            setFullScreen(true);
-            setSelectedState(defaultState);
-            console.log(map.getBounds());
+            mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom);
+            // setFullScreen(true);
+            // setSelectedState(defaultState);
+            // console.log(map.getBounds());
           }
         }),
-        [map]
+        [geoJsonId]
     );
 
-    const onClickGeo = useMemo(
-        () => ({
-          click() {
-            console.log(map.getBounds());
-          }
-        }),
-        [map]
-    );
+    // useEffect(() => {
+    //     map.flyTo(selectedState.latlng, selectedState.zoom);
+    //     console.log(map.getBounds());
+    // }, [selectedState]);
 
-    useEffect(() => {
-        map.flyTo(selectedState.latlng, selectedState.zoom);
-    }, [selectedState]);
+    // useEffect(() => {
 
-    useEffect(() => {
+    //     // if else add otherwise react finds the center of the world map in Africa
+    //     if (selectedCounty.stfp !== "") {
+    //         map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
+    //     } else {
+    //         map.flyTo(selectedState.latlng, selectedState.zoom);
+    //     }
 
-        // if else add otherwise react finds the center of the world map in Africa
-        if (selectedCounty.stfp !== "") {
-            map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
-        } else {
-            map.flyTo(selectedState.latlng, selectedState.zoom);
-        }
+    //     // Update the color of the county when county is updated
+    //     map.eachLayer((layer) => {
+    //         if ((layer as any).feature) {
+    //             if ((layer as any).feature.properties.selected) {
+    //                 (layer as any).setStyle(highlightSelectedStyle((layer as any).feature));
+    //             }
+    //         }
+    //     });
 
-        // Update the color of the county when county is updated
-        map.eachLayer((layer) => {
-            if ((layer as any).feature) {
-                if ((layer as any).feature.properties.selected) {
-                    (layer as any).setStyle(highlightSelectedStyle((layer as any).feature));
-                }
-            }
-        });
+    //     setTractsData(unnestedTracts(selectedState));
 
-        setTractsData(unnestedTracts(selectedState));
-    }, [selectedCounty, selectedState]);
+    //     // console.log(map.getBounds());
+    // }, [selectedCounty, selectedState]);
 
 
-    useEffect(() => {
-        if (geoJsonTractsLayer.current) {
-            geoJsonTractsLayer.current?.clearLayers().addData(tractsData);
-        }
-    }, [tractsData]);
+    // useEffect(() => {
+    //     if (geoJsonTractsLayer.current) {
+    //         geoJsonTractsLayer.current?.clearLayers().addData(tractsData);
+    //     }
+    // }, [tractsData]);
 
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            {selectedState.stfp === "" ?
-                <GeoJSON data={nestedStateData} style={layersStyle.default} onEachFeature={onEachState} eventHandlers={onClickGeo}/> : 
+            <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachState} ref={geoJsonRef} key="geoJsonAll"/>
+            {/* {selectedState.stfp === "" ?
+                <GeoJSON data={nestedStateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
                 <FeatureGroup>
                     <GeoJSON data={nestedStateData} style={layersStyle.selected} />
                     {selectedCounty.cntyfp === "" ? 
-                        <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty} eventHandlers={onClickGeo}/>
+                        <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty} />
                     :
                         <FeatureGroup>
                             <GeoJSON data={unnestedCountyData} style={highlightSelectedStyle}/>
@@ -166,7 +188,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                         </FeatureGroup>
                     }
                 </FeatureGroup>
-            }
+            } */}
         </div>
     )
 }
@@ -174,21 +196,24 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 export default function Map({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
                             { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
 
+    const mapRef = useRef(null);
+
     return(
         <MapContainer
             className="home-map"
-            center={[defaultMap.center.lat, defaultMap.center.lng]}
+            center={[defaultMap.latlng.lat, defaultMap.latlng.lng]}
             zoom={defaultMap.zoom}
             minZoom={defaultMap.minZoom}
             maxZoom={defaultMap.maxZoom}
             scrollWheelZoom={false}
             zoomControl={false}
+            ref={mapRef}
             >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent setFullScreen={setFullScreen} 
+            <LayersComponent mapRef={mapRef} setFullScreen={setFullScreen} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
                              selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}

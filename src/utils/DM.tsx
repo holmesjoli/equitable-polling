@@ -64,6 +64,7 @@ function formattedStateGeoJSON() {
             properties: {type: 'State',
                          name: e.name,
                          stfp: e.stfp,
+                         geoid: e.geoid,
                          latlng: {lat: e.Y, lng: e.X} as LatLng,
                          counties: countyData,
                          zoom: e.zoom} as State, 

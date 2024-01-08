@@ -7,9 +7,10 @@ stfp <- c("13", "45", "28", "55") #state fips codes
 
 states_geo <- tigris::states(cb = T) %>% 
   filter(STATEFP %in% stfp) %>% 
-  select(NAME, STATEFP, geometry) %>% 
+  select(NAME, STATEFP, GEOID, geometry) %>% 
   rename(stfp = STATEFP,
-         name = NAME) %>% 
+         name = NAME,
+         geoid, GEOID) %>% 
   mutate(zoom = ifelse(stfp == "45", 8, 7))
 
 states_geo <- states_geo %>% 

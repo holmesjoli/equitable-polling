@@ -12,3 +12,5 @@ export type ChangeYear = {id: string, descr: string, baseYear: number};
 export type EquityIndicator = {id: string, descr: string};
 
 export type Indicator = {id: string, descr: string};
+
+export type GeoID = {geoid: string, type: string, latlng: LatLng, zoom: number};
