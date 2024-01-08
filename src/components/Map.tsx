@@ -12,7 +12,7 @@ import { State, County, GeoID } from "../utils/Types";
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { unnestedTracts, unnestedCountyData, nestedStateData, updateSelectedCounty } from "../utils/DM";
+import { unnestedTracts, unnestedCountyData, stateData, updateSelectedCounty } from "../utils/DM";
 
 // Styles 
 import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
@@ -44,7 +44,7 @@ export function mouseOutTract(event: any) {
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
                          { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
-    const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(nestedStateData);
+    const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
 
@@ -88,7 +88,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function onClickState(event: any) {
         var layer = event.target;
-        const clickedState = nestedStateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
+        const clickedState = stateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
         setSelectedState(clickedState as State);
         setSelectedCounty(defaultCounty);
 
@@ -126,8 +126,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         () => ({
           click() {
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom);
-            // setSelectedState(defaultState);
-            // console.log(map.getBounds());
+            setGeoJsonId(defaultMap);
+            setGeoJsonData(stateData);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
           }
         }),
         [geoJsonId]
@@ -173,9 +174,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachState} ref={geoJsonRef} key="geoJsonAll"/>
             {/* {selectedState.stfp === "" ?
-                <GeoJSON data={nestedStateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
+                <GeoJSON data={stateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
                 <FeatureGroup>
-                    <GeoJSON data={nestedStateData} style={layersStyle.selected} />
+                    <GeoJSON data={stateData} style={layersStyle.selected} />
                     {selectedCounty.cntyfp === "" ? 
                         <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty} />
                     :

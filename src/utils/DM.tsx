@@ -10,24 +10,23 @@ import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
 // Processed Data
-const stateData = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 
-export const nestedStateData = formattedStateGeoJSON();
+export const stateData = formattedStateGeoJSON();
 export const unnestedCountyData = unnestedCounties();
 
 function formattedStateGeoJSON() {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
-    stateGeo.forEach((e: any) => {
+    (stateGeo as any[]).forEach((e: any) => {
 
         const countyFeatures = [] as GeoJSON.Feature[];
 
-        countyGeo.filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
+        (countyGeo as any[]).filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
 
             const tractFeatures = [] as GeoJSON.Feature[];
 
-            tractGeo.filter((c: any) => c.cntyfp === d.cntyfp).forEach((c: any) => {
+            (tractGeo as any[]).filter((c: any) => c.cntyfp === d.cntyfp).forEach((c: any) => {
 
                 tractFeatures.push({type: 'Feature', 
                     properties: {type: 'Tract',
@@ -71,9 +70,7 @@ function formattedStateGeoJSON() {
             geometry: e.geometry as GeoJSON.Geometry})
     });
 
-    stateData.features = stateFeatures;
-
-    return stateData;
+    return {type: 'FeatureCollection', features: stateFeatures as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 }
 
 // Returns an unnested list of all the counties for the project
