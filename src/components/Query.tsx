@@ -14,7 +14,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 
 // Types
-import { State, County, ChangeYear, Indicator } from '../utils/Types';
+import { State, County, ChangeYear, Indicator, GeoID } from '../utils/Types';
 
 // Globals
 import { selectVariable, defaultCounty } from "../utils/Global";
@@ -194,11 +194,11 @@ function SelectIndicator({indicator, setIndicator} : {indicator: Indicator, setI
     )
 }
 
-export const Menu = styled.div<{ $isfullscreen: boolean; }>`
+export const Menu = styled.div<{ $geoJsonId: GeoID; }>`
     z-index: +9;
     position: absolute;
     top: 10vh;
-    left: ${props => props.$isfullscreen ? '-100vw;' : '0vw;'};
+    left: ${props => props.$geoJsonId.type === "US" ? '-100vw;' : '0vw;'};
     width: 20rem;
     // padding: .625rem;
     background-color: ${theme.backgroundFill};
@@ -208,11 +208,11 @@ export const Menu = styled.div<{ $isfullscreen: boolean; }>`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({ isFullScreen, indicator, setIndicator, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty} : 
-                          { isFullScreen: boolean, indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) {
+export function QueryMenu({ geoJsonId, indicator, setIndicator, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty} : 
+                          { geoJsonId: GeoID, indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) {
 
     return(
-        <Menu $isfullscreen={isFullScreen}>
+        <Menu $geoJsonId={geoJsonId}>
             <div className="Query">
                 <PageDescription>
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>

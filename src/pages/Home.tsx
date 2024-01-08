@@ -62,9 +62,9 @@ export default function Home({}): JSX.Element {
                 )}
                 </>
             }
-            <QueryMenu isFullScreen={isFullScreen} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
+            <QueryMenu geoJsonId={geoJsonId} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
             <Map geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId}
-                setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} 
+                 selectedState={selectedState} setSelectedState={setSelectedState} 
                                                selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
                                                showPolls={showPolls} setShowPolls={setShowPolls}
                                                showVD={showVD} setShowVD={setShowVD}/>

@@ -41,8 +41,8 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(nestedStateData);
 
@@ -71,7 +71,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, setFullScreen, selec
         if (geoJsonId.geoid != '0') {
             mapRef.current.flyTo(geoJsonId!.latlng, geoJsonId!.zoom); // zooms to new map location
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
-            setFullScreen(false);
         }
     }, [geoJsonId]);
 
@@ -89,7 +88,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, setFullScreen, selec
 
     function onClickState(event: any) {
         var layer = event.target;
-        setFullScreen(false);
         const clickedState = nestedStateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
         setSelectedState(clickedState as State);
         setSelectedCounty(defaultCounty);
@@ -128,7 +126,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, setFullScreen, selec
         () => ({
           click() {
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom);
-            setFullScreen(true);
             // setSelectedState(defaultState);
             // console.log(map.getBounds());
           }
@@ -193,8 +190,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, setFullScreen, selec
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                            { geoJsonId: GeoID, setGeoJsonId: any, setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -215,7 +212,6 @@ export default function Map({ geoJsonId, setGeoJsonId, setFullScreen, selectedSt
             />
             <LayersComponent mapRef={mapRef} 
                             geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId}
-                            setFullScreen={setFullScreen} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
                              selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
