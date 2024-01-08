@@ -1,5 +1,5 @@
 // Libraries
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, FeatureGroup } from "react-leaflet";
 
 // Components
@@ -45,6 +45,9 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                          { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
     const map = useMap();
+
+    const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection>(unnestedTracts(selectedState));
+    const geoJsonTractsLayer = useRef<L.GeoJSON<any, any>>(null);
 
     // Functions ---------------------------------------------------
 
@@ -100,7 +103,17 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
             map.flyTo(defaultMap.center, defaultMap.zoom);
             setFullScreen(true);
             setSelectedState(defaultState);
-          },
+            console.log(map.getBounds());
+          }
+        }),
+        [map]
+    );
+
+    const onClickGeo = useMemo(
+        () => ({
+          click() {
+            console.log(map.getBounds());
+          }
         }),
         [map]
     );
@@ -110,6 +123,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     }, [selectedState]);
 
     useEffect(() => {
+
         // if else add otherwise react finds the center of the world map in Africa
         if (selectedCounty.stfp !== "") {
             map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
@@ -125,21 +139,30 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                 }
             }
         });
+
+        setTractsData(unnestedTracts(selectedState));
     }, [selectedCounty, selectedState]);
+
+
+    useEffect(() => {
+        if (geoJsonTractsLayer.current) {
+            geoJsonTractsLayer.current?.clearLayers().addData(tractsData);
+        }
+    }, [tractsData]);
 
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             {selectedState.stfp === "" ?
-                <GeoJSON data={nestedStateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
+                <GeoJSON data={nestedStateData} style={layersStyle.default} onEachFeature={onEachState} eventHandlers={onClickGeo}/> : 
                 <FeatureGroup>
-                    <GeoJSON data={nestedStateData} style={layersStyle.selected}/>
+                    <GeoJSON data={nestedStateData} style={layersStyle.selected} />
                     {selectedCounty.cntyfp === "" ? 
-                        <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty}/>
+                        <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty} eventHandlers={onClickGeo}/>
                     :
                         <FeatureGroup>
                             <GeoJSON data={unnestedCountyData} style={highlightSelectedStyle}/>
-                            <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.defaultTract} onEachFeature={onEachTract}/>
+                            <GeoJSON key="tract-geo-layer" ref={geoJsonTractsLayer} data={tractsData} style={layersStyle.defaultTract} onEachFeature={onEachTract}/>
                         </FeatureGroup>
                     }
                 </FeatureGroup>
