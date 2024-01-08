@@ -17,7 +17,7 @@ import Box from '@mui/material/Box';
 import { State, County, ChangeYear, Indicator, GeoID } from '../utils/Types';
 
 // Globals
-import { selectVariable, defaultCounty } from "../utils/Global";
+import { selectVariable, defaultCounty, defaultState } from "../utils/Global";
 
 // Styles
 import styled from "styled-components";
@@ -58,18 +58,19 @@ export function PageDescription({children}: {children: React.ReactNode}):  JSX.E
     )
 }
 
-function SelectState({geoJsonId, setGeoJsonId} : { geoJsonId: GeoID, setGeoJsonId: any}) : JSX.Element {
+function SelectState({geoJsonId, setGeoJsonId, selectedState, setSelectedState} : 
+                     { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
 
         const properties = stateData?.features.find(d => d.properties?.geoid === event.target.value)?.properties;
-
         const geoId = {geoid: properties?.geoid, 
-                       name: properties?.name, 
-                       type: properties?.type, 
-                       latlng: properties?.latlng, zoom: properties?.zoom}
+                    name: properties?.name, 
+                    type: properties?.type, 
+                    latlng: properties?.latlng, zoom: properties?.zoom}
 
         setGeoJsonId(geoId as GeoID);
+        setSelectedState(stateData?.features.find(d => d.properties?.stfp === event.target.value)?.properties as State);
     };
 
     return (
@@ -79,7 +80,7 @@ function SelectState({geoJsonId, setGeoJsonId} : { geoJsonId: GeoID, setGeoJsonI
                 <Select
                 labelId="select-state-label"
                 id="select-state"
-                value={geoJsonId.geoid}
+                value={selectedState.geoid}
                 label="State"
                 onChange={handleChange}
                 >
@@ -139,8 +140,7 @@ function SelectGeography({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
 
     return(
         <ComponentGroup title="Select geography">
-
-            {geoJsonId.type === "US" ? null: <SelectState geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} />}
+            {geoJsonId.type === "US" ? null: <SelectState geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState}/>}
             {/* {selectedState.stfp !== "" ? <SelectCounty geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/> : null} */}
         </ComponentGroup>
     )

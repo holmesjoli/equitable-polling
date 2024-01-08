@@ -56,6 +56,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
         setGeoJsonData(countyData);
         setGeoJsonBoundaryData(stateData);
+
+        if (properties.type === "State") {
+            setSelectedState(stateData?.features.find(d => d.properties?.geoid === properties.geoid)?.properties as State);
+        }
     }
 
     console.log(geoJsonId);
