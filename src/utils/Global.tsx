@@ -19,6 +19,7 @@ export const outerBounds: [number, number][] =
     [83.162102, -19]] //Northeast
 
 export const defaultMap = {geoid: '0',
+                           name: 'United States',
                            type: 'US',
                            zoom: 5, 
                            latlng: {lat: 39.97, lng: -86.19} as LatLng,

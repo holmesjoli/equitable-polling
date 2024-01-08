@@ -51,7 +51,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const onDrillDown = (event: any) => {
         const layer = event.target;
         const properties = layer.feature.properties;
-        setGeoJsonId({geoid: properties.geoid, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
+        setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
         setGeoJsonData(unnestedCountyData);
     }
 
@@ -128,7 +128,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom);
             setGeoJsonId(defaultMap);
             setGeoJsonData(stateData);
-            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+            geoJsonRef.current?.clearLayers().addData(stateData); // Replaces geojson clickable elements with drilldown
           }
         }),
         [geoJsonId]

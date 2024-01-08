@@ -62,7 +62,7 @@ export default function Home({}): JSX.Element {
                 )}
                 </>
             }
-            <QueryMenu geoJsonId={geoJsonId} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
+            <QueryMenu geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
             <Map geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId}
                  selectedState={selectedState} setSelectedState={setSelectedState} 
                                                selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 

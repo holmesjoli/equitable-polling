@@ -13,4 +13,4 @@ export type EquityIndicator = {id: string, descr: string};
 
 export type Indicator = {id: string, descr: string};
 
-export type GeoID = {geoid: string, type: string, latlng: LatLng, zoom: number};
+export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, zoom: number};
