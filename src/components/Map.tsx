@@ -9,7 +9,7 @@ import * as Tooltip from "./Tooltip";
 import { State, County, GeoID } from "../utils/Types";
 
 // Global
-import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
+import { defaultMap, outerBounds, defaultCounty } from "../utils/Global";
 
 // Data
 import { unnestedTracts, countyData, stateData, updateSelectedCounty } from "../utils/DM";
@@ -62,14 +62,20 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setGeoJsonBoundaryData(stateData);
             setGeoJsonData(countyData);
         } else if (properties.type === "County") {
-            setSelectedCounty(countyData?.features.find(d => d.properties?.geoid === properties.geoid)?.properties as County);
+
+            const county = countyData?.features.find(d => d.properties?.geoid === properties.geoid)?.properties as County;
+            setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
-            const tractData = unnestedTracts(selectedState);
+            const tractData = unnestedTracts(county.stfp);
             setGeoJsonData(tractData);
         }
     }
 
-    console.log(geoJsonId);
+    // console.log(selectedState);
+    // console.log('data', geoJsonData);
+    // console.log('boundary', geoJsonBoundaryData);
+
+    // console.log('id', geoJsonId);
     
     useEffect(() => {
         // if (mapRef.current && geoJsonRef.current) {
