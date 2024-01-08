@@ -12,7 +12,7 @@ import { Feature } from "geojson";
 // Processed Data
 
 export const stateData = formattedStateGeoJSON();
-export const unnestedCountyData = unnestedCounties();
+export const countyData = unnestedCounties();
 
 function formattedStateGeoJSON() {
 
@@ -93,7 +93,7 @@ export function unnestedTracts(selectedState: State) {
 
     const features: Feature[] = [];
 
-    unnestedCountyData.features
+    countyData.features
     .filter((d: any) => d.properties.stfp === selectedState.stfp)
     .forEach((e: any) => {
         e.properties.tracts.features.forEach((d: any) => {
@@ -111,7 +111,7 @@ export function getAdjacentTracts(selectedCounty: County) {
 
     const features: Feature[] = [];
 
-    unnestedCountyData.features
+    countyData.features
             .filter((d: any) => d.properties.adjacencies.includes(selectedCounty.geoid))
             .forEach((d: any) => {
                 d.properties.tracts.features.forEach((e: any) => {

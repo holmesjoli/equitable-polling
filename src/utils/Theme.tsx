@@ -7,9 +7,9 @@ export const theme = {
     focusColor: '#047391'
 }
 
-export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
+export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1, zIndex: 100 },
                             defaultTract: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 1 },
-                            selected: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
+                            outline: { color: theme.grey.primary, fillOpacity: 0, weight: 2, zIndex: -100 },
                             highlight: { color: theme.focusColor, fillColor: theme.focusColor},
                             highlightTract: { color: theme.focusColor, fillColor: theme.focusColor, fillOpacity: .5},
                             greyOut: { color: theme.grey.teriary, fillOpacity: 0.75, weight: 0 }

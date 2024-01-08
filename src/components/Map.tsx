@@ -12,7 +12,7 @@ import { State, County, GeoID } from "../utils/Types";
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { unnestedTracts, unnestedCountyData, stateData, updateSelectedCounty } from "../utils/DM";
+import { unnestedTracts, countyData, stateData, updateSelectedCounty } from "../utils/DM";
 
 // Styles 
 import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
@@ -45,14 +45,17 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                          { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
+    const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
+    const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
 
     const onDrillDown = (event: any) => {
         const layer = event.target;
         const properties = layer.feature.properties;
         setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
-        setGeoJsonData(unnestedCountyData);
+        setGeoJsonData(countyData);
+        setGeoJsonBoundaryData(stateData);
     }
 
     console.log(geoJsonId);
@@ -71,6 +74,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         if (geoJsonId.geoid != '0') {
             mapRef.current.flyTo(geoJsonId!.latlng, geoJsonId!.zoom); // zooms to new map location
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
         }
     }, [geoJsonId]);
 
@@ -135,11 +139,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     );
 
     // useEffect(() => {
-    //     map.flyTo(selectedState.latlng, selectedState.zoom);
-    //     console.log(map.getBounds());
-    // }, [selectedState]);
-
-    // useEffect(() => {
 
     //     // if else add otherwise react finds the center of the world map in Africa
     //     if (selectedCounty.stfp !== "") {
@@ -172,16 +171,19 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachState} ref={geoJsonRef} key="geoJsonAll"/>
+            <FeatureGroup>
+                {/* {geoJsonId.geoid != '0' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null} */}
+                <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachState} ref={geoJsonRef} key="geoJsonAll"/>
+            </FeatureGroup>
             {/* {selectedState.stfp === "" ?
                 <GeoJSON data={stateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
                 <FeatureGroup>
                     <GeoJSON data={stateData} style={layersStyle.selected} />
                     {selectedCounty.cntyfp === "" ? 
-                        <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty} />
+                        <GeoJSON data={countyData} style={layersStyle.default} onEachFeature={onEachCounty} />
                     :
                         <FeatureGroup>
-                            <GeoJSON data={unnestedCountyData} style={highlightSelectedStyle}/>
+                            <GeoJSON data={countyData} style={highlightSelectedStyle}/>
                             <GeoJSON key="tract-geo-layer" ref={geoJsonTractsLayer} data={tractsData} style={layersStyle.defaultTract} onEachFeature={onEachTract}/>
                         </FeatureGroup>
                     }
