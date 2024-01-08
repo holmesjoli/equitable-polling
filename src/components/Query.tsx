@@ -65,9 +65,9 @@ function SelectState({setGeoJsonId, selectedState, setSelectedState, setSelected
 
         const properties = stateData?.features.find(d => d.properties?.geoid === event.target.value)?.properties;
         const geoId = {geoid: properties?.geoid, 
-                    name: properties?.name, 
-                    type: properties?.type, 
-                    latlng: properties?.latlng, zoom: properties?.zoom}
+                       name: properties?.name, 
+                       type: properties?.type, 
+                       latlng: properties?.latlng, zoom: properties?.zoom}
 
         setGeoJsonId(geoId as GeoID);
         setSelectedState(stateData?.features.find(d => d.properties?.stfp === event.target.value)?.properties as State);
@@ -113,11 +113,19 @@ function SelectCounty({geoJsonId, setGeoJsonId, selectedState, setSelectedState,
             onChange = {(_, feature) => {
                 if (feature === null) {
                     return;
-                } else if (feature?.properties?.geoid === '0') {
-                    setSelectedCounty(defaultCounty);                
                 } else {
-                    updateSelectedCounty(selectedState, setSelectedState, feature.properties!.cntyfp);
-                    setSelectedCounty(feature?.properties as County)
+                    if (feature?.properties?.geoid === '0') {
+                        setSelectedCounty(defaultCounty);                
+                    } else {
+                        const properties = countyData?.features.find(d => d.properties?.geoid === feature?.properties?.geoid)?.properties;
+                        const geoId = {geoid: properties?.geoid, 
+                                       name: properties?.name, 
+                                       type: properties?.type, 
+                                       latlng: properties?.latlng, zoom: properties?.zoom}
+                        setGeoJsonId(geoId as GeoID);
+                        updateSelectedCounty(selectedState, setSelectedState, feature.properties!.cntyfp);
+                        setSelectedCounty(feature?.properties as County)
+                    }
                 }
             }}
             renderOption={(props, option) => (
