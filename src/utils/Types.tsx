@@ -1,5 +1,7 @@
 import { LatLng } from "leaflet";
 
+export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, zoom: number};
+
 export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, geoid: string, latlng: LatLng, zoom: number};
 
 export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string, tracts: GeoJSON.FeatureCollection, 

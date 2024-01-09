@@ -9,10 +9,13 @@ import Map from "../components/Map";
 import * as Tooltip from "../components/Tooltip";
 
 // Data 
-import { selectVariable, defaultCounty, defaultState } from "../utils/Global";
+import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
 
 // Data Management
 import { getAdjacentTracts } from "../utils/DM";
+
+// Types
+import { GeoID } from "../utils/Types";
 
 export default function Home({}): JSX.Element {
 
@@ -25,8 +28,8 @@ export default function Home({}): JSX.Element {
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
     const [showPolls, setShowPolls] = useState(true);
     const [showVD, setShowVD] = useState(false);
-
     const [isFullScreen, setFullScreen] = useState(true);
+    const [geoJsonId, setGeoJsonId] = useState<GeoID>(defaultMap);
 
     useEffect(() => {
         Tooltip.init();

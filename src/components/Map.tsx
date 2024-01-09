@@ -1,5 +1,5 @@
 // Libraries
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, FeatureGroup } from "react-leaflet";
 
 // Components
@@ -47,6 +47,9 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     const map = useMap();
 
     const [countyLayerData, setCountyLayerData] = useState<GeoJSON.FeatureCollection>(countyData);
+
+    const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
+    const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
 
     // Functions ---------------------------------------------------
 
@@ -98,7 +101,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     const onClickRect = useMemo(
         () => ({
           click() {
-            map.flyTo(defaultMap.center, defaultMap.zoom);
+            map.flyTo(defaultMap.latlng, defaultMap.zoom);
             setFullScreen(true);
             setSelectedState(defaultState);
           },
@@ -169,10 +172,10 @@ export default function Map({ setFullScreen, selectedState, setSelectedState, se
     return(
         <MapContainer
             className="home-map"
-            center={[defaultMap.center.lat, defaultMap.center.lng]}
+            center={[defaultMap.latlng.lat, defaultMap.latlng.lng]}
             zoom={defaultMap.zoom}
-            minZoom={defaultMap.minZoom}
-            maxZoom={defaultMap.maxZoom}
+            minZoom={4}
+            maxZoom={18}
             scrollWheelZoom={false}
             zoomControl={false}
             >
