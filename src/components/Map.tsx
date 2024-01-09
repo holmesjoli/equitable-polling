@@ -46,6 +46,8 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
     const map = useMap();
 
+    const [countyLayerData, setCountyLayerData] = useState<GeoJSON.FeatureCollection>(countyData);
+
     // Functions ---------------------------------------------------
 
     function onEachState(_: any, layer: any) {
@@ -77,7 +79,6 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
     function onClickCounty(event: any) {
         var layer = event.target;
-        updateSelectedCounty(layer.feature.properties.cntyfp);
         const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
         setSelectedCounty(clickedCounty as County);
         Tooltip.pointerOut();
@@ -117,16 +118,28 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
             map.flyTo(selectedState.latlng, selectedState.zoom);
         }
 
-        updateSelectedCounty(selectedCounty.cntyfp);
 
         // Update the color of the county when county is updated
-        map.eachLayer((layer) => {
-            if ((layer as any).feature) {
-                if ((layer as any).feature.properties.selected) {
-                    (layer as any).setStyle(highlightSelectedStyle((layer as any).feature));
+
+        if (selectedCounty.cntyfp !== "") {
+
+            countyData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.geoid === selectedCounty.geoid) {
+                    d.properties!.selected = true;
+                } else {
+                    d.properties!.selected = false;
                 }
-            }
-        });
+            });
+
+            map.eachLayer((layer) => {
+                if ((layer as any).feature) {
+                    if ((layer as any).feature.properties.type === "County") {
+                        (layer as any).setStyle(highlightSelectedStyle((layer as any).feature));
+                    }
+                }
+            });
+        }
+
     }, [selectedCounty, selectedState]);
 
     return(
@@ -171,7 +184,7 @@ export default function Map({ setFullScreen, selectedState, setSelectedState, se
                              selectedState={selectedState} setSelectedState={setSelectedState} 
                              selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
-                            showVD={showVD} setShowVD={setShowVD}
+                             showVD={showVD} setShowVD={setShowVD}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>
