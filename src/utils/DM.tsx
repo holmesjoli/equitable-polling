@@ -122,17 +122,15 @@ export function getAdjacentTracts(selectedCounty: County) {
 }
 
 // Updates the selectedState data with the selected county
-export function updateSelectedCounty(selectedState: State, setSelectedState: any, cntyfp: any) {
+export function updateSelectedCounty(cntyfp: any) {
 
     if (cntyfp !== '') {
-        selectedState.counties.features.forEach((d: GeoJSON.Feature) => {
+        countyData.features.forEach((d: GeoJSON.Feature) => {
             if (d.properties!.cntyfp === cntyfp) {
                 d.properties!.selected = true;
             } else {
                 d.properties!.selected = false;
             }
         });
-
-        setSelectedState(selectedState);
     }
 }

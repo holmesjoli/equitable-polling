@@ -24,7 +24,7 @@ import styled from "styled-components";
 import { theme } from "../utils/Theme";
 
 // Data
-import { stateData, updateSelectedCounty } from "../utils/DM";
+import { stateData } from "../utils/DM";
 
 
 export function ComponentGroupInner({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
@@ -104,7 +104,6 @@ function SelectCounty({selectedState, setSelectedState, selectedCounty, setSelec
                 } else if (feature?.properties?.geoid === '0') {
                     setSelectedCounty(defaultCounty);                
                 } else {
-                    updateSelectedCounty(selectedState, setSelectedState, feature.properties!.cntyfp);
                     setSelectedCounty(feature?.properties as County)
                 }
             }}

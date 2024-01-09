@@ -77,7 +77,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
     function onClickCounty(event: any) {
         var layer = event.target;
-        updateSelectedCounty(selectedState, setSelectedState, layer.feature.properties.cntyfp);
+        updateSelectedCounty(layer.feature.properties.cntyfp);
         const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
         setSelectedCounty(clickedCounty as County);
         Tooltip.pointerOut();
@@ -117,7 +117,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
             map.flyTo(selectedState.latlng, selectedState.zoom);
         }
 
-        updateSelectedCounty(selectedState, setSelectedState, selectedCounty.cntyfp);
+        updateSelectedCounty(selectedCounty.cntyfp);
 
         // Update the color of the county when county is updated
         map.eachLayer((layer) => {
