@@ -24,7 +24,7 @@ import styled from "styled-components";
 import { theme } from "../utils/Theme";
 
 // Data
-import { nestedStateData, updateSelectedCounty } from "../utils/DM";
+import { stateData, updateSelectedCounty } from "../utils/DM";
 
 
 export function ComponentGroupInner({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
@@ -61,7 +61,7 @@ export function PageDescription({children}: {children: React.ReactNode}):  JSX.E
 function SelectState({selectedState, setSelectedState, setSelectedCounty} : { selectedState: State, setSelectedState: any, setSelectedCounty: any}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
-        setSelectedState(nestedStateData.features.find(d => d.properties!.stfp === event.target.value)!.properties as State);
+        setSelectedState(stateData.features.find(d => d.properties!.stfp === event.target.value)!.properties as State);
         setSelectedCounty(defaultCounty);
     };
 
@@ -76,7 +76,7 @@ function SelectState({selectedState, setSelectedState, setSelectedCounty} : { se
                 label="State"
                 onChange={handleChange}
                 >
-                {nestedStateData.features.map((state: GeoJSON.Feature) => (
+                {stateData.features.map((state: GeoJSON.Feature) => (
                     <MenuItem key={state.properties!.stfp} value={state.properties!.stfp}>{state.properties!.name}</MenuItem>
                 ))}
                 </Select>

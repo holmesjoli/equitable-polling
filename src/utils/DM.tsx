@@ -10,10 +10,8 @@ import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
 // Processed Data
-const stateData = {type: 'FeatureCollection', features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
-
-export const nestedStateData = formattedStateGeoJSON();
-export const unnestedCountyData = unnestedCounties();
+export const stateData = formattedStateGeoJSON();
+export const countyData = unnestedCounties();
 
 function formattedStateGeoJSON() {
 
@@ -70,9 +68,7 @@ function formattedStateGeoJSON() {
             geometry: e.geometry as GeoJSON.Geometry})
     });
 
-    stateData.features = stateFeatures;
-
-    return stateData;
+    return {type: 'FeatureCollection', features: stateFeatures as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;;
 }
 
 // Returns an unnested list of all the counties for the project
@@ -95,7 +91,7 @@ export function unnestedTracts(selectedState: State) {
 
     const features: Feature[] = [];
 
-    unnestedCountyData.features
+    countyData.features
     .filter((d: any) => d.properties.stfp === selectedState.stfp)
     .forEach((e: any) => {
         e.properties.tracts.features.forEach((d: any) => {
@@ -113,7 +109,7 @@ export function getAdjacentTracts(selectedCounty: County) {
 
     const features: Feature[] = [];
 
-    unnestedCountyData.features
+    countyData.features
             .filter((d: any) => d.properties.adjacencies.includes(selectedCounty.geoid))
             .forEach((d: any) => {
                 d.properties.tracts.features.forEach((e: any) => {

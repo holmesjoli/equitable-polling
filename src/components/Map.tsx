@@ -12,7 +12,7 @@ import { State, County } from "../utils/Types";
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { unnestedTracts, unnestedCountyData, nestedStateData, updateSelectedCounty } from "../utils/DM";
+import { unnestedTracts, countyData, stateData, updateSelectedCounty } from "../utils/DM";
 
 // Styles 
 import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
@@ -60,7 +60,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     function onClickState(event: any) {
         var layer = event.target;
         setFullScreen(false);
-        const clickedState = nestedStateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
+        const clickedState = stateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
         setSelectedState(clickedState as State);
         setSelectedCounty(defaultCounty);
 
@@ -117,6 +117,8 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
             map.flyTo(selectedState.latlng, selectedState.zoom);
         }
 
+        updateSelectedCounty(selectedState, setSelectedState, selectedCounty.cntyfp);
+
         // Update the color of the county when county is updated
         map.eachLayer((layer) => {
             if ((layer as any).feature) {
@@ -131,14 +133,14 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             {selectedState.stfp === "" ?
-                <GeoJSON data={nestedStateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
+                <GeoJSON data={stateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
                 <FeatureGroup>
-                    <GeoJSON data={nestedStateData} style={layersStyle.selected}/>
+                    <GeoJSON data={stateData} style={layersStyle.selected}/>
                     {selectedCounty.cntyfp === "" ? 
-                        <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty}/>
+                        <GeoJSON data={countyData} style={layersStyle.default} onEachFeature={onEachCounty}/>
                     :
                         <FeatureGroup>
-                            <GeoJSON data={unnestedCountyData} style={highlightSelectedStyle}/>
+                            <GeoJSON data={countyData} style={highlightSelectedStyle}/>
                             <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.defaultTract} onEachFeature={onEachTract}/>
                         </FeatureGroup>
                     }
