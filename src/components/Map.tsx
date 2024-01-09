@@ -110,10 +110,6 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     );
 
     useEffect(() => {
-        map.flyTo(selectedState.latlng, selectedState.zoom);
-    }, [selectedState]);
-
-    useEffect(() => {
         // if else add otherwise react finds the center of the world map in Africa
         if (selectedCounty.stfp !== "") {
             map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
