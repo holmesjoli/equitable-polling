@@ -14,6 +14,7 @@ import { Feature } from "geojson";
 export const stateData = formattedStateGeoJSON();
 export const countyData = unnestedCounties();
 
+
 function formattedStateGeoJSON() {
 
     const stateFeatures = [] as GeoJSON.Feature[];
@@ -26,7 +27,7 @@ function formattedStateGeoJSON() {
 
             const tractFeatures = [] as GeoJSON.Feature[];
 
-            (tractGeo as any[]).filter((c: any) => c.cntyfp === d.cntyfp).forEach((c: any) => {
+            (tractGeo as any[]).filter((c: any) => (c.cntyfp === d.cntyfp) && (c.stfp === d.stfp)).forEach((c: any) => {
 
                 tractFeatures.push({type: 'Feature', 
                     properties: {type: 'Tract',

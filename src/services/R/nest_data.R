@@ -87,7 +87,8 @@ tract_geo <- cbind(tract_geo, bbox)
 tract_geo <- tract_geo %>% 
   bind_cols(tract_geo %>% 
               sf::st_centroid() %>% 
-              sf::st_coordinates()) 
+              sf::st_coordinates()) %>% 
+  arrange(stfp, cntyfp)
 # %>%
 #   rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
 
