@@ -151,7 +151,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
             {selectedState.stfp === "" ?
                 <GeoJSON data={stateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
                 <FeatureGroup>
-                    <GeoJSON data={stateData} style={layersStyle.selected}/>
+                    <GeoJSON data={stateData} style={layersStyle.outline}/>
                     {selectedCounty.cntyfp === "" ? 
                         <GeoJSON data={countyData} style={layersStyle.default} onEachFeature={onEachCounty}/>
                     :
