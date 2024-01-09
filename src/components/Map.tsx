@@ -65,43 +65,32 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
 
-            // const bounds = mapRef.current.getBounds();
-            // const ne = bounds.getNorthEast();
-            // const sw = bounds.getSouthWest();
+            const bounds = mapRef?.current?.getBounds();
+            const ne = bounds?.getNorthEast();
+            const sw = bounds?.getSouthWest();
 
-            // const tracts = unnestedTracts().features.filter((d: any) => (d.properties.bounds.northEast.lat < ne.lat) && 
-            //                                                                        (d.properties.bounds.northEast.lng < ne.lng) &&
-            //                                                                        (d.properties.bounds.southWest.lat > sw.lat) &&
-            //                                                                        (d.properties.bounds.southWest.lng > sw.lng));
-            // console.log(tracts)
-            // setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
-            setGeoJsonData(unnestedTracts(county.stfp));
+
+            const tracts = unnestedTracts(selectedState.stfp).features.filter((d: any) => (d.properties.bounds.northEast.lat < ne!.lat) && 
+                                                                        (d.properties.bounds.northEast.lng < ne!.lng) &&
+                                                                        (d.properties.bounds.southWest.lat > sw!.lat) &&
+                                                                        (d.properties.bounds.southWest.lng > sw!.lng));
+
+            console.log(tracts)
+
+            setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
         }
     }
 
     useEffect(() => {
-        // if (mapRef.current && geoJsonRef.current) {
 
-        //     console.log(mapRef.current.getBounds());
-        //     console.log(geoJsonRef.current.getBounds());
-    
-        //     // mapRef.current.fitBounds(
-        //     //     geoJsonRef.current.getBounds()
-        //     // );
-        // }
-
-        if (geoJsonId.geoid != '0') {
+        if (geoJsonId.geoid != '0') {                
             mapRef.current.flyTo(geoJsonId!.latlng, geoJsonId!.zoom); // zooms to new map location
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
-
-        // console.log(mapRef.current.getBounds());
-        // if (geoJsonRef.current) {
-        //     console.log(geoJsonRef.current.getBounds());
-        // }
     }, [geoJsonId]);
 
+    console.log(mapRef?.current?.getBounds());
 
     // Functions ---------------------------------------------------
 

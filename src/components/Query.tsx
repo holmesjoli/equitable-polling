@@ -97,7 +97,8 @@ function SelectState({setGeoJsonId, selectedState, setSelectedState, setSelected
     );
 }
 
-function SelectCounty({geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty} : {geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any}) : JSX.Element {
+function SelectCounty({setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonBoundaryData, setGeoJsonData }: 
+                        {setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonBoundaryData: any, setGeoJsonData: any}) : JSX.Element {
 
     const allOpt = [{type: 'Feature', 
                     properties: {name: 'All counties', geoid: '0'}, 
@@ -124,7 +125,11 @@ function SelectCounty({geoJsonId, setGeoJsonId, selectedState, setSelectedState,
                                        latlng: properties?.latlng, zoom: properties?.zoom}
                         setGeoJsonId(geoId as GeoID);
                         updateSelectedCounty(selectedState, setSelectedState, feature.properties!.cntyfp);
-                        setSelectedCounty(feature?.properties as County)
+                        setSelectedCounty(feature?.properties as County);
+
+
+                        setGeoJsonBoundaryData(countyData);
+                        // setGeoJsonData(countyData);
                     }
                 }
             }}
@@ -156,7 +161,7 @@ function SelectGeography({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             {geoJsonId.type !== "US" ? 
                 <>
                 <SelectState setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} setSelectedCounty={setSelectedCounty} setGeoJsonBoundaryData={setGeoJsonBoundaryData} setGeoJsonData={setGeoJsonData}/>
-                <SelectCounty geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
+                <SelectCounty setGeoJsonId={setGeoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonBoundaryData={setGeoJsonBoundaryData} setGeoJsonData={setGeoJsonData}/>
                 </>: 
                 null}
         </ComponentGroup>
