@@ -19,15 +19,15 @@ function formattedStateGeoJSON() {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
-    stateGeo.forEach((e: any) => {
+    (stateGeo as any[]).forEach((e: any) => {
 
         const countyFeatures = [] as GeoJSON.Feature[];
 
-        countyGeo.filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
+        (countyGeo as any[]).filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
 
             const tractFeatures = [] as GeoJSON.Feature[];
 
-            tractGeo.filter((c: any) => c.cntyfp === d.cntyfp).forEach((c: any) => {
+            (tractGeo as any[]).filter((c: any) => (c.cntyfp === d.cntyfp) && (c.stfp === d.stfp)).forEach((c: any) => {
 
                 tractFeatures.push({type: 'Feature', 
                     properties: {type: 'Tract',
