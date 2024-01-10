@@ -23,11 +23,11 @@ export function mouseOut(event: any) {
     Tooltip.pointerOut();
 }
 
-// export function mouseOutTract(event: any) {
-//     var layer = event.target;
-//     layer.setStyle(layersStyle.defaultTract);
-//     Tooltip.pointerOut();
-// }
+export function mouseOutTract(event: any) {
+    var layer = event.target;
+    layer.setStyle(layersStyle.defaultTract);
+    Tooltip.pointerOut();
+}
 
 function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
                          { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
@@ -43,12 +43,12 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
     // Functions ---------------------------------------------------
 
-    // function mouseOverTract(event: any) {
-    //     var layer = event.target;
-    //     layer.setStyle(layersStyle.highlightTract);
-    //     var coords = map.latLngToContainerPoint(layer.feature.properties.latlng);
-    //     Tooltip.pointerOver(coords.x, coords.y, `<span class="Bold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
-    // }
+    function mouseOverTract(event: any) {
+        var layer = event.target;
+        layer.setStyle(layersStyle.highlightTract);
+        var coords = map.latLngToContainerPoint(layer.feature.properties.latlng);
+        Tooltip.pointerOver(coords.x, coords.y, `<span class="Bold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
+    }
 
     function mouseOver(event: any) {
         var layer = event.target;
@@ -58,16 +58,19 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     }
 
     function onEachFeature(_: any, layer: any) {
+
+        const properties = layer.feature.properties;
+
         layer.on({
-          mouseover: mouseOver,
-          mouseout: mouseOut,
+          mouseover: properties.type === "Tract" ? mouseOverTract: mouseOver,
+          mouseout: properties.type === "Tract" ? mouseOutTract: mouseOut,
           click: onClickFeature
         });
         Tooltip.pointerOut();
     }
 
     function onClickFeature(event: any) {
-        var layer = event.target;
+        const layer = event.target;
         const properties = layer.feature.properties;
 
         if (properties.type === "State") {
@@ -136,21 +139,25 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
     useEffect(() => {
 
-        // if else add otherwise react finds the center of the world map in Africa
-        if (selectedState.stfp === '' && selectedCounty.cntyfp === '') {
-            map.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level
-        } else {
-            setFullScreen(false);
-            if (selectedCounty.cntyfp === '') {
-                map.flyTo(selectedState.latlng, selectedState.zoom); // zooms to state level 
-            } else {
-                map.flyTo(selectedCounty.latlng, selectedCounty.zoom); // zooms to county level
-            }
-        }
-        
-        // Update in boundary and interactive layer
+        // Update Boundary layer
         geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-        geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+
+        if (selectedCounty.cntyfp !== '') {
+            map.flyTo(selectedCounty.latlng, selectedCounty.zoom); // zooms to county 
+            
+            // Update interactive layer
+            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(highlightSelectedStyle); // Replaces geojson clickable elements with drilldown
+        } else {
+            if (selectedState.stfp !== '') { 
+                map.flyTo(selectedState.latlng, selectedState.zoom); // zooms to state level
+            } else {
+                map.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level, otherwise react finds the center of the world map in Africa
+            }
+
+            // Update interactive layer
+            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+        }
+
     }, [selectedState, selectedCounty]);
 
     // useEffect(() => {
