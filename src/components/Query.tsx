@@ -26,7 +26,6 @@ import { theme } from "../utils/Theme";
 // Data
 import { stateData } from "../utils/DM";
 
-
 export function ComponentGroupInner({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
 
     return(
