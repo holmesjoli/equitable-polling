@@ -95,12 +95,6 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
             setGeoJsonData(tracts);
         }
-        // setFullScreen(false);
-        // const clickedState = stateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
-        // setSelectedState(clickedState as State);
-        // setSelectedCounty(defaultCounty);
-
-        // map.flyTo(clickedState!.latlng, clickedState!.zoom);
     }
 
     // function onEachCounty(_: any, layer: any) {
@@ -147,11 +141,11 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
             map.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level
         } else {
             setFullScreen(false);
-            if (selectedCounty.stfp !== '') {                
-                map.flyTo(selectedCounty.latlng, selectedCounty.zoom); // zooms to county level
-            } else {
+            if (selectedCounty.cntyfp === '') {
                 map.flyTo(selectedState.latlng, selectedState.zoom); // zooms to state level 
-            }    
+            } else {
+                map.flyTo(selectedCounty.latlng, selectedCounty.zoom); // zooms to county level
+            }
         }
         
         // Update in boundary and interactive layer
