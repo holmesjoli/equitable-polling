@@ -81,6 +81,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
             setGeoJsonData(countyData);
         } else if (properties.type === "County") {
             const county = countyData?.features.find(d => d.properties?.geoid === properties.geoid)?.properties as County;
+
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
 
@@ -100,29 +101,6 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         }
     }
 
-    // function onEachCounty(_: any, layer: any) {
-    //     layer.on({
-    //       mouseover: mouseOver,
-    //       mouseout: mouseOut,
-    //       click: onClickCounty
-    //     });
-    // }
-
-    // function onClickCounty(event: any) {
-    //     var layer = event.target;
-    //     const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
-    //     setSelectedCounty(clickedCounty as County);
-    //     Tooltip.pointerOut();
-    //     map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
-    // }
-
-    // function onEachTract(_: any, layer: any) {
-    //     layer.on({
-    //       mouseover: mouseOverTract,
-    //       mouseout: mouseOutTract
-    //     });
-    // }
-
     // React Hooks ---------------------------------------------------
 
     // on Click Rectangle - Resets the zoom and full screen to the us map
@@ -139,14 +117,20 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
     useEffect(() => {
 
-        // Update Boundary layer
-        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-
         if (selectedCounty.cntyfp !== '') {
             map.flyTo(selectedCounty.latlng, selectedCounty.zoom); // zooms to county 
-            
+
+            geoJsonBoundaryData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.geoid === selectedCounty.geoid) {
+                    d.properties!.selected = true;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
             // Update interactive layer
-            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(highlightSelectedStyle); // Replaces geojson clickable elements with drilldown
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         } else {
             if (selectedState.stfp !== '') { 
                 map.flyTo(selectedState.latlng, selectedState.zoom); // zooms to state level
@@ -154,7 +138,8 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
                 map.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level, otherwise react finds the center of the world map in Africa
             }
 
-            // Update interactive layer
+            // Update boundary and interactive layer
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
 
