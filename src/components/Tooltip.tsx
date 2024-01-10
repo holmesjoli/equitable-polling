@@ -12,16 +12,16 @@ export function init() {
             .attr('class', 'tooltip')
             .style('max-width', '175px')
             .style('position', 'absolute')
-            .style('left', '0px')
             .style('top', '0px')
+            .style('left', '0px')
             .style('visibility', 'hidden')
             .style('padding', '7px')
             .style('pointer-events', 'none')
             .style('border-radius', '5px')
             .style('background-color', 'rgba(250, 246, 240, .9)')
             .style('font-weight', 'normal')
-            .style('border', `1px solid ${theme.grey.primary}`)
-            // .style('font-family', Theme.tooltipStyles.fontFamily)
+            .style('border', `1.5px solid ${theme.grey.primary}`)
+            .style('font-family', theme.fontFamily)
             .style('font-size', theme.fontSize)
             .style('color', theme.grey.primary)
             // .style('line-height', Theme.tooltipStyles.lineHeight);
@@ -30,6 +30,13 @@ export function init() {
 }
 
 export function pointerOver(x: number, y: number, str: string) {
+
+    const nav: HTMLElement | null = d3.select(`.Navigation`).node() as HTMLElement | null;
+    const navHeight = nav?.getBoundingClientRect().height;
+    console.log(navHeight);
+
+    y = y + navHeight! - 20;
+
     d3.select(`#${selector} .tooltip`)
         .style('visibility', 'visible')
         .style('top', `${y}px`)

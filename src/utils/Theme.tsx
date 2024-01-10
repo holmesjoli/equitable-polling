@@ -4,7 +4,8 @@ export const theme = {
     fontSize: 13,
     grey: {primary: '#757575', secondary: '#C6C6C6', teriary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
-    focusColor: '#047391'
+    focusColor: '#047391',
+    fontFamily: 'Inter, sans-serif'
 }
 
 export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },

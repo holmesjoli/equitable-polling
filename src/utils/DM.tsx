@@ -29,6 +29,7 @@ function formattedStateGeoJSON() {
 
                 tractFeatures.push({type: 'Feature', 
                     properties: {type: 'Tract',
+                                 descr: 'Census tract',
                                  name: c.name,
                                  stfp: c.stfp, 
                                  cntyfp: c.cntyfp,
@@ -44,6 +45,7 @@ function formattedStateGeoJSON() {
 
             countyFeatures.push({type: 'Feature', 
                 properties: {type: 'County',
+                             descr: 'County',
                              name: d.name,
                              cntyfp: d.cntyfp,
                              stfp: d.stfp,
@@ -60,6 +62,7 @@ function formattedStateGeoJSON() {
 
         stateFeatures.push({type: 'Feature', 
             properties: {type: 'State',
+                         descr: '',
                          name: e.name,
                          stfp: e.stfp,
                          latlng: {lat: e.Y, lng: e.X} as LatLng,

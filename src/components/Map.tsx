@@ -12,27 +12,15 @@ import { State, County } from "../utils/Types";
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { unnestedTracts, countyData, stateData, updateSelectedCounty } from "../utils/DM";
+import { unnestedTracts, countyData, stateData } from "../utils/DM";
 
 // Styles 
 import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
-
-export function mouseOver(event: any) {
-    var layer = event.target;
-    layer.setStyle(layersStyle.highlight);
-    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, layer.feature.properties.name);
-}
 
 export function mouseOut(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.default);
     Tooltip.pointerOut();
-}
-
-export function mouseOverTract(event: any) {
-    var layer = event.target;
-    layer.setStyle(layersStyle.highlightTract);
-    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, layer.feature.properties.name);
 }
 
 export function mouseOutTract(event: any) {
@@ -52,6 +40,21 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
 
     // Functions ---------------------------------------------------
+
+    function mouseOverTract(event: any) {
+        var layer = event.target;
+        layer.setStyle(layersStyle.highlightTract);
+        var coords = map.latLngToContainerPoint(layer.feature.properties.latlng);
+        Tooltip.pointerOver(coords.x, coords.y, `<span class="Bold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
+    }
+
+    function mouseOver(event: any) {
+        var layer = event.target;
+        layer.setStyle(layersStyle.highlight);
+        var coords = map.latLngToContainerPoint(layer.feature.properties.latlng);
+        console.log(coords);
+        Tooltip.pointerOver(coords.x, coords.y, `<span class="Bold">${layer.feature.properties.name} ${layer.feature.properties.descr}</span>`);
+    }
 
     function onEachState(_: any, layer: any) {
         layer.on({
@@ -117,9 +120,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
             map.flyTo(selectedState.latlng, selectedState.zoom);
         }
 
-
         // Update the color of the county when county is updated
-
         if (selectedCounty.cntyfp !== "") {
 
             countyData.features.forEach((d: GeoJSON.Feature) => {
