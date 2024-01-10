@@ -130,7 +130,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
 
             // Update interactive layer
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
-            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
         } else {
             if (selectedState.stfp !== '') { 
                 map.flyTo(selectedState.latlng, selectedState.zoom); // zooms to state level
