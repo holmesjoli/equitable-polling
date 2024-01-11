@@ -29,6 +29,21 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
+function updateTracts(mapRef: any, county: County, setGeoJsonData: any) {
+    const bounds = mapRef.current.getBounds();
+    console.log(bounds);
+    const ne = bounds?.getNorthEast();
+    const sw = bounds?.getSouthWest();
+
+    const tracts = unnestedTracts(county.stfp).features.filter((d: any) => (d.properties.bounds.northEast.lat < ne!.lat) && 
+                                                               (d.properties.bounds.northEast.lng < ne!.lng) &&
+                                                               (d.properties.bounds.southWest.lat > sw!.lat) &&
+                                                               (d.properties.bounds.southWest.lng > sw!.lng));
+
+    console.log(tracts);
+    setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
+}
+
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
                          { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
@@ -120,18 +135,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
 
-            const bounds = mapRef.current.getBounds();
-            const ne = bounds?.getNorthEast();
-            const sw = bounds?.getSouthWest();
-
-            const tracts = unnestedTracts(county.stfp).features.filter((d: any) => (d.properties.bounds.northEast.lat < ne!.lat) && 
-                                                                       (d.properties.bounds.northEast.lng < ne!.lng) &&
-                                                                       (d.properties.bounds.southWest.lat > sw!.lat) &&
-                                                                       (d.properties.bounds.southWest.lng > sw!.lng));
-
-            setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
-
             mapRef.current.flyTo(county.latlng, county.zoom);
+
+            mapRef.current.on('zoomend', () => {
+                updateTracts(mapRef, county, setGeoJsonData)
+            }).on('moveend', () => {
+                updateTracts(mapRef, county, setGeoJsonData)
+            });
         }
 
     }, [geoJsonId]);
