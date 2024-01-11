@@ -107,6 +107,8 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
 
+            console.log(county);
+
             const tracts = unnestedTracts(county.stfp);
             setGeoJsonData(tracts);
         }
