@@ -123,9 +123,6 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
                 }
             });
 
-            console.log(countyData.features.find(d => d.properties?.selected));
-
-            // const county = countyData?.features.find(d => d.properties?.selected)?.properties as County;
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
             const tracts = unnestedTracts(county.stfp);
