@@ -122,14 +122,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
 
-            mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom)
+            mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
                 .on('zoomend', () => {
                     setGeoJsonData(stateData);
-        
+                    setVdData({} as GeoJSON.FeatureCollection);
                 })
                 .on('moveend', () => {
                     setGeoJsonData(stateData);
-                }); // zooms to country level, otherwise react finds the center of the world map in Africa
+                    setVdData({} as GeoJSON.FeatureCollection);
+                });
 
         // Selected State
         } else if (geoJsonId.type === "State") {
@@ -139,20 +140,22 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData(stateData);
 
-            mapRef.current.flyTo(state.latlng, state.zoom)
+            mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
             .on('zoomend', () => {
                 setGeoJsonData(countyData);
-    
+                setVdData({} as GeoJSON.FeatureCollection);
             })
             .on('moveend', () => {
                 setGeoJsonData(countyData);
-            }); // zooms to state level
+                setVdData({} as GeoJSON.FeatureCollection);
+            }); 
         
         // Selected County
         } else {
 
             let county = {} as County;
 
+            // Updates selected state which is need to style the county and make it distinct from surrounding counties
             countyData.features.forEach((d: GeoJSON.Feature) => {
                 if (d.properties!.geoid === geoJsonId.geoid) {
                     d.properties!.selected = true;
@@ -166,7 +169,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setGeoJsonBoundaryData(countyData);
 
             mapRef.current
-                .flyTo(county.latlng, county.zoom)
+                .flyTo(county.latlng, county.zoom) // zooms to county level
                 .on('zoomend', () => {
                     setGeoJsonData(updateTracts(mapRef, county));
                     setVdData(county.vtdsts);
