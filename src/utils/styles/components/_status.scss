@@ -1,6 +1,6 @@
 .Status {
     position: fixed;
-    top: 5rem;
+    top: calc($navHeight + 1rem);
     right: 1rem;
     cursor: grab;
     background-color: $appBackgroundTransparent;
