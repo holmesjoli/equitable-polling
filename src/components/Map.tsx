@@ -50,8 +50,6 @@ function updateTracts(mapRef: any, county: County, setGeoJsonData: any) {
             tracts.push(d);
         }
     })                            
-
-    console.log(tracts);
     setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
 }
 
