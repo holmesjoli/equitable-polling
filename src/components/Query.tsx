@@ -135,8 +135,8 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
     );
 }
 
-function SelectGeography({ geoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId } : 
-                         { geoJsonId: GeoID, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any }) : JSX.Element {
+function SelectGeography({ selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId } : 
+                         { selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any }) : JSX.Element {
 
     return(
         <ComponentGroup title="Select geography">
@@ -227,7 +227,7 @@ export function QueryMenu({ geoJsonId, indicator, setIndicator, changeYear, setC
                 </PageDescription>
                 <SelectIndicator indicator={indicator} setIndicator={setIndicator} />
                 <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
-                <SelectGeography geoJsonId={geoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
+                <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
             </div>
         </Menu>
     );
