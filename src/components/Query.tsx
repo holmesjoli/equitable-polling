@@ -109,7 +109,6 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
                 } else if (feature?.properties?.geoid === '0') {
                     setSelectedCounty(defaultCounty);
                     setGeoJsonId({geoid: selectedState.geoid, name: selectedState.name, type: selectedState.type, latlng: selectedState.latlng, zoom: selectedState.zoom} as GeoID);
-   
                 } else {
                     const properties = feature?.properties;
                     setSelectedCounty(properties as County);
@@ -136,13 +135,13 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
     );
 }
 
-function SelectGeography({ selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId } : 
-                         { selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any }) : JSX.Element {
+function SelectGeography({ geoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId } : 
+                         { geoJsonId: GeoID, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any }) : JSX.Element {
 
     return(
         <ComponentGroup title="Select geography">
             <SelectState selectedState={selectedState} setSelectedState={setSelectedState} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
-            {selectedState.stfp !== "" ? <SelectCounty selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/> : null}
+            <SelectCounty selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
         </ComponentGroup>
     )
 }
@@ -203,11 +202,11 @@ function SelectIndicator({indicator, setIndicator} : {indicator: Indicator, setI
     )
 }
 
-export const Menu = styled.div<{ $selectedstate: State; }>`
+export const Menu = styled.div<{ $geojsonid: GeoID; }>`
     z-index: +9;
     position: absolute;
     top: 10vh;
-    left: ${props => props.$selectedstate.stfp === '' ? '-100vw;' : '0vw;'};
+    left: ${props => props.$geojsonid.type === 'US' ? '-100vw;' : '0vw;'};
     width: 20rem;
     // padding: .625rem;
     background-color: ${theme.backgroundFill};
@@ -217,18 +216,18 @@ export const Menu = styled.div<{ $selectedstate: State; }>`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({ indicator, setIndicator, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId} : 
-                          { indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any}) {
+export function QueryMenu({ geoJsonId, indicator, setIndicator, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId} : 
+                          { geoJsonId: GeoID, indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any}) {
 
     return(
-        <Menu $selectedstate={selectedState}>
+        <Menu $geojsonid={geoJsonId}>
             <div className="Query">
                 <PageDescription>
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
                 </PageDescription>
                 <SelectIndicator indicator={indicator} setIndicator={setIndicator} />
                 <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
-                <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
+                <SelectGeography geoJsonId={geoJsonId} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
             </div>
         </Menu>
     );

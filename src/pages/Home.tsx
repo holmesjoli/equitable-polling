@@ -35,16 +35,12 @@ export default function Home({}): JSX.Element {
         Tooltip.init();
     }, []);
 
-    useEffect(() => {
-        setAdjTracts(getAdjacentTracts(selectedCounty));
-    }, [selectedCounty]);
-
     return(
         <Main>
-            {selectedState.stfp === ''? 
+            {geoJsonId.type === 'US'? 
                 <USStatus /> : 
                 <>
-                {selectedCounty.cntyfp === "" ? (
+                {geoJsonId.type === "State" ? (
                         <StateStatus
                             equityIndicator={equityIndicator}
                             setEquityIndicator={setEquityIndicator}
@@ -62,7 +58,7 @@ export default function Home({}): JSX.Element {
                 </>
             }
 
-            <QueryMenu indicator={indicator} setIndicator={setIndicator} 
+            <QueryMenu geoJsonId={geoJsonId} indicator={indicator} setIndicator={setIndicator} 
                        changeYear={changeYear} setChangeYear={setChangeYear} 
                        selectedState={selectedState} setSelectedState={setSelectedState} 
                        selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
