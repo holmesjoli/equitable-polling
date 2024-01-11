@@ -84,6 +84,7 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             map.flyTo(defaultMap.latlng, defaultMap.zoom);
             setSelectedState(defaultState);
             setSelectedCounty(defaultCounty);
+            setGeoJsonId({geoid: defaultMap.geoid, name: defaultMap.name, type: defaultMap.type, latlng: defaultMap.latlng, zoom: defaultMap.zoom} as GeoID);
           },
         }),
         [map]
