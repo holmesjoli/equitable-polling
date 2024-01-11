@@ -6,7 +6,7 @@ import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, Featu
 import * as Tooltip from "./Tooltip";
 
 // Types
-import { State, County } from "../utils/Types";
+import { State, County, GeoID } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
@@ -29,8 +29,8 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                         { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
+function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                         { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
     const map = useMap();
 
@@ -72,33 +72,7 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     function onClickFeature(event: any) {
         const layer = event.target;
         const properties = layer.feature.properties;
-
-        if (properties.type === "State") {
-            setSelectedState(stateData?.features.find(d => d.properties?.geoid === properties.geoid)?.properties as State);
-            setSelectedCounty(defaultCounty);
-
-            setGeoJsonBoundaryData(stateData);
-            setGeoJsonData(countyData);
-        } else if (properties.type === "County") {
-            const county = countyData?.features.find(d => d.properties?.geoid === properties.geoid)?.properties as County;
-
-            setSelectedCounty(county);
-            setGeoJsonBoundaryData(countyData);
-
-            // const bounds = mapRef?.current?.getBounds();
-            // const ne = bounds?.getNorthEast();
-            // const sw = bounds?.getSouthWest();
-
-            const tracts = unnestedTracts(county.stfp);
-            // .features.filter((d: any) => (d.properties.bounds.northEast.lat < ne!.lat) && 
-            //                                                             (d.properties.bounds.northEast.lng < ne!.lng) &&
-            //                                                             (d.properties.bounds.southWest.lat > sw!.lat) &&
-            //                                                             (d.properties.bounds.southWest.lng > sw!.lng));
-
-            // console.log(tracts);
-
-            setGeoJsonData(tracts);
-        }
+        setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
     }
 
     // React Hooks ---------------------------------------------------
@@ -108,12 +82,36 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
         () => ({
           click() {
             map.flyTo(defaultMap.latlng, defaultMap.zoom);
-            setFullScreen(true);
             setSelectedState(defaultState);
+            setSelectedCounty(defaultCounty);
           },
         }),
         [map]
     );
+
+    useEffect(() => {
+
+        if (geoJsonId.type === "US") {
+            setSelectedState(defaultState);
+            setSelectedCounty(defaultCounty);
+            setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
+            setGeoJsonData(stateData);
+
+        } else if (geoJsonId.type === "State") {
+            setSelectedState(stateData?.features.find(d => d.properties?.geoid === geoJsonId.geoid)?.properties as State);
+            setSelectedCounty(defaultCounty);
+            setGeoJsonBoundaryData(stateData);
+            setGeoJsonData(countyData);
+        } else {
+            const county = countyData?.features.find(d => d.properties?.geoid === geoJsonId.geoid)?.properties as County;
+            setSelectedCounty(county);
+            setGeoJsonBoundaryData(countyData);
+
+            const tracts = unnestedTracts(county.stfp);
+            setGeoJsonData(tracts);
+        }
+
+    }, [geoJsonId]);
 
     useEffect(() => {
 
@@ -179,8 +177,8 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     )
 }
 
-export default function Map({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                            { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -196,7 +194,7 @@ export default function Map({ setFullScreen, selectedState, setSelectedState, se
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent setFullScreen={setFullScreen} 
+            <LayersComponent geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
                              selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}

@@ -63,10 +63,11 @@ export default function Home({}): JSX.Element {
             }
 
             <QueryMenu indicator={indicator} setIndicator={setIndicator} changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}/>
-            <Map setFullScreen={setFullScreen} selectedState={selectedState} setSelectedState={setSelectedState} 
-                                               selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
-                                               showPolls={showPolls} setShowPolls={setShowPolls}
-                                               showVD={showVD} setShowVD={setShowVD}/>
+            <Map geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
+                selectedState={selectedState} setSelectedState={setSelectedState} 
+                selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
+                showPolls={showPolls} setShowPolls={setShowPolls}
+                showVD={showVD} setShowVD={setShowVD}/>
         </Main>
     )
 }
