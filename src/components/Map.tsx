@@ -1,6 +1,7 @@
 // Libraries
 import { useEffect, useMemo, useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, FeatureGroup } from "react-leaflet";
+import { point, bounds } from 'leaflet';
 
 // Components
 import * as Tooltip from "./Tooltip";
@@ -30,15 +31,25 @@ export function mouseOutTract(event: any) {
 }
 
 function updateTracts(mapRef: any, county: County, setGeoJsonData: any) {
-    const bounds = mapRef.current.getBounds();
-    console.log(bounds);
-    const ne = bounds?.getNorthEast();
-    const sw = bounds?.getSouthWest();
+    const mapBounds = mapRef.current.getBounds();
+    const mapNE = mapBounds?.getNorthEast();
+    const mapSW = mapBounds?.getSouthWest();
 
-    const tracts = unnestedTracts(county.stfp).features.filter((d: any) => (d.properties.bounds.northEast.lat < ne!.lat) && 
-                                                               (d.properties.bounds.northEast.lng < ne!.lng) &&
-                                                               (d.properties.bounds.southWest.lat > sw!.lat) &&
-                                                               (d.properties.bounds.southWest.lng > sw!.lng));
+    const mapBounds2 = bounds(point(mapSW!.lat, mapSW!.lng), point(mapNE!.lat, mapNE!.lng));                                   
+
+    const tracts: any[] = [];
+
+    unnestedTracts(county.stfp).features.forEach((d: any) => {
+
+        var p1 = point(d.properties.bounds.southWest.lat, d.properties.bounds.southWest.lng),
+            p2 = point(d.properties.bounds.northEast.lat, d.properties.bounds.northEast.lng),
+        tractBounds = bounds(p1, p2);
+
+        if (mapBounds2.overlaps(tractBounds)) {
+
+            tracts.push(d);
+        }
+    })                            
 
     console.log(tracts);
     setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
@@ -159,8 +170,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
 
     }, [geoJsonBoundaryData, geoJsonData]);
-
-    console.log(geoJsonId);
 
     return(
         <div className="Layers">
