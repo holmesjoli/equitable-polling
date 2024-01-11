@@ -1,11 +1,13 @@
 import { LatLng } from "leaflet";
 
+export type Bounds = {northEast: LatLng, southWest: LatLng};
+
 export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, zoom: number};
 
-export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, geoid: string, latlng: LatLng, zoom: number};
+export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, geoid: string, latlng: LatLng, zoom: number, bounds: Bounds};
 
 export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string, tracts: GeoJSON.FeatureCollection, 
-                      adjacencies: string[], latlng: LatLng, zoom: number, selected: boolean};
+                      adjacencies: string[], latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds};
 
 export type State = {type: string, stfp: string, geoid: string, name: string, counties: GeoJSON.FeatureCollection, latlng: LatLng, zoom: number};
 

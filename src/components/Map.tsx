@@ -108,7 +108,7 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             setGeoJsonBoundaryData(stateData);
             setGeoJsonData(countyData);
 
-            map.flyTo(state.latlng, state.zoom); // zooms to state leve;
+            map.flyTo(state.latlng, state.zoom); // zooms to state level
             
         } else {
 
@@ -125,8 +125,17 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
 
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
-            const tracts = unnestedTracts(county.stfp);
-            setGeoJsonData(tracts);
+
+            const bounds = map.getBounds();
+            const ne = bounds?.getNorthEast();
+            const sw = bounds?.getSouthWest();
+
+            const tracts = unnestedTracts(county.stfp).features.filter((d: any) => (d.properties.bounds.northEast.lat < ne!.lat) && 
+                                                                        (d.properties.bounds.northEast.lng < ne!.lng) &&
+                                                                        (d.properties.bounds.southWest.lat > sw!.lat) &&
+                                                                        (d.properties.bounds.southWest.lng > sw!.lng));
+
+            setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
 
             map.flyTo(county.latlng, county.zoom);
         }
