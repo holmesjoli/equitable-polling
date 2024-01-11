@@ -1,38 +1,27 @@
 // Libraries
 import { useEffect, useMemo, useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, FeatureGroup } from "react-leaflet";
+import { point, bounds } from 'leaflet';
 
 // Components
 import * as Tooltip from "./Tooltip";
 
 // Types
-import { State, County } from "../utils/Types";
+import { State, County, GeoID } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { unnestedTracts, unnestedCountyData, nestedStateData, updateSelectedCounty } from "../utils/DM";
+import { unnestedTracts, countyData, stateData } from "../utils/DM";
 
 // Styles 
 import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
-
-export function mouseOver(event: any) {
-    var layer = event.target;
-    layer.setStyle(layersStyle.highlight)
-    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, `${layer.feature.properties.name}`);
-}
 
 export function mouseOut(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.default);
     Tooltip.pointerOut();
-}
-
-export function mouseOverTract(event: any) {
-    var layer = event.target;
-    layer.setStyle(layersStyle.highlightTract);
-    Tooltip.pointerOver(event.originalEvent.clientX, event.originalEvent.clientY, `${layer.feature.properties.name}`);
 }
 
 export function mouseOutTract(event: any) {
@@ -41,58 +30,77 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, showVD}: 
-                         { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, showVD: boolean }) {
+function updateTracts(mapRef: any, county: County, setGeoJsonData: any) {
+    const mapBounds = mapRef.current.getBounds();
+    const mapNE = mapBounds?.getNorthEast();
+    const mapSW = mapBounds?.getSouthWest();
 
-    const map = useMap();
+    const mapBounds2 = bounds(point(mapSW!.lat, mapSW!.lng), point(mapNE!.lat, mapNE!.lng));                                   
 
-    const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>(selectedCounty!.vtdsts);
+    const tracts: any[] = [];
+
+    unnestedTracts(county.stfp).features.forEach((d: any) => {
+
+        var p1 = point(d.properties.bounds.southWest.lat, d.properties.bounds.southWest.lng),
+            p2 = point(d.properties.bounds.northEast.lat, d.properties.bounds.northEast.lng),
+        tractBounds = bounds(p1, p2);
+
+        if (mapBounds2.overlaps(tractBounds)) {
+
+            tracts.push(d);
+        }
+    })                            
+    setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
+}
+
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
+
+    const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
+    const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
+
+    const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
+    const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
+
+    // const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>(selectedCounty!.vtdsts);
     const geoJsonVdLayer = useRef<L.GeoJSON<any, any>>(null);
-    console.log(vdData);
+    // console.log(vdData);
 
     // Functions ---------------------------------------------------
 
-    function onEachState(_: any, layer: any) {
+    function mouseOverTract(event: any) {
+        var layer = event.target;
+        layer.setStyle(layersStyle.highlightTract);
+        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
+        Tooltip.pointerOver(coords.x, coords.y, `<span class="Bold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
+    }
+
+    function mouseOver(event: any) {
+        var layer = event.target;
+        layer.setStyle(layersStyle.highlight);
+        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
+        Tooltip.pointerOver(coords.x, coords.y, `<span class="Bold">${layer.feature.properties.name} ${layer.feature.properties.descr}</span>`);
+    }
+
+    function onEachFeature(_: any, layer: any) {
+
+        const properties = layer.feature.properties;
+
         layer.on({
-          mouseover: mouseOver,
-          mouseout: mouseOut,
-          click: onClickState
+          mouseover: properties.type === "Tract" ? mouseOverTract: mouseOver,
+          mouseout: properties.type === "Tract" ? mouseOutTract: mouseOut,
+          click: onClickFeature
         });
         Tooltip.pointerOut();
     }
 
-    function onClickState(event: any) {
-        var layer = event.target;
-        setFullScreen(false);
-        const clickedState = nestedStateData.features.find((d: GeoJSON.Feature) => d.properties!.stfp === layer.feature.properties.stfp)!.properties;
-        setSelectedState(clickedState as State);
-        setSelectedCounty(defaultCounty);
+    function onClickFeature(event: any) {
+        const layer = event.target;
+        const properties = layer.feature.properties;
 
-        map.flyTo(clickedState!.latlng, clickedState!.zoom);
-    }
-
-    function onEachCounty(_: any, layer: any) {
-        layer.on({
-          mouseover: mouseOver,
-          mouseout: mouseOut,
-          click: onClickCounty
-        });
-    }
-
-    function onClickCounty(event: any) {
-        var layer = event.target;
-        updateSelectedCounty(selectedState, setSelectedState, layer.feature.properties.cntyfp);
-        const clickedCounty = selectedState.counties.features.find(d => d.properties!.cntyfp === layer.feature.properties.cntyfp)!.properties;
-        setSelectedCounty(clickedCounty as County);
-        Tooltip.pointerOut();
-        map.flyTo(clickedCounty!.latlng, clickedCounty!.zoom);
-    }
-
-    function onEachTract(_: any, layer: any) {
-        layer.on({
-          mouseover: mouseOverTract,
-          mouseout: mouseOutTract
-        });
+        if (properties.type !== "Tract") {
+            setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
+        }        
     }
 
     // React Hooks ---------------------------------------------------
@@ -101,89 +109,116 @@ function LayersComponent({ setFullScreen, selectedState, setSelectedState, selec
     const onClickRect = useMemo(
         () => ({
           click() {
-            map.flyTo(defaultMap.center, defaultMap.zoom);
-            setFullScreen(true);
-            setSelectedState(defaultState);
-          },
+            setGeoJsonId({geoid: defaultMap.geoid, name: defaultMap.name, type: defaultMap.type, latlng: defaultMap.latlng, zoom: defaultMap.zoom} as GeoID);
+          }
         }),
-        [map]
+        [geoJsonId]
     );
 
     useEffect(() => {
-        map.flyTo(selectedState.latlng, selectedState.zoom);
-    }, [selectedState]);
 
-    useEffect(() => {
+        if (geoJsonId.type === "US") {
+            setSelectedState(defaultState);
+            setSelectedCounty(defaultCounty);
+            setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
+            setGeoJsonData(stateData);
 
-        setVdData(selectedCounty.vtdsts);
+            mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level, otherwise react finds the center of the world map in Africa
 
-        // if else add otherwise react finds the center of the world map in Africa
-        if (selectedCounty.stfp !== "") {
-            map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
+        } else if (geoJsonId.type === "State") {
+
+            const state = stateData?.features.find(d => d.properties?.geoid === geoJsonId.geoid)?.properties as State;
+            setSelectedState(state);
+            setSelectedCounty(defaultCounty);
+            setGeoJsonBoundaryData(stateData);
+            setGeoJsonData(countyData);
+
+            mapRef.current.flyTo(state.latlng, state.zoom); // zooms to state level
+            
         } else {
-            map.flyTo(selectedState.latlng, selectedState.zoom);
+
+            let county = {} as County;
+
+            countyData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.geoid === geoJsonId.geoid) {
+                    d.properties!.selected = true;
+                    county = d.properties as County;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
+            setSelectedCounty(county);
+            setGeoJsonBoundaryData(countyData);
+
+            mapRef.current.flyTo(county.latlng, county.zoom);
+
+            mapRef.current.on('zoomend', () => {
+                updateTracts(mapRef, county, setGeoJsonData)
+            }).on('moveend', () => {
+                updateTracts(mapRef, county, setGeoJsonData)
+            });
         }
 
-        // Update the color of the county when county is updated
-        map.eachLayer((layer) => {
-            if ((layer as any).feature) {
-                if ((layer as any).feature.properties.selected) {
-                    (layer as any).setStyle(highlightSelectedStyle((layer as any).feature));
-                }
-            }
-        });
-    }, [selectedCounty, selectedState]);
+    }, [geoJsonId]);
 
     useEffect(() => {
-        if (geoJsonVdLayer.current) {
-            geoJsonVdLayer.current?.clearLayers().addData(vdData);
+
+        // Update boundary and interactive layer
+        if (geoJsonId.type === 'County') {
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
+        } else {
+      
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
-    }, [vdData]);
+
+    }, [geoJsonBoundaryData, geoJsonData]);
+
+    // useEffect(() => {
+    //     if (geoJsonVdLayer.current) {
+    //         geoJsonVdLayer.current?.clearLayers().addData(vdData);
+    //     }
+    // }, [vdData]);
 
     console.log(showVD);
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            {selectedState.stfp === "" ?
-                <GeoJSON data={nestedStateData} style={layersStyle.default} onEachFeature={onEachState} /> : 
-                <FeatureGroup>
-                    <GeoJSON data={nestedStateData} style={layersStyle.selected}/>
-                    {selectedCounty.cntyfp === "" ? 
-                        <GeoJSON data={unnestedCountyData} style={layersStyle.default} onEachFeature={onEachCounty}/>
-                    :
-                        <FeatureGroup>
-                            <GeoJSON data={unnestedCountyData} style={highlightSelectedStyle}/>
-                            <GeoJSON data={unnestedTracts(selectedState)} style={layersStyle.defaultTract} onEachFeature={onEachTract}/>
-                            {/* {showVD ? <GeoJSON data={vdData} key="vd-geo-layer" ref={geoJsonVdLayer} style={layersStyle.highlightTract} /> : null} */}
-                        </FeatureGroup>
-                    }
-                </FeatureGroup>
-            }
+            <FeatureGroup>
+                {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
+                <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
+            </FeatureGroup>
         </div>
     )
 }
 
-export default function Map({ setFullScreen, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, showVD }: 
-                            { setFullScreen: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, showVD: boolean }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
+
+    const mapRef = useRef(null);
 
     return(
         <MapContainer
             className="home-map"
-            center={[defaultMap.center.lat, defaultMap.center.lng]}
+            center={[defaultMap.latlng.lat, defaultMap.latlng.lng]}
             zoom={defaultMap.zoom}
-            minZoom={defaultMap.minZoom}
-            maxZoom={defaultMap.maxZoom}
+            minZoom={4}
+            maxZoom={18}
             scrollWheelZoom={false}
             zoomControl={false}
+            ref={mapRef}
             >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent setFullScreen={setFullScreen} 
+            <LayersComponent mapRef={mapRef} geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
-                             selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
-                             showPolls={showPolls} showVD={showVD}
+                             setSelectedCounty={setSelectedCounty}
+                             showPolls={showPolls} setShowPolls={setShowPolls}
+                             showVD={showVD} setShowVD={setShowVD}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>

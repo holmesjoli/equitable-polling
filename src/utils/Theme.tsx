@@ -4,12 +4,13 @@ export const theme = {
     fontSize: 13,
     grey: {primary: '#757575', secondary: '#C6C6C6', teriary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
-    focusColor: '#047391'
+    focusColor: '#047391',
+    fontFamily: 'Inter'
 }
 
 export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
                             defaultTract: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 1 },
-                            selected: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
+                            outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
                             highlight: { color: theme.focusColor, fillColor: theme.focusColor},
                             highlightTract: { color: theme.focusColor, fillColor: theme.focusColor, fillOpacity: .5},
                             greyOut: { color: theme.grey.teriary, fillOpacity: 0.75, weight: 0 }
@@ -33,7 +34,7 @@ function getColor(d: any) {
 }
 
 function getWeight(d: any) {
-    return d ? 5 : 1;
+    return d ? 4 : 1;
 }
 
 export function highlightSelectedStyle(feature: any) {
