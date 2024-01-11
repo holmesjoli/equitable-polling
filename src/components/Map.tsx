@@ -99,6 +99,10 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
 
             map.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level, otherwise react finds the center of the world map in Africa
 
+            // Update boundary and interactive layer
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+
         } else if (geoJsonId.type === "State") {
 
             const state = stateData?.features.find(d => d.properties?.geoid === geoJsonId.geoid)?.properties as State;
@@ -108,8 +112,22 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             setGeoJsonData(countyData);
 
             map.flyTo(state.latlng, state.zoom); // zooms to state level
+
+            // Update boundary and interactive layer
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+            
         } else {
-            const county = countyData?.features.find(d => d.properties?.geoid === geoJsonId.geoid)?.properties as County;
+
+            countyData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.geoid === geoJsonId.geoid) {
+                    d.properties!.selected = true;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
+            const county = countyData?.features.find(d => d.properties?.selected)?.properties as County;
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
 
@@ -119,37 +137,27 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             setGeoJsonData(tracts);
 
             console.log(tracts);
-            map.flyTo(selectedCounty.latlng, selectedCounty.zoom);
+            map.flyTo(county.latlng, county.zoom);
+
+             // Update interactive layer
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
         }
 
     }, [geoJsonId]);
 
     useEffect(() => {
 
-        if (selectedCounty.cntyfp !== '') {
-
-            geoJsonBoundaryData.features.forEach((d: GeoJSON.Feature) => {
-                if (d.properties!.geoid === selectedCounty.geoid) {
-                    d.properties!.selected = true;
-                } else {
-                    d.properties!.selected = false;
-                }
-            });
-
-            // Update interactive layer
+        if (geoJsonId.type === 'Tract') {
+            // Update boundary and interactive layer
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
             geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
         } else {
-            // if (selectedState.stfp !== '') { 
-            //     map.flyTo(selectedState.latlng, selectedState.zoom); // zooms to state level
-            // }
-
             // Update boundary and interactive layer
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
-
-    }, [selectedState, selectedCounty]);
+    }, [geoJsonBoundaryData, geoJsonData]);
 
     return(
         <div className="Layers">
