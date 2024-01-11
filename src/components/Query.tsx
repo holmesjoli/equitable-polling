@@ -111,8 +111,9 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
                     setGeoJsonId({geoid: selectedState.geoid, name: selectedState.name, type: selectedState.type, latlng: selectedState.latlng, zoom: selectedState.zoom} as GeoID);
    
                 } else {
-                    setSelectedCounty(feature?.properties as County);
-                    setGeoJsonId({geoid: selectedCounty.geoid, name: selectedCounty.name, type: selectedCounty.type, latlng: selectedCounty.latlng, zoom: selectedCounty.zoom} as GeoID);
+                    const properties = feature?.properties;
+                    setSelectedCounty(properties as County);
+                    setGeoJsonId({geoid: properties!.geoid, name: properties!.name, type: properties!.type, latlng: properties!.latlng, zoom: properties!.zoom} as GeoID);
                 }
             }}
             renderOption={(props, option) => (
