@@ -72,7 +72,7 @@ function getStates() {
     return {type: 'FeatureCollection', features: stateFeatures as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;;
 }
 
-// Returns an unnested list of all the counties for the project
+// Returns a feature collection of all the counties for the selected project states
 export function getCounties() {
 
     const features: Feature[] = [];
@@ -87,7 +87,7 @@ export function getCounties() {
             features: features} as GeoJSON.FeatureCollection;
 }
 
-// Returns an unnested list of all the counties for the project
+// Returns a feature collection of all the tracts for the selected project states
 export function getTracts(stfp: string) {
 
     const features: Feature[] = [];
@@ -114,16 +114,3 @@ export function getTracts(stfp: string) {
             features: features} as GeoJSON.FeatureCollection;
 }
 
-// Updates the selectedState data with the selected county
-export function updateSelectedCounty(cntyfp: any) {
-
-    if (cntyfp !== '') {
-        countyData.features.forEach((d: GeoJSON.Feature) => {
-            if (d.properties!.cntyfp === cntyfp) {
-                d.properties!.selected = true;
-            } else {
-                d.properties!.selected = false;
-            }
-        });
-    }
-}
