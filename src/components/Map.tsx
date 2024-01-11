@@ -43,13 +43,13 @@ function updateTracts(mapRef: any, county: County, setGeoJsonData: any) {
 
         var p1 = point(d.properties.bounds.southWest.lat, d.properties.bounds.southWest.lng),
             p2 = point(d.properties.bounds.northEast.lat, d.properties.bounds.northEast.lng),
-        tractBounds = bounds(p1, p2);
+            tractBounds = bounds(p1, p2);
 
         if (mapBounds2.overlaps(tractBounds)) {
-
             tracts.push(d);
         }
-    })                            
+    });
+       
     setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
 }
 
@@ -154,13 +154,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
 
-            mapRef.current.flyTo(county.latlng, county.zoom);
-
-            mapRef.current.on('zoomend', () => {
-                updateTracts(mapRef, county, setGeoJsonData)
-            }).on('moveend', () => {
-                updateTracts(mapRef, county, setGeoJsonData)
-            });
+            mapRef.current
+                .flyTo(county.latlng, county.zoom)
+                .on('zoomend', () => {
+                    updateTracts(mapRef, county, setGeoJsonData)
+                })
+                .on('moveend', () => {
+                    updateTracts(mapRef, county, setGeoJsonData)
+                });
         }
 
     }, [geoJsonId]);
