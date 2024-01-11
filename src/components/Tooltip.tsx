@@ -33,7 +33,6 @@ export function pointerOver(x: number, y: number, str: string) {
 
     const nav: HTMLElement | null = d3.select(`.Navigation`).node() as HTMLElement | null;
     const navHeight = nav?.getBoundingClientRect().height;
-    console.log(navHeight);
 
     y = y + navHeight! - 20;
 

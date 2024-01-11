@@ -65,6 +65,7 @@ function formattedStateGeoJSON() {
                          descr: '',
                          name: e.name,
                          stfp: e.stfp,
+                         geoid: e.geoid, 
                          latlng: {lat: e.Y, lng: e.X} as LatLng,
                          counties: countyData,
                          zoom: e.zoom} as State, 
@@ -90,12 +91,12 @@ export function unnestedCounties() {
 }
 
 // Returns an unnested list of all the counties for the project
-export function unnestedTracts(selectedState: State) {
+export function unnestedTracts(stfp: string) {
 
     const features: Feature[] = [];
 
     countyData.features
-    .filter((d: any) => d.properties.stfp === selectedState.stfp)
+    .filter((d: any) => d.properties.stfp === stfp)
     .forEach((e: any) => {
         e.properties.tracts.features.forEach((d: any) => {
             features.push(d);
