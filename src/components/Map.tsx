@@ -31,7 +31,7 @@ export function mouseOutTract(event: any) {
 }
 
 // Returns a list of tracks which are current in view
-function updateTracts(mapRef: any, county: County, setGeoJsonData: any) {
+function updateTracts(mapRef: any, county: County) {
     const mapBounds = mapRef.current.getBounds();
     const mapNE = mapBounds?.getNorthEast();
     const mapSW = mapBounds?.getSouthWest();
@@ -51,7 +51,7 @@ function updateTracts(mapRef: any, county: County, setGeoJsonData: any) {
         }
     });
        
-    setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
+    return {type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection;
 }
 
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
@@ -121,9 +121,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedState(defaultState);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
-            setGeoJsonData(stateData);
 
-            mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level, otherwise react finds the center of the world map in Africa
+            mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom)
+                .on('zoomend', () => {
+                    setGeoJsonData(stateData);
+        
+                })
+                .on('moveend', () => {
+                    setGeoJsonData(stateData);
+                }); // zooms to country level, otherwise react finds the center of the world map in Africa
 
         // Selected State
         } else if (geoJsonId.type === "State") {
@@ -132,9 +138,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData(stateData);
-            setGeoJsonData(countyData);
 
-            mapRef.current.flyTo(state.latlng, state.zoom); // zooms to state level
+            mapRef.current.flyTo(state.latlng, state.zoom)
+            .on('zoomend', () => {
+                setGeoJsonData(countyData);
+    
+            })
+            .on('moveend', () => {
+                setGeoJsonData(countyData);
+            }); // zooms to state level
         
         // Selected County
         } else {
@@ -156,11 +168,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             mapRef.current
                 .flyTo(county.latlng, county.zoom)
                 .on('zoomend', () => {
-                    updateTracts(mapRef, county, setGeoJsonData);
+                    setGeoJsonData(updateTracts(mapRef, county));
                     setVdData(county.vtdsts);
                 })
                 .on('moveend', () => {
-                    updateTracts(mapRef, county, setGeoJsonData);
+                    setGeoJsonData(updateTracts(mapRef, county));
                     setVdData(county.vtdsts);
                 });
         }
