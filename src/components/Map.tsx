@@ -30,6 +30,7 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
+// Returns a list of tracks which are current in view
 function updateTracts(mapRef: any, county: County, setGeoJsonData: any) {
     const mapBounds = mapRef.current.getBounds();
     const mapNE = mapBounds?.getNorthEast();
@@ -63,8 +64,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdLayer = useRef<L.GeoJSON<any, any>>(null);
-
-    // console.log(vdData);
 
     // Functions ---------------------------------------------------
 
@@ -157,10 +156,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             mapRef.current
                 .flyTo(county.latlng, county.zoom)
                 .on('zoomend', () => {
-                    updateTracts(mapRef, county, setGeoJsonData)
+                    updateTracts(mapRef, county, setGeoJsonData);
+                    setVdData(county.vtdsts);
                 })
                 .on('moveend', () => {
-                    updateTracts(mapRef, county, setGeoJsonData)
+                    updateTracts(mapRef, county, setGeoJsonData);
+                    setVdData(county.vtdsts);
                 });
         }
 
@@ -177,13 +178,19 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
 
-        if (showVD) {
-            geoJsonVdLayer.current?.clearLayers().addData(vdData);
-        }
-
     }, [geoJsonBoundaryData, geoJsonData]);
 
-    console.log(showVD);
+    useEffect(() => {
+
+        if (showVD) {
+            geoJsonVdLayer.current?.clearLayers().addData(vdData);
+        } else {
+            geoJsonVdLayer.current?.clearLayers();
+        }   
+    }, [geoJsonBoundaryData, geoJsonData, showVD]);
+
+    console.log(vdData, showVD);
+
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
