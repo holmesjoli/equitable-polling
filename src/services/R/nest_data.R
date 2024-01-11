@@ -4,6 +4,7 @@ library(dplyr)
 library(magrittr)
 
 stfp <- c("13", "45", "28", "55") #state fips codes
+year <- c(2012, 2014, 2016, 2018, 2020, 2022)
 
 states_geo <- tigris::states(cb = T) %>% 
   filter(STATEFP %in% stfp) %>% 
@@ -102,4 +103,38 @@ adj <- readr::read_delim("../data/raw/county_adjacency.txt", delim = "|") %>%
 
 exportJSON <- toJSON(adj)
 write(exportJSON, "../data/processed/countyAdjacency.json")
+
+
+# lapply(stfp, function(st) {
+#   
+#   dfs <- lapply(year, function(yr) {
+#     
+#     df <- tigris::voting_districts(cb = T, state = st, year = yr) %>% 
+#       filter(STATEFP20 %in% stfp) %>% 
+#       select(STATEFP20, COUNTYFP20, VTDST20, geometry) %>% 
+#       rename(stfp = STATEFP20,
+#              cntyfp = COUNTYFP20,
+#              vdfp = VTDST20
+#       )
+#   })
+#   
+#   return(df)
+# })
+
+vd_geo <- lapply(stfp, function(st) {
+  
+    df <- tigris::voting_districts(year = 2020, state=st, cb=T) %>% 
+      rename(stfp = STATEFP20,
+             cntyfp = COUNTYFP20,
+             vtdst = VTDST20,
+             geoid = GEOID20,
+             name = NAME20) %>% 
+      select(stfp, cntyfp, vtdst, geoid, name, geometry) %>% 
+      mutate(year = 2020)
+
+    return(df)
+}) %>% dplyr::bind_rows()
+
+exportJSON <- toJSON(df)
+write(exportJSON, "../data/processed/votingDistrictGeoJSON.json")
 

@@ -9,6 +9,10 @@
 .ComponentGroupInner {
     border-bottom: 1px solid #F4DFC8;
     padding-top: $appPadding;
+
+    h4 {
+        margin-bottom: .5rem;
+    }
 }
 
 .ComponentGroup {

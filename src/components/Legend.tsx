@@ -33,8 +33,8 @@ function initLegend(selector: string) {
       .attr('width', width);
 }
 
-function legendHeight(data: any[]) {
-    const height = 27 + (data.length) * 21;
+function legendHeight(data: any[], margin: number = 0) {
+    const height = margin + (data.length) * 24;
     return height;
 }
 
@@ -48,7 +48,7 @@ function initSizeLegend() {
     initLegend(sizeLegendId);
   
     const svg = d3.select(`#${sizeLegendId} svg`)
-      .attr('height', legendHeight(data));
+      .attr('height', legendHeight(data, 15));
 
       svg
       .selectAll('path')
@@ -158,9 +158,7 @@ function ColorTypeState () {
 
 function ColorTypeCounty () {
   return (
-    <ComponentGroupInner title="Poll status">
       <div id={colorLegendId}></div>
-    </ComponentGroupInner>
   );
 }
 

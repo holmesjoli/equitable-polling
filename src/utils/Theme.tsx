@@ -13,8 +13,9 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                             outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
                             highlight: { color: theme.focusColor, fillColor: theme.focusColor},
                             highlightTract: { color: theme.focusColor, fillColor: theme.focusColor, fillOpacity: .5},
-                            greyOut: { color: theme.grey.teriary, fillOpacity: 0.75, weight: 0 }
-}
+                            greyOut: { color: theme.grey.teriary, fillOpacity: 0.75, weight: 0},
+                            vd: { color: theme.focusColor,  fillColor: theme.focusColor, fillOpacity: .75, weight: 1 }
+                          }
 
 // Scales
 export const strokeColorScale = d3.scaleOrdinal()

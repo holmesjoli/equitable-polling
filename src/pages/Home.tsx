@@ -11,9 +11,6 @@ import * as Tooltip from "../components/Tooltip";
 // Data 
 import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
 
-// Data Management
-import { getAdjacentTracts } from "../utils/DM";
-
 // Types
 import { GeoID } from "../utils/Types";
 
@@ -21,8 +18,6 @@ export default function Home({}): JSX.Element {
 
     const [selectedState, setSelectedState] = useState(defaultState);
     const [selectedCounty, setSelectedCounty] = useState(defaultCounty);
-    const [adjTracts, setAdjTracts] = useState({type: 'FeatureCollection', 
-                                                features: [] as GeoJSON.Feature[]} as GeoJSON.FeatureCollection);
     const [changeYear, setChangeYear] = useState(selectVariable.changeYear[0]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);

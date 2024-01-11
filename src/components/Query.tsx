@@ -30,7 +30,7 @@ export function ComponentGroupInner({title, children}: {title: string, children:
 
     return(
         <div className="ComponentGroupInner">
-            <h3>{title}</h3>
+            <h4>{title}</h4>
             {children}
         </div>
     )
