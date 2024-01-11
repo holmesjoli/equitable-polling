@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, Rectangle, FeatureGroup } from "react-leaflet";
 import { point, bounds } from 'leaflet';
+import * as d3 from 'd3';
 
 // Components
 import * as Tooltip from "./Tooltip";
@@ -22,6 +23,7 @@ export function mouseOut(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.default);
     Tooltip.pointerOut();
+    d3.select(".Status .ComponentGroup .US span").attr("class", "");
 }
 
 export function mouseOutTract(event: any) {
@@ -69,14 +71,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         var layer = event.target;
         layer.setStyle(layersStyle.highlightTract);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        Tooltip.pointerOver(coords.x, coords.y, `<span class="Bold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
+        Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
     }
 
     function mouseOver(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        Tooltip.pointerOver(coords.x, coords.y, `<span class="Bold">${layer.feature.properties.name} ${layer.feature.properties.descr}</span>`);
+        Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${layer.feature.properties.name} ${layer.feature.properties.descr}</span>`);
+        d3.select(".Status .ComponentGroup .US span").attr("class", "focus");
     }
 
     function onEachFeature(_: any, layer: any) {
