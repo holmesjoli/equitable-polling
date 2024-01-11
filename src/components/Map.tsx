@@ -29,12 +29,9 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                         { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
-    const map = useMap();
-
-    // const [countyLayerData, setCountyLayerData] = useState<GeoJSON.FeatureCollection>(countyData);
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
@@ -46,14 +43,14 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
     function mouseOverTract(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.highlightTract);
-        var coords = map.latLngToContainerPoint(layer.feature.properties.latlng);
+        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         Tooltip.pointerOver(coords.x, coords.y, `<span class="Bold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
     }
 
     function mouseOver(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.highlight);
-        var coords = map.latLngToContainerPoint(layer.feature.properties.latlng);
+        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         Tooltip.pointerOver(coords.x, coords.y, `<span class="Bold">${layer.feature.properties.name} ${layer.feature.properties.descr}</span>`);
     }
 
@@ -81,13 +78,10 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
     const onClickRect = useMemo(
         () => ({
           click() {
-            map.flyTo(defaultMap.latlng, defaultMap.zoom);
-            setSelectedState(defaultState);
-            setSelectedCounty(defaultCounty);
             setGeoJsonId({geoid: defaultMap.geoid, name: defaultMap.name, type: defaultMap.type, latlng: defaultMap.latlng, zoom: defaultMap.zoom} as GeoID);
-          },
+          }
         }),
-        [map]
+        [geoJsonId]
     );
 
     useEffect(() => {
@@ -98,7 +92,7 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
             setGeoJsonData(stateData);
 
-            map.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level, otherwise react finds the center of the world map in Africa
+            mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level, otherwise react finds the center of the world map in Africa
 
         } else if (geoJsonId.type === "State") {
 
@@ -108,7 +102,7 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             setGeoJsonBoundaryData(stateData);
             setGeoJsonData(countyData);
 
-            map.flyTo(state.latlng, state.zoom); // zooms to state level
+            mapRef.current.flyTo(state.latlng, state.zoom); // zooms to state level
             
         } else {
 
@@ -126,18 +120,18 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
 
-            const bounds = map.getBounds();
+            const bounds = mapRef.current.getBounds();
             const ne = bounds?.getNorthEast();
             const sw = bounds?.getSouthWest();
 
             const tracts = unnestedTracts(county.stfp).features.filter((d: any) => (d.properties.bounds.northEast.lat < ne!.lat) && 
-                                                                        (d.properties.bounds.northEast.lng < ne!.lng) &&
-                                                                        (d.properties.bounds.southWest.lat > sw!.lat) &&
-                                                                        (d.properties.bounds.southWest.lng > sw!.lng));
+                                                                       (d.properties.bounds.northEast.lng < ne!.lng) &&
+                                                                       (d.properties.bounds.southWest.lat > sw!.lat) &&
+                                                                       (d.properties.bounds.southWest.lng > sw!.lng));
 
             setGeoJsonData({type: 'FeatureCollection', features: tracts} as GeoJSON.FeatureCollection);
 
-            map.flyTo(county.latlng, county.zoom);
+            mapRef.current.flyTo(county.latlng, county.zoom);
         }
 
     }, [geoJsonId]);
@@ -156,6 +150,8 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
 
     }, [geoJsonBoundaryData, geoJsonData]);
 
+    console.log(geoJsonId);
+
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
@@ -170,6 +166,8 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
 export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
                             { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
 
+    const mapRef = useRef(null);
+
     return(
         <MapContainer
             className="home-map"
@@ -179,12 +177,13 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
             maxZoom={18}
             scrollWheelZoom={false}
             zoomControl={false}
+            ref={mapRef}
             >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
-            <LayersComponent geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
+            <LayersComponent mapRef={mapRef} geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
                              setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
