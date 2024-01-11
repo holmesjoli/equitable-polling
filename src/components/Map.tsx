@@ -99,10 +99,6 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
 
             map.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level, otherwise react finds the center of the world map in Africa
 
-            // Update boundary and interactive layer
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
-
         } else if (geoJsonId.type === "State") {
 
             const state = stateData?.features.find(d => d.properties?.geoid === geoJsonId.geoid)?.properties as State;
@@ -111,11 +107,7 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             setGeoJsonBoundaryData(stateData);
             setGeoJsonData(countyData);
 
-            map.flyTo(state.latlng, state.zoom); // zooms to state level
-
-            // Update boundary and interactive layer
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+            map.flyTo(state.latlng, state.zoom); // zooms to state leve;
             
         } else {
 
@@ -130,18 +122,10 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             const county = countyData?.features.find(d => d.properties?.selected)?.properties as County;
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
-
-            console.log(county);
-
             const tracts = unnestedTracts(county.stfp);
             setGeoJsonData(tracts);
 
-            console.log(tracts);
             map.flyTo(county.latlng, county.zoom);
-
-             // Update interactive layer
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
-            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
         }
 
     }, [geoJsonId]);
