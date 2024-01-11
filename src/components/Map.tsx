@@ -13,7 +13,7 @@ import { State, County, GeoID } from "../utils/Types";
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { unnestedTracts, countyData, stateData } from "../utils/DM";
+import { getTracts, countyData, stateData } from "../utils/DM";
 
 // Styles 
 import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
@@ -39,7 +39,7 @@ function updateTracts(mapRef: any, county: County, setGeoJsonData: any) {
 
     const tracts: any[] = [];
 
-    unnestedTracts(county.stfp).features.forEach((d: any) => {
+    getTracts(county.stfp).features.forEach((d: any) => {
 
         var p1 = point(d.properties.bounds.southWest.lat, d.properties.bounds.southWest.lng),
             p2 = point(d.properties.bounds.northEast.lat, d.properties.bounds.northEast.lng),
@@ -117,6 +117,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     useEffect(() => {
 
+        // United State
         if (geoJsonId.type === "US") {
             setSelectedState(defaultState);
             setSelectedCounty(defaultCounty);
@@ -125,6 +126,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom); // zooms to country level, otherwise react finds the center of the world map in Africa
 
+        // Selected State
         } else if (geoJsonId.type === "State") {
 
             const state = stateData?.features.find(d => d.properties?.geoid === geoJsonId.geoid)?.properties as State;
@@ -134,7 +136,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setGeoJsonData(countyData);
 
             mapRef.current.flyTo(state.latlng, state.zoom); // zooms to state level
-            
+        
+        // Selected County
         } else {
 
             let county = {} as County;
@@ -169,18 +172,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
             geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
         } else {
-      
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
 
-    }, [geoJsonBoundaryData, geoJsonData]);
+        if (showVD) {
+            geoJsonVdLayer.current?.clearLayers().addData(vdData);
+        }
 
-    // useEffect(() => {
-    //     if (geoJsonVdLayer.current) {
-    //         geoJsonVdLayer.current?.clearLayers().addData(vdData);
-    //     }
-    // }, [vdData]);
+    }, [geoJsonBoundaryData, geoJsonData]);
 
     console.log(showVD);
     return(

@@ -8,7 +8,7 @@ export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string
 
 export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst: string, name: string, geoid: string};
 
-export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string, tracts: GeoJSON.FeatureCollection, 
+export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string,
                       vtdsts: GeoJSON.FeatureCollection, latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds};
 
 export type State = {type: string, stfp: string, geoid: string, name: string, counties: GeoJSON.FeatureCollection, latlng: LatLng, zoom: number};

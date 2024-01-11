@@ -10,10 +10,10 @@ import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
 // Processed Data
-export const stateData = formattedStateGeoJSON();
-export const countyData = unnestedCounties();
+export const stateData = getStates();
+export const countyData = getCounties();
 
-function formattedStateGeoJSON() {
+function getStates() {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
@@ -22,27 +22,6 @@ function formattedStateGeoJSON() {
         const countyFeatures = [] as GeoJSON.Feature[];
 
         (countyGeo as any[]).filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
-
-            const tractFeatures = [] as GeoJSON.Feature[];
-
-            (tractGeo as any[]).filter((c: any) => (c.cntyfp === d.cntyfp) && (c.stfp === d.stfp)).forEach((c: any) => {
-
-                tractFeatures.push({type: 'Feature', 
-                    properties: {type: 'Tract',
-                                 descr: 'Census tract',
-                                 name: c.name,
-                                 stfp: c.stfp, 
-                                 cntyfp: c.cntyfp,
-                                 tractfp: c.tractfp,
-                                 geoid: c.geoid,
-                                 latlng: {lat: c.Y, lng: c.X} as LatLng,
-                                 zoom: 12,
-                                 bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
-                                          southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as Tract, 
-                    geometry: c.geometry as GeoJSON.Geometry})
-            });
-
-            const tractData = {type: 'FeatureCollection', features: tractFeatures} as GeoJSON.FeatureCollection;
 
             const vdFeatures = [] as GeoJSON.Feature[];
 
@@ -68,7 +47,6 @@ function formattedStateGeoJSON() {
                              stfp: d.stfp,
                              geoid: d.geoid,
                              latlng: {lat: d.Y, lng: d.X} as LatLng,
-                             tracts: tractData,
                              vtdsts: vdData,
                              zoom: 10,
                              selected: false,
@@ -95,7 +73,7 @@ function formattedStateGeoJSON() {
 }
 
 // Returns an unnested list of all the counties for the project
-export function unnestedCounties() {
+export function getCounties() {
 
     const features: Feature[] = [];
 
@@ -110,16 +88,26 @@ export function unnestedCounties() {
 }
 
 // Returns an unnested list of all the counties for the project
-export function unnestedTracts(stfp: string) {
+export function getTracts(stfp: string) {
 
     const features: Feature[] = [];
 
-    countyData.features
-    .filter((d: any) => d.properties.stfp === stfp)
-    .forEach((e: any) => {
-        e.properties.tracts.features.forEach((d: any) => {
-            features.push(d);
-        });
+    (tractGeo as any[])
+        .filter((c: any) => c.stfp === stfp)
+        .forEach((c: any) => {
+            features.push({type: 'Feature', 
+                properties: {type: 'Tract',
+                            descr: 'Census tract',
+                            name: c.name,
+                            stfp: c.stfp, 
+                            cntyfp: c.cntyfp,
+                            tractfp: c.tractfp,
+                            geoid: c.geoid,
+                            latlng: {lat: c.Y, lng: c.X} as LatLng,
+                            zoom: 12,
+                            bounds: {northEast: {lat: c.ymax, lng: c.xmin} as LatLng,
+                                    southWest: {lat: c.ymin, lng: c.xmax} as LatLng } as Bounds} as Tract, 
+                geometry: c.geometry as GeoJSON.Geometry})
     });
 
     return {type: 'FeatureCollection', 

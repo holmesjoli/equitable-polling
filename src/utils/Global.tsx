@@ -31,7 +31,6 @@ export const defaultCounty = {'type': 'County',
                               'name':'',
                               'cntyfp':'',
                               'geoid':'',
-                              'tracts': {} as GeoJSON.FeatureCollection,
                               'vtdsts': {} as GeoJSON.FeatureCollection,
                               latlng: {lat: 0, lng: 0}} as County;
 
