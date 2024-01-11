@@ -59,11 +59,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-    const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
+    // const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
-    const geoJsonVdLayer = useRef<L.GeoJSON<any, any>>(null);
+    // const geoJsonVdLayer = useRef<L.GeoJSON<any, any>>(null);
 
     // Functions ---------------------------------------------------
 
@@ -125,11 +125,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
                 .on('zoomend', () => {
                     setGeoJsonData(stateData);
-                    setVdData({} as GeoJSON.FeatureCollection);
+                    // setVdData({} as GeoJSON.FeatureCollection);
                 })
                 .on('moveend', () => {
                     setGeoJsonData(stateData);
-                    setVdData({} as GeoJSON.FeatureCollection);
+                    // setVdData({} as GeoJSON.FeatureCollection);
                 });
 
         // Selected State
@@ -143,11 +143,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
             .on('zoomend', () => {
                 setGeoJsonData(countyData);
-                setVdData({} as GeoJSON.FeatureCollection);
+                // setVdData({} as GeoJSON.FeatureCollection);
             })
             .on('moveend', () => {
                 setGeoJsonData(countyData);
-                setVdData({} as GeoJSON.FeatureCollection);
+                // setVdData({} as GeoJSON.FeatureCollection);
             }); 
         
         // Selected County
@@ -172,11 +172,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 .flyTo(county.latlng, county.zoom) // zooms to county level
                 .on('zoomend', () => {
                     setGeoJsonData(updateTracts(mapRef, county));
-                    setVdData(county.vtdsts);
+                    // setVdData(county.vtdsts);
                 })
                 .on('moveend', () => {
                     setGeoJsonData(updateTracts(mapRef, county));
-                    setVdData(county.vtdsts);
+                    // setVdData(county.vtdsts);
                 });
         }
 
@@ -195,16 +195,16 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonBoundaryData, geoJsonData]);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (showVD) {
-            geoJsonVdLayer.current?.clearLayers().addData(vdData);
-        } else {
-            geoJsonVdLayer.current?.clearLayers();
-        }   
-    }, [geoJsonBoundaryData, geoJsonData, showVD]);
+    //     if (showVD) {
+    //         geoJsonVdLayer.current?.clearLayers().addData(vdData);
+    //     } else {
+    //         geoJsonVdLayer.current?.clearLayers();
+    //     }   
+    // }, [geoJsonBoundaryData, geoJsonData, showVD]);
 
-    console.log(vdData, showVD);
+    // console.log(vdData, showVD);
 
     return(
         <div className="Layers">
@@ -212,7 +212,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             <FeatureGroup>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
-                {showVD ? <GeoJSON data={vdData} style={layersStyle.vd} ref={geoJsonVdLayer} key="geoJsonVD"/> : null}
+                {/* {showVD ? <GeoJSON data={vdData} style={layersStyle.vd} ref={geoJsonVdLayer} key="geoJsonVD"/> : null} */}
             </FeatureGroup>
         </div>
     )
