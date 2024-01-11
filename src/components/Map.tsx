@@ -1,6 +1,6 @@
 // Libraries
 import { useEffect, useMemo, useState, useRef } from "react";
-import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, Rectangle, FeatureGroup } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, Rectangle, FeatureGroup } from "react-leaflet";
 import { point, bounds } from 'leaflet';
 
 // Components
@@ -58,12 +58,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
+    const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
-
-    // const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>(selectedCounty!.vtdsts);
     const geoJsonVdLayer = useRef<L.GeoJSON<any, any>>(null);
+
     // console.log(vdData);
 
     // Functions ---------------------------------------------------
@@ -189,6 +189,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             <FeatureGroup>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
+                {showVD ? <GeoJSON data={vdData} style={layersStyle.vd} ref={geoJsonVdLayer} key="geoJsonVD"/> : null}
             </FeatureGroup>
         </div>
     )
