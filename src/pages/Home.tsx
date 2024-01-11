@@ -65,7 +65,7 @@ export default function Home({}): JSX.Element {
                        setGeoJsonId={setGeoJsonId}/>
             <Map geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                 selectedState={selectedState} setSelectedState={setSelectedState} 
-                selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
+                setSelectedCounty={setSelectedCounty} 
                 showPolls={showPolls} setShowPolls={setShowPolls}
                 showVD={showVD} setShowVD={setShowVD}/>
         </Main>

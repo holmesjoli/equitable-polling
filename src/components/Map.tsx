@@ -29,8 +29,8 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
-function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                         { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
+function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                         { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
     const map = useMap();
 
@@ -158,8 +158,8 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
 
     return(
         <MapContainer
@@ -177,7 +177,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
             />
             <LayersComponent geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
-                             selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
+                             setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
                              showVD={showVD} setShowVD={setShowVD}
                              />
