@@ -112,15 +112,20 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
             
         } else {
 
+            let county = {} as County;
+
             countyData.features.forEach((d: GeoJSON.Feature) => {
                 if (d.properties!.geoid === geoJsonId.geoid) {
                     d.properties!.selected = true;
+                    county = d.properties as County;
                 } else {
                     d.properties!.selected = false;
                 }
             });
 
-            const county = countyData?.features.find(d => d.properties?.selected)?.properties as County;
+            console.log(countyData.features.find(d => d.properties?.selected));
+
+            // const county = countyData?.features.find(d => d.properties?.selected)?.properties as County;
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
             const tracts = unnestedTracts(county.stfp);
@@ -133,15 +138,16 @@ function LayersComponent({ geoJsonId, setGeoJsonId, selectedState, setSelectedSt
 
     useEffect(() => {
 
-        if (geoJsonId.type === 'Tract') {
-            // Update boundary and interactive layer
+        // Update boundary and interactive layer
+        if (geoJsonId.type === 'County') {
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
             geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
         } else {
-            // Update boundary and interactive layer
+      
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
+
     }, [geoJsonBoundaryData, geoJsonData]);
 
     return(
