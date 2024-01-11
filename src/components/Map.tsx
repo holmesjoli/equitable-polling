@@ -93,7 +93,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     function onClickFeature(event: any) {
         const layer = event.target;
         const properties = layer.feature.properties;
-        setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
+
+        if (properties.type !== "Tract") {
+            setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
+        }        
     }
 
     // React Hooks ---------------------------------------------------
