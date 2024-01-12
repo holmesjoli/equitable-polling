@@ -12,6 +12,8 @@ import { Feature } from "geojson";
 // Processed Data
 export const stateData = getStates();
 export const countyData = getCounties();
+export const tractData = getTracts();
+export const vdData = getVd();
 
 function getStates() {
 
@@ -23,22 +25,6 @@ function getStates() {
 
         (countyGeo as any[]).filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
 
-            const vdFeatures = [] as GeoJSON.Feature[];
-
-            (vdGeo as any[]).filter((c: any) => c.cntyfp === d.cntyfp).forEach((c: any) => {
-
-                vdFeatures.push({type: 'Feature', 
-                    properties: {type: 'Voting district',
-                                 name: c.name,
-                                 stfp: c.stfp, 
-                                 cntyfp: c.cntyfp,
-                                 geoid: c.geoid,
-                                 vtdst: c.vtdst} as VotingDistrict, 
-                    geometry: c.geometry as GeoJSON.Geometry})
-            });
-
-            const vdData = {type: 'FeatureCollection', features: vdFeatures} as GeoJSON.FeatureCollection;
-
             countyFeatures.push({type: 'Feature', 
                 properties: {type: 'County',
                              descr: 'County',
@@ -47,7 +33,6 @@ function getStates() {
                              stfp: d.stfp,
                              geoid: d.geoid,
                              latlng: {lat: d.Y, lng: d.X} as LatLng,
-                             vtdsts: vdData,
                              zoom: 10,
                              selected: false,
                              bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
@@ -88,12 +73,11 @@ export function getCounties() {
 }
 
 // Returns a feature collection of all the tracts for the selected project states
-export function getTracts(stfp: string) {
+export function getTracts() {
 
     const features: Feature[] = [];
 
     (tractGeo as any[])
-        .filter((c: any) => c.stfp === stfp)
         .forEach((c: any) => {
             features.push({type: 'Feature', 
                 properties: {type: 'Tract',
@@ -105,6 +89,7 @@ export function getTracts(stfp: string) {
                             geoid: c.geoid,
                             latlng: {lat: c.Y, lng: c.X} as LatLng,
                             zoom: 12,
+                            selected: false,
                             bounds: {northEast: {lat: c.ymax, lng: c.xmin} as LatLng,
                                     southWest: {lat: c.ymin, lng: c.xmax} as LatLng } as Bounds} as Tract, 
                 geometry: c.geometry as GeoJSON.Geometry})
@@ -114,3 +99,27 @@ export function getTracts(stfp: string) {
             features: features} as GeoJSON.FeatureCollection;
 }
 
+export function getVd() {
+
+    const features: Feature[] = [];
+
+    (vdGeo as any[]).forEach((c: any) => {
+
+        features.push({type: 'Feature', 
+            properties: {type: 'Voting district',
+                         descr: 'Voting district',
+                         name: c.name,
+                         stfp: c.stfp, 
+                         cntyfp: c.cntyfp,
+                         geoid: c.geoid,
+                         vtdst: c.vtdst,
+                         selected: false,
+                         latlng: {lat: c.Y, lng: c.X} as LatLng,
+                         bounds: {northEast: {lat: c.ymax, lng: c.xmin} as LatLng,
+                                  southWest: {lat: c.ymin, lng: c.xmax} as LatLng } as Bounds} as VotingDistrict, 
+            geometry: c.geometry as GeoJSON.Geometry})
+    });
+
+    return {type: 'FeatureCollection', 
+            features: features} as GeoJSON.FeatureCollection;
+}

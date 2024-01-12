@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 
 export const theme = {
     fontSize: 13,
-    grey: {primary: '#757575', secondary: '#C6C6C6', teriary: '#EAEAEA'},
+    grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#047391',
     fontFamily: 'Inter'
@@ -13,8 +13,8 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                             outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
                             highlight: { color: theme.focusColor, fillColor: theme.focusColor},
                             highlightTract: { color: theme.focusColor, fillColor: theme.focusColor, fillOpacity: .5},
-                            greyOut: { color: theme.grey.teriary, fillOpacity: 0.75, weight: 0},
-                            vd: { color: theme.focusColor,  fillColor: theme.focusColor, fillOpacity: .75, weight: 1 }
+                            greyOut: { color: theme.grey.tertiary, fillOpacity: 0.75, weight: 0},
+                            vd: { color: theme.focusColor, fillOpacity: 0, weight: 1 }
                           }
 
 // Scales
@@ -35,15 +35,43 @@ function getColor(d: any) {
 }
 
 function getWeight(d: any) {
-    return d ? 4 : 1;
+    return d ? 3 : 1;
 }
 
-export function highlightSelectedStyle(feature: any) {
+function getStrokeOpacity(d: any) {
+  return d ? 1 : .25;
+}
+
+function getFillOpacity(d: any) {
+  return d ? .3 : .1;
+}
+
+export function highlightSelectedCounty(feature: any) {
     return {
       color: theme.grey.primary,
       fillColor: getColor(feature.properties!.selected),
-      weight: getWeight(feature.properties!.selected),
-      opacity: 1,
-      fillOpacity: .15
+      weight: 3,
+      opacity: getStrokeOpacity(feature.properties!.selected),
+      fillOpacity: getFillOpacity(feature.properties!.selected)
     };
+}
+
+export function tractStyle(feature: any) {
+
+  return {
+    color: theme.grey.primary,
+    fillColor: theme.backgroundFill,
+    weight: 1,
+    opacity: getStrokeOpacity(feature.properties!.selected),
+    fillOpacity: 0
+  };
+}
+
+export function vdStyle(feature: any) {
+  return {
+    color: theme.focusColor,
+    weight: 1,
+    opacity: getStrokeOpacity(feature.properties!.selected),
+    fillOpacity: 0
+  };
 }
