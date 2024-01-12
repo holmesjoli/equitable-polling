@@ -38,17 +38,21 @@ function getWeight(d: any) {
     return d ? 3 : 1;
 }
 
-function getOpacity(d: any) {
+function getStrokeOpacity(d: any) {
   return d ? 1 : .25;
 }
 
-export function highlightSelectedStyle(feature: any) {
+function getFillOpacity(d: any) {
+  return d ? .3 : .1;
+}
+
+export function highlightSelectedCounty(feature: any) {
     return {
       color: theme.grey.primary,
       fillColor: getColor(feature.properties!.selected),
-      weight: getWeight(feature.properties!.selected),
-      opacity: 1,
-      fillOpacity: .15
+      weight: 3,
+      opacity: getStrokeOpacity(feature.properties!.selected),
+      fillOpacity: getFillOpacity(feature.properties!.selected)
     };
 }
 
@@ -58,7 +62,7 @@ export function tractStyle(feature: any) {
     color: theme.grey.primary,
     fillColor: theme.backgroundFill,
     weight: 1,
-    opacity: getOpacity(feature.properties!.selected),
+    opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: 0
   };
 }
@@ -67,7 +71,7 @@ export function vdStyle(feature: any) {
   return {
     color: theme.focusColor,
     weight: 1,
-    opacity: getOpacity(feature.properties!.selected),
+    opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: 0
   };
 }

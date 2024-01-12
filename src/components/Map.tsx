@@ -17,7 +17,7 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { stateData, countyData, tractData, vdData } from "../utils/DM";
 
 // Styles 
-import { layersStyle, highlightSelectedStyle, vdStyle, tractStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle } from "../utils/Theme";
 
 export function mouseOut(event: any) {
     var layer = event.target;
@@ -236,12 +236,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     useEffect(() => {
         // Update boundary and interactive layer
         if (geoJsonId.type === 'County') {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
             geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
         } else {
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
+
     }, [geoJsonBoundaryData, geoJsonData]);
 
     // Updates the voting districts
