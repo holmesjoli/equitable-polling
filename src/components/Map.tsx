@@ -86,13 +86,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Functions ---------------------------------------------------
 
-    // function mouseOverVD(event: any) {
-    //     var layer = event.target;
-    //     layer.setStyle(layersStyle.highlightTract);
-    //     var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-    //     Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
-    // }
-
     function mouseOverTract(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.highlightTract);
@@ -229,8 +222,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
 
     }, [geoJsonId]);
-
-    console.log(geoJsonData.features.filter((d: any) => d.properties.selected));
 
     // Updates main geography and main boundary
     useEffect(() => {
