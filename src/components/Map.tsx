@@ -17,7 +17,7 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { stateData, countyData, tractData, vdData } from "../utils/DM";
 
 // Styles 
-import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedStyle, vdStyle } from "../utils/Theme";
 
 export function mouseOut(event: any) {
     var layer = event.target;
@@ -48,11 +48,11 @@ function filterByBounds(mapRef: any, data: any) {
             p2 = point(d.properties.bounds.northEast.lat, d.properties.bounds.northEast.lng),
             tractBounds = bounds(p1, p2);
 
-        if (mapBounds2.overlaps(tractBounds)) {
+        if (mapBounds2.intersects(tractBounds)) {
             features.push(d);
         }
     });
-       
+
     return {type: 'FeatureCollection', features: features} as GeoJSON.FeatureCollection;
 }
 
@@ -169,11 +169,20 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         } else {
             let county = {} as County;
 
-            // Updates selected state which is need to style the county and make it distinct from surrounding counties
+            // Updates selected county which is need to style the county and make it distinct from surrounding counties
             countyData.features.forEach((d: GeoJSON.Feature) => {
                 if (d.properties!.geoid === geoJsonId.geoid) {
                     d.properties!.selected = true;
                     county = d.properties as County;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
+            // Updates selected county which is need to style the county and make it distinct from surrounding counties
+            vdData.features.forEach((d: GeoJSON.Feature) => {
+                if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
+                    d.properties!.selected = true;
                 } else {
                     d.properties!.selected = false;
                 }
@@ -196,10 +205,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonId]);
 
-    // console.log(vdData);
-
-    console.log(geoJsonData);
-
     useEffect(() => {
 
         // Update boundary and interactive layer
@@ -213,13 +218,22 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonBoundaryData, geoJsonData]);
 
+    useEffect(() => {
+        if (showVD) {
+            console.log(geoJsonVdData.features.filter((d: any) => d.properties!.selected));
+            geoJsonVdRef.current?.clearLayers().addData(geoJsonVdData).setStyle(vdStyle);
+        } else {
+            geoJsonVdRef.current?.clearLayers().addData({} as GeoJSON.FeatureCollection);
+        }
+    }, [geoJsonVdData]);
+
     return(
         <div className="Layers">
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
             <FeatureGroup>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
-                {showVD ? <GeoJSON data={geoJsonVdData} style={layersStyle.vd} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
+                {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
             </FeatureGroup>
         </div>
     )

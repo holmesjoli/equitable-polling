@@ -35,7 +35,11 @@ function getColor(d: any) {
 }
 
 function getWeight(d: any) {
-    return d ? 4 : 1;
+    return d ? 3 : 1;
+}
+
+function getVdOpacity(d: any) {
+  return d ? 1 : .35;
 }
 
 export function highlightSelectedStyle(feature: any) {
@@ -46,4 +50,13 @@ export function highlightSelectedStyle(feature: any) {
       opacity: 1,
       fillOpacity: .15
     };
+}
+
+export function vdStyle(feature: any) {
+  return {
+    color: theme.focusColor,
+    weight: 1,
+    opacity: getVdOpacity(feature.properties!.selected),
+    fillOpacity: 0
+  };
 }
