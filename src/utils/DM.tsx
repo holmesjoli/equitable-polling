@@ -107,12 +107,14 @@ export function getVd() {
 
         features.push({type: 'Feature', 
             properties: {type: 'Voting district',
+                         descr: 'Voting district',
                          name: c.name,
                          stfp: c.stfp, 
                          cntyfp: c.cntyfp,
                          geoid: c.geoid,
                          vtdst: c.vtdst,
                          selected: false,
+                         latlng: {lat: c.Y, lng: c.X} as LatLng,
                          bounds: {northEast: {lat: c.ymax, lng: c.xmin} as LatLng,
                                   southWest: {lat: c.ymin, lng: c.xmax} as LatLng } as Bounds} as VotingDistrict, 
             geometry: c.geometry as GeoJSON.Geometry})

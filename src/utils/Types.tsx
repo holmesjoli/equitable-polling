@@ -4,7 +4,8 @@ export type Bounds = {northEast: LatLng, southWest: LatLng};
 
 export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, zoom: number};
 
-export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean};
+export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, 
+                    geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean};
 
 export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst: string, name: string, geoid: string, bounds: Bounds};
 

@@ -39,7 +39,7 @@ function getWeight(d: any) {
 }
 
 function getVdOpacity(d: any) {
-  return d ? 1 : .35;
+  return d ? 1 : .25;
 }
 
 export function highlightSelectedStyle(feature: any) {

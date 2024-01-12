@@ -86,6 +86,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Functions ---------------------------------------------------
 
+    // function mouseOverVD(event: any) {
+    //     var layer = event.target;
+    //     layer.setStyle(layersStyle.highlightTract);
+    //     var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
+    //     Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
+    // }
+
     function mouseOverTract(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.highlightTract);
@@ -112,6 +119,16 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         });
         Tooltip.pointerOut();
     }
+
+    function onEachVD(_: any, layer: any) {
+
+        layer.on({
+          mouseover: mouseOverTract,
+          mouseout: mouseOutTract
+        });
+        Tooltip.pointerOut();
+    }
+
 
     function onClickFeature(event: any) {
         const layer = event.target;
@@ -233,7 +250,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             <FeatureGroup>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
-                {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
+                {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
             </FeatureGroup>
         </div>
     )

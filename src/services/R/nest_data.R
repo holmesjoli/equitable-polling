@@ -146,10 +146,14 @@ vd_geo <- lapply(stfp, function(st) {
     row.names(bbox) <- NULL
     
     df <- cbind(df, bbox)
+    
+    df <- df %>% 
+      bind_cols(df %>% 
+                  sf::st_centroid() %>% 
+                  sf::st_coordinates()) 
 
     return(df)
 }) %>% dplyr::bind_rows()
 
 exportJSON <- toJSON(vd_geo)
 write(exportJSON, "../data/processed/votingDistrictGeoJSON.json")
-
