@@ -14,7 +14,7 @@ import { State, County, GeoID } from "../utils/Types";
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { getTracts, countyData, stateData } from "../utils/DM";
+import { getTracts, countyData, stateData, vdData } from "../utils/DM";
 
 // Styles 
 import { layersStyle, highlightSelectedStyle } from "../utils/Theme";
@@ -61,9 +61,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
+    const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>(vdData);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
+    const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
 
     // Functions ---------------------------------------------------
 
@@ -177,19 +179,18 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonId]);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        // Update boundary and interactive layer
-        if (geoJsonId.type === 'County') {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
-            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
-        } else {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
-        }
+    //     // Update boundary and interactive layer
+    //     if (geoJsonId.type === 'County') {
+    //         geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
+    //         geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
+    //     } else {
+    //         geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
+    //         geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+    //     }
 
-    }, [geoJsonBoundaryData, geoJsonData]);
-
+    // }, [geoJsonBoundaryData, geoJsonData]);
 
     return(
         <div className="Layers">
@@ -197,6 +198,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             <FeatureGroup>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
+                <GeoJSON data={geoJsonVdData} style={layersStyle.vd} ref={geoJsonVdRef} key="geoJsonVD"/>
             </FeatureGroup>
         </div>
     )
