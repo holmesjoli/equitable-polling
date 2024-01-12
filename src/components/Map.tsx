@@ -17,7 +17,7 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { stateData, countyData, tractData, vdData } from "../utils/DM";
 
 // Styles 
-import { layersStyle, highlightSelectedStyle, vdStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedStyle, vdStyle, tractStyle } from "../utils/Theme";
 
 export function mouseOut(event: any) {
     var layer = event.target;
@@ -129,7 +129,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         Tooltip.pointerOut();
     }
 
-
     function onClickFeature(event: any) {
         const layer = event.target;
         const properties = layer.feature.properties;
@@ -197,6 +196,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             });
 
             // Updates selected county which is need to style the county and make it distinct from surrounding counties
+            tractData.features.forEach((d: GeoJSON.Feature) => {
+                if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
+                    d.properties!.selected = true;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
+            // Updates selected county which is need to style the county and make it distinct from surrounding counties
             vdData.features.forEach((d: GeoJSON.Feature) => {
                 if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
                     d.properties!.selected = true;
@@ -222,22 +230,23 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonId]);
 
-    useEffect(() => {
+    console.log(geoJsonData.features.filter((d: any) => d.properties.selected));
 
+    // Updates main geography and main boundary
+    useEffect(() => {
         // Update boundary and interactive layer
         if (geoJsonId.type === 'County') {
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
-            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
+            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
         } else {
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
-
     }, [geoJsonBoundaryData, geoJsonData]);
 
+    // Updates the voting districts
     useEffect(() => {
         if (showVD) {
-            console.log(geoJsonVdData.features.filter((d: any) => d.properties!.selected));
             geoJsonVdRef.current?.clearLayers().addData(geoJsonVdData).setStyle(vdStyle);
         } else {
             geoJsonVdRef.current?.clearLayers().addData({} as GeoJSON.FeatureCollection);
