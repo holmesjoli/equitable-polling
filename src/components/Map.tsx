@@ -179,18 +179,20 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonId]);
 
-    // useEffect(() => {
+    console.log(vdData);
 
-    //     // Update boundary and interactive layer
-    //     if (geoJsonId.type === 'County') {
-    //         geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
-    //         geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
-    //     } else {
-    //         geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-    //         geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
-    //     }
+    useEffect(() => {
 
-    // }, [geoJsonBoundaryData, geoJsonData]);
+        // Update boundary and interactive layer
+        if (geoJsonId.type === 'County') {
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedStyle);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(layersStyle.defaultTract); // Replaces geojson clickable elements with drilldown
+        } else {
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+        }
+
+    }, [geoJsonBoundaryData, geoJsonData]);
 
     return(
         <div className="Layers">
