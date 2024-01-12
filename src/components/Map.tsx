@@ -23,7 +23,7 @@ export function mouseOut(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.default);
     Tooltip.pointerOut();
-    d3.select(".Status .ComponentGroup .US span").attr("class", "");
+    d3.select(".Status .ComponentGroup span").attr("class", "");
 }
 
 export function mouseOutTract(event: any) {
@@ -79,7 +79,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         layer.setStyle(layersStyle.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${layer.feature.properties.name} ${layer.feature.properties.descr}</span>`);
-        d3.select(".Status .ComponentGroup .US span").attr("class", "focus");
+        d3.select(".Status .ComponentGroup span").attr("class", "focus");
     }
 
     function onEachFeature(_: any, layer: any) {

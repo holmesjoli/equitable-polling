@@ -36,10 +36,10 @@ export function ComponentGroupInner({title, children}: {title: string, children:
     )
 }
 
-export function ComponentGroup({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
+export function ComponentGroup({title, children, className=""}: {title: string, children: React.ReactNode, className?: string}):  JSX.Element {
 
     return(
-        <div className="ComponentGroup">
+        <div className={className + " ComponentGroupInner"}>
             <h3>{title}</h3>
             {children}
         </div>
