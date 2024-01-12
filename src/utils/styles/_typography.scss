@@ -83,7 +83,7 @@ a {
 a:hover,
 .focus {
   color: $appColorFocus;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 a:hover h3 {
@@ -97,6 +97,10 @@ img {
   max-width: 100%;
 }
 
-.Bold {
+.SemiBold {
   font-weight: 500;
+}
+
+.Bold {
+  font-weight: 600;
 }

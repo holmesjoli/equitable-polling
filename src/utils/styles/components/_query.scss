@@ -8,18 +8,26 @@
 
 .ComponentGroupInner {
     border-bottom: 1px solid #F4DFC8;
-    padding-top: $appPadding;
+    // padding-top: $appPadding;
+
+    h3 {
+        padding-top: 0.625rem;
+    }
 
     h4 {
         margin-bottom: .5rem;
+        padding-top: 0.625rem;
     }
+}
+
+.US.ComponentGroupInner {
+    border: none;   
 }
 
 .ComponentGroup {
     margin: $appMargin;
 }
 
-.Status,
 .Query {
-    padding: $appPadding;
+    padding: 1rem;
 }
