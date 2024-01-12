@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 
 export const theme = {
     fontSize: 13,
-    grey: {primary: '#757575', secondary: '#C6C6C6', teriary: '#EAEAEA'},
+    grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#047391',
     fontFamily: 'Inter'
@@ -13,7 +13,7 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                             outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
                             highlight: { color: theme.focusColor, fillColor: theme.focusColor},
                             highlightTract: { color: theme.focusColor, fillColor: theme.focusColor, fillOpacity: .5},
-                            greyOut: { color: theme.grey.teriary, fillOpacity: 0.75, weight: 0},
+                            greyOut: { color: theme.grey.tertiary, fillOpacity: 0.75, weight: 0},
                             vd: { color: theme.focusColor, fillOpacity: 0, weight: 1 }
                           }
 
