@@ -131,10 +131,25 @@ vd_geo <- lapply(stfp, function(st) {
              name = NAME20) %>% 
       select(stfp, cntyfp, vtdst, geoid, name, geometry) %>% 
       mutate(year = 2020)
+    
+    bbox <- lapply(1:nrow(df), function(x) {
+      bb <- df %>% 
+        slice(x) %>% 
+        sf::st_bbox()
+      
+      return(data.frame(xmin = bb[1],
+                       xmax = bb[3],
+                       ymin = bb[2],
+                       ymax = bb[4]))
+    }) %>% bind_rows()
+    
+    row.names(bbox) <- NULL
+    
+    df <- cbind(df, bbox)
 
     return(df)
 }) %>% dplyr::bind_rows()
 
-exportJSON <- toJSON(df)
+exportJSON <- toJSON(vd_geo)
 write(exportJSON, "../data/processed/votingDistrictGeoJSON.json")
 

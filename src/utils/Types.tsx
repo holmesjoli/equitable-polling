@@ -6,7 +6,7 @@ export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, 
 
 export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, geoid: string, latlng: LatLng, zoom: number, bounds: Bounds};
 
-export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst: string, name: string, geoid: string};
+export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst: string, name: string, geoid: string, bounds: Bounds};
 
 export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string,
                       vtdsts: GeoJSON.FeatureCollection, latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds};

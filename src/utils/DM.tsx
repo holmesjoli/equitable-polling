@@ -12,6 +12,7 @@ import { Feature } from "geojson";
 // Processed Data
 export const stateData = getStates();
 export const countyData = getCounties();
+export const tractData = getTracts();
 export const vdData = getVd();
 
 function getStates() {
@@ -89,12 +90,11 @@ export function getCounties() {
 }
 
 // Returns a feature collection of all the tracts for the selected project states
-export function getTracts(stfp: string) {
+export function getTracts() {
 
     const features: Feature[] = [];
 
     (tractGeo as any[])
-        .filter((c: any) => c.stfp === stfp)
         .forEach((c: any) => {
             features.push({type: 'Feature', 
                 properties: {type: 'Tract',
@@ -127,7 +127,9 @@ export function getVd() {
                          stfp: c.stfp, 
                          cntyfp: c.cntyfp,
                          geoid: c.geoid,
-                         vtdst: c.vtdst} as VotingDistrict, 
+                         vtdst: c.vtdst,
+                         bounds: {northEast: {lat: c.ymax, lng: c.xmin} as LatLng,
+                                  southWest: {lat: c.ymin, lng: c.xmax} as LatLng } as Bounds} as VotingDistrict, 
             geometry: c.geometry as GeoJSON.Geometry})
     });
 
