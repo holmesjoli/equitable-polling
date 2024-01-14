@@ -8,6 +8,7 @@
     margin-right: calc(15px + 1rem);
     background-color: $appBackgroundTransparent;
     padding: $appPadding;
+    box-shadow: $boxShadow;
 }
 
 .leaflet-control-zoom-out, 
@@ -47,10 +48,6 @@
     margin-bottom: 0;
 }
 
-.leaflet-bar a,
-.leaflet-container a {
-    color: $appColor;
-}
 .leaflet-control-container a:hover {
     font-weight: 400;
 }
