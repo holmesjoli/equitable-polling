@@ -1,5 +1,6 @@
 .leaflet-container {
     font-family: $baseFont;
+    background-color: $appBackground;
 }
 
 .leaflet-control-zoom.leaflet-bar.leaflet-control {
@@ -10,19 +11,45 @@
 .leaflet-control-zoom-out, 
 .leaflet-control-zoom-in {
     transform: rotate(-90deg);
-    // padding: 2px;
+
     margin: 4px;
     border: 1px solid $appBorderColor;
+    font-family: $baseFont;
+    font: normal 16px $baseFont;
+}
+
+.leaflet-touch .leaflet-control-zoom-out,
+.leaflet-touch .leaflet-control-zoom-in {
+    font-size: 16px;
 }
 
 .leaflet-container .leaflet-control-attribution {
     margin-right: calc(1rem);
+    opacity: .6;
 }
 
-.leaflet-bar a {
-    border-bottom: none;
+.leaflet-bar a,
+.leaflet-bar a:last-child {
+    border-bottom: 1px solid $appBorderColor;
 }
 
 .leaflet-touch .leaflet-bar {
     border: none;
+}
+
+.leaflet-bottom .leaflet-control {
+    margin-bottom: 0;
+}
+
+.leaflet-bar a,
+.leaflet-container a {
+    color: $appColor;
+}
+.leaflet-control-container a:hover {
+    font-weight: 400;
+}
+
+.leaflet-bar a:hover {
+    background-color: $appBackground;
+    border-color: $appColor;
 }
