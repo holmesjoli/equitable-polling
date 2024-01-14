@@ -6,6 +6,7 @@ import * as d3 from 'd3';
 import { ComponentGroupInner } from "./Query";
 import { fillColorScale, strokeColorScale, rScale, theme } from "../utils/Theme";
 
+const equityLegendId = 'Equity-Legend';
 const sizeLegendId = 'Size-Legend';
 const colorLegendId = 'Color-Legend';
 const width = 200;
@@ -22,77 +23,76 @@ const colorDataState = [{'overall': 'increase', 'label': 'Increase of more than 
                         {'overall': 'decrease', 'label': "Decrease of 4 to 10", id: '-2' },
                         {'overall': 'decrease', 'label': "Decrease of more than 10", id: '-3' }];
 
-
 const colorDataCounty = [{'overall': 'added', 'label': 'Added', id: '3' },
                         {'overall': 'nochange', 'label': "No change", id: '0' },
                         {'overall': 'decrease', 'label': "Removed", id: '-3' }];
 
 function initLegend(selector: string) {
-    d3.select(`.Legend #${selector}`)
-      .append('svg')
-      .attr('width', width);
+  d3.select(`.Legend #${selector}`)
+    .append('svg')
+    .attr('width', width);
 }
 
 function legendHeight(data: any[], margin: number = 0) {
-    const height = margin + (data.length) * 24;
-    return height;
+  const height = margin + (data.length) * 24;
+  return height;
 }
 
 function initSizeLegend() {
 
-    const data = [{'rSize': 2, 'label': '0' },
-                  {'rSize': 5, 'label': "Between 1 and 5" },
-                  {'rSize': 15, 'label': "Between 15 and 30" },
-                  {'rSize': 30, 'label': "Greater than 30" }];
+  const data = [{'rSize': 2, 'label': '0' },
+                {'rSize': 5, 'label': "Between 1 and 5" },
+                {'rSize': 15, 'label': "Between 15 and 30" },
+                {'rSize': 30, 'label': "Greater than 30" }];
 
-    initLegend(sizeLegendId);
-  
-    const svg = d3.select(`#${sizeLegendId} svg`)
-      .attr('height', legendHeight(data, 15));
+  initLegend(sizeLegendId);
 
-      svg
-      .selectAll('path')
-      .data(data, (d: any) => d.rSize)
-      .join(
-        enter => enter
-          .append('circle')
-          .attr('r', d => rScale(d.rSize))
-          .attr('transform', function (d, i) {
+  const svg = d3.select(`#${sizeLegendId} svg`)
+    .attr('height', legendHeight(data, 15));
 
-            let x = data.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
+  svg
+  .selectAll('path')
+  .data(data, (d: any) => d.rSize)
+  .join(
+    enter => enter
+      .append('circle')
+      .attr('r', d => rScale(d.rSize))
+      .attr('transform', function (d, i) {
 
-            return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.rSize) + 8) + ')';
-          })
-          .attr('fill', theme.grey.secondary)
-          .attr("stroke", theme.grey.primary)
-          .attr('stroke-width', 1)
-        //   ,
-        // update => update
-        //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
-        // exit => exit.remove()
-      );
+        let x = data.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
 
-    svg
-      .selectAll('text')
-      .data(data, (d: any) => d.rSize)
-      .join(
-        enter => enter
-          .append('text')
-          .attr('x', textStart)
-          .attr('y', function(d, i) { 
+        return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.rSize) + 8) + ')';
+      })
+      .attr('fill', theme.grey.secondary)
+      .attr("stroke", theme.grey.primary)
+      .attr('stroke-width', 1)
+    //   ,
+    // update => update
+    //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
+    // exit => exit.remove()
+  );
 
-            let x = data.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
-            
-            return i * 16 + x + rScale(d.rSize) + 8})
-          .text(d => d.label)
-          .attr('font-size', theme.fontSize)
-          .attr('fill', theme.grey.primary)
-          .attr('dominant-baseline', 'middle')
-          // ,
-        // update => update
-        //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
-        // exit => exit.remove()
-      );
+  svg
+    .selectAll('text')
+    .data(data, (d: any) => d.rSize)
+    .join(
+      enter => enter
+        .append('text')
+        .attr('x', textStart)
+        .attr('y', function(d, i) { 
+
+          let x = data.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
+          
+          return i * 16 + x + rScale(d.rSize) + 8})
+        .text(d => d.label)
+        .attr('font-size', theme.fontSize)
+        .attr('fill', theme.grey.primary)
+        .attr('dominant-baseline', 'middle')
+        // ,
+      // update => update
+      //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
+      // exit => exit.remove()
+    );
 }
 
 function initColorLegend(data: any) {
@@ -102,24 +102,24 @@ function initColorLegend(data: any) {
   const svg = d3.select(`#${colorLegendId} svg`)
     .attr('height', legendHeight(data));
 
-    svg
-    .selectAll('path')
-    .data(data, (d: any) => d.rSize)
-    .join(
-      enter => enter
-        .append('circle')
-        .attr('r', 6)
-        .attr('transform', function (d, i) {
-          return 'translate(' + circleStart + ', ' + (i * 23 + 15) + ')';
-        })
-        .attr('fill', (d: any) => fillColorScale(d.id) as string) // Add type assertion
-        .attr("stroke", (d: any) => strokeColorScale(d.overall) as string) // Add type assertion
-        .attr('stroke-width', 1)
-      //   ,
-      // update => update
-      //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
-      // exit => exit.remove()
-    );
+  svg
+  .selectAll('path')
+  .data(data, (d: any) => d.rSize)
+  .join(
+    enter => enter
+      .append('circle')
+      .attr('r', 6)
+      .attr('transform', function (d, i) {
+        return 'translate(' + circleStart + ', ' + (i * 23 + 15) + ')';
+      })
+      .attr('fill', (d: any) => fillColorScale(d.id) as string) // Add type assertion
+      .attr("stroke", (d: any) => strokeColorScale(d.overall) as string) // Add type assertion
+      .attr('stroke-width', 1)
+    //   ,
+    // update => update
+    //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
+    // exit => exit.remove()
+  );
 
   svg
     .selectAll('text')
@@ -140,20 +140,26 @@ function initColorLegend(data: any) {
 
 }
 
+function EquityType () {
+  return (
+    <div id={equityLegendId}></div>
+  );
+}
+
 function SizeTypeState () {
-    return (
-      <ComponentGroupInner title="# of poll location changes">
-        <div id={sizeLegendId}></div>
-      </ComponentGroupInner>
-    );
+  return (
+    <ComponentGroupInner title="# of poll location changes">
+      <div id={sizeLegendId}></div>
+    </ComponentGroupInner>
+  );
 }
 
 function ColorTypeState () {
-    return (
-      <ComponentGroupInner title="Net change in # of polls">
-        <div id={colorLegendId}></div>
-      </ComponentGroupInner>
-    );
+  return (
+    <ComponentGroupInner title="Net change in # of polls">
+      <div id={colorLegendId}></div>
+    </ComponentGroupInner>
+  );
 }
 
 function ColorTypeCounty () {
@@ -163,29 +169,31 @@ function ColorTypeCounty () {
 }
 
 export function StateLegend () {
-    // Initiate legends
-    useEffect(() => {
-        initSizeLegend();
-        initColorLegend(colorDataState);
-    }, []);
+  // Initiate legends
+  useEffect(() => {
+    initSizeLegend();
+    initColorLegend(colorDataState);
+  }, []);
 
-    return (
-        <div className="Legend">
-          <SizeTypeState />
-          <ColorTypeState />
-        </div>
-    );
+  return (
+    <div className="Legend">
+      <EquityType />
+      <SizeTypeState />
+      <ColorTypeState />
+    </div>
+  );
 }
 
 export function CountyLegend () {
   // Initiate legends
   useEffect(() => {
-      initColorLegend(colorDataCounty);
+    initColorLegend(colorDataCounty);
   }, []);
 
   return (
-      <div className="Legend">
-        <ColorTypeCounty />
-      </div>
+    <div className="Legend">
+      <EquityType />
+      <ColorTypeCounty />
+    </div>
   );
 }

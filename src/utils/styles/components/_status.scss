@@ -11,7 +11,9 @@
     overflow-y: auto;
     z-index: +9;
     padding: .5rem 1rem 1rem 1rem;
-    // margin: 2rem;
+    max-height: calc(100vh - 10rem - #{$navHeight});
+    visibility: visible;
+    box-shadow: $boxShadow;
 
     h3 {
         padding-bottom: 0rem;
