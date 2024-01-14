@@ -1,0 +1,28 @@
+.leaflet-container {
+    font-family: $baseFont;
+}
+
+.leaflet-control-zoom.leaflet-bar.leaflet-control {
+    transform: rotate(90deg);
+    margin-right: calc(15px + 1rem);
+}
+
+.leaflet-control-zoom-out, 
+.leaflet-control-zoom-in {
+    transform: rotate(-90deg);
+    // padding: 2px;
+    margin: 4px;
+    border: 1px solid $appBorderColor;
+}
+
+.leaflet-container .leaflet-control-attribution {
+    margin-right: calc(1rem);
+}
+
+.leaflet-bar a {
+    border-bottom: none;
+}
+
+.leaflet-touch .leaflet-bar {
+    border: none;
+}
