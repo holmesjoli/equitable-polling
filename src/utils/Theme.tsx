@@ -29,8 +29,8 @@ export const pollFillScale = d3.scaleOrdinal()
 
 // Created using https://gka.github.io/palettes/#/6|s|2a8ca7,eaeaea|ffffe0,ff005e,93003a|1|1
 export const geoFillScale = d3.scaleOrdinal()
-  .domain(['4', '3', '2', '1', '0'])
-  .range(['#2a8ca7', '#5d9eb4', '#83b1c1', '#a6c4cf', '#c8d7dc'])
+  .domain(['3', '2', '1', '0'])
+  .range(['#2a8ca7', '#67a3b7', '#95bac8', '#c0d2d9'])
 
 export const rScale = d3.scaleSqrt()
   .domain([1, 30])
