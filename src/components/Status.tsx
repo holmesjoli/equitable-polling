@@ -11,7 +11,7 @@ import Switch from '@mui/material/Switch';
 
 // Components
 import { ComponentGroup, ComponentGroupInner } from "./Query";
-import { CountyLegend, StateLegend } from "./Legend";
+import { CountyLegend, StateLegend, EquityLegend } from "./Legend";
 
 // Data
 import { selectVariable } from "../utils/Global";
@@ -22,25 +22,23 @@ import { EquityIndicator } from '../utils/Types';
 function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIndicator: EquityIndicator, setEquityIndicator: any}) : JSX.Element {
 
   const handleChange = (event: SelectChangeEvent) => {
-      setEquityIndicator(selectVariable.equityIndicator.find(d => d.id === event.target.value) as EquityIndicator);
+      setEquityIndicator(selectVariable.equityIndicator.find(d => d.variable === event.target.value) as EquityIndicator);
   };
 
   return (
-    <ComponentGroupInner title="Equity indicator">
-      <div id="SelectEquityIndicator" className="QueryComponent">
-          <FormControl fullWidth size="small">
-              <Select
-                  id="select-equity-indicator"
-                  value={equityIndicator.id}
-                  onChange={handleChange}
-              >
-              {selectVariable.equityIndicator.map((equityIndicator: EquityIndicator) => (
-                  <MenuItem key={equityIndicator.id} value={equityIndicator.id}>{equityIndicator.descr}</MenuItem>
-              ))}
-              </Select>
-          </FormControl>
-      </div>
-    </ComponentGroupInner>
+    <div id="SelectEquityIndicator">
+        <FormControl fullWidth size="small">
+            <Select
+                id="select-equity-indicator"
+                value={equityIndicator.variable}
+                onChange={handleChange}
+            >
+            {selectVariable.equityIndicator.map((equityIndicator: EquityIndicator) => (
+                <MenuItem key={equityIndicator.variable} value={equityIndicator.variable}>{equityIndicator.descr}</MenuItem>
+            ))}
+            </Select>
+        </FormControl>
+    </div>
   );
 }
 
@@ -89,7 +87,10 @@ export function StateStatus({equityIndicator, setEquityIndicator} :
   return (
     <Status>
       <ComponentGroup title="Legend">
-        <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
+        <ComponentGroupInner title="Equity indicator">
+          <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
+          <EquityLegend equityIndicator={equityIndicator}/>
+        </ComponentGroupInner>
         <StateLegend />
       </ComponentGroup>
     </Status>
@@ -103,7 +104,10 @@ export function CountyStatus({equityIndicator, setEquityIndicator, showPolls, se
     return (
       <Status>
         <ComponentGroup title="Legend">
-            <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
+          <ComponentGroupInner title="Equity indicator">
+              <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
+              <EquityLegend equityIndicator={equityIndicator}/>
+          </ComponentGroupInner>
           <ComponentGroupInner title="Voting districts">
             <VDSwitch showVD={showVD} setShowVD={setShowVD}/>
           </ComponentGroupInner>

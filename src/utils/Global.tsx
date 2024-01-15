@@ -6,10 +6,14 @@ export const selectVariable = {
     changeYear: [{id: '0', descr: 'Overall 2012 – 2022', baseYear: 2022},
                  {id: '1', descr: '2018 – 2020', baseYear: 2020},
                  {id: '2', descr: '2016 – 2018', baseYear: 2018}],
-    equityIndicator: [{id: '0', descr: 'None'},
-                      {id: '1', descr: '% Black Voters'},
-                      {id: '2', descr: 'Age demographics'},
-                      {id: '3', descr: 'Nearest time to poll'}],
+    equityIndicator: [{variable: 'none', descr: 'None'},
+                    //   {id: '', descr: 'Total # registered voters'},
+                    //   {id: '', descr: '# polls per # registered voters'},
+                      {variable: 'percentage_race_black_african_american', descr: '% Black'},
+                    //   {id: '4', variable: '', descr: 'Age demographics'},
+                      {variable: 'population_density', descr: 'Population density'},
+                    //   {id: '', descr: 'Nearest time to poll'}
+                ],
     indicator: [{id: '0', descr: '# polls per registered voters'},
                 {id: '1', descr: '# polls'}],
 }
