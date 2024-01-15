@@ -225,9 +225,9 @@ export function QueryMenu({ geoJsonId, indicator, setIndicator, changeYear, setC
                 <PageDescription>
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
                 </PageDescription>
-                <SelectIndicator indicator={indicator} setIndicator={setIndicator} />
-                <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
+                {/* <SelectIndicator indicator={indicator} setIndicator={setIndicator} /> */}
                 <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
+                <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
             </div>
         </Menu>
     );
