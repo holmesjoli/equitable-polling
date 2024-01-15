@@ -82,38 +82,39 @@ export function USStatus() {
     );
 }
 
-export function StateStatus({equityIndicator, setEquityIndicator} : 
-                            {equityIndicator: EquityIndicator, setEquityIndicator: any}) {
+export function StateStatus({equityIndicator, setEquityIndicator, geoHover, pollHover} : 
+                            {equityIndicator: EquityIndicator, setEquityIndicator: any, geoHover: any, pollHover: any}) {
   return (
     <Status>
       <ComponentGroup title="Legend">
         <ComponentGroupInner title="Equity indicator">
           <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
-          <EquityLegend equityIndicator={equityIndicator}/>
+          <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover}/>
         </ComponentGroupInner>
-        <StateLegend />
+        <StateLegend pollHover={pollHover}/>
       </ComponentGroup>
     </Status>
   );
 }
 
-export function CountyStatus({equityIndicator, setEquityIndicator, showPolls, setShowPolls, showVD, setShowVD} : 
+export function CountyStatus({equityIndicator, setEquityIndicator, showPolls, setShowPolls, showVD, setShowVD, geoHover, pollHover} : 
                              {equityIndicator: EquityIndicator, setEquityIndicator: any, 
                               showPolls: boolean, setShowPolls: any, 
-                              showVD: boolean, setShowVD: any}) {
+                              showVD: boolean, setShowVD: any, 
+                              geoHover: any, pollHover: any}) {
     return (
       <Status>
         <ComponentGroup title="Legend">
           <ComponentGroupInner title="Equity indicator">
               <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
-              <EquityLegend equityIndicator={equityIndicator}/>
+              <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover}/>
           </ComponentGroupInner>
           <ComponentGroupInner title="Voting districts">
             <VDSwitch showVD={showVD} setShowVD={setShowVD}/>
           </ComponentGroupInner>
           <ComponentGroupInner title="Poll status">
             <PollsSwitch showPolls={showPolls} setShowPolls={setShowPolls}/>
-            {showPolls ? <CountyLegend /> : <></>}
+            {showPolls ? <CountyLegend pollHover={pollHover}/> : <></>}
           </ComponentGroupInner>
         </ComponentGroup>
       </Status>

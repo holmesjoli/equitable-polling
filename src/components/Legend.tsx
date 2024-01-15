@@ -40,7 +40,7 @@ function legendText(svg: any, data: any[]) {
         .attr('fill', theme.grey.primary)
         // ,
       // update => update
-      //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
+      //   .attr('opacity', d.pollHoverId === hoverValue ? 1 : 0.3),
       // exit => exit.remove()
     );
 }
@@ -52,7 +52,7 @@ function legendHeight(data: any[], margin: number = 0) {
 }
 
 // Initiate size legend
-function initSizeLegend() {
+function initSizeLegend(pollHover: any) {
 
   const data = [{id: 0, rSize: 2, label: '0' },
                 {id: 1, rSize: 5, label: "Between 1 and 5" },
@@ -82,7 +82,7 @@ function initSizeLegend() {
       .attr('stroke-width', 1)
     //   ,
     // update => update
-    //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
+    //   .attr('opacity', d.color === pollHoverId ? 1 : 0.3),
     // exit => exit.remove()
   );
 
@@ -104,13 +104,13 @@ function initSizeLegend() {
         .attr('dominant-baseline', 'middle')
         // ,
       // update => update
-      //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
+      //   .attr('opacity', d.pollHoverId === pollHover ? 1 : 0.3),
       // exit => exit.remove()
     );
 }
 
 // Initiate poll legend
-function initPollLegend(geo: string) {
+function initPollLegend(geo: string, pollHover: any) {
   
 const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3', geo: 'state' },
               { overall: 'increase', label: "Increase of 4 to 10", id: '2', geo: 'state' },
@@ -143,7 +143,7 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
         .attr('stroke-width', 1)
       //   ,
       // update => update
-      //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
+      //   .attr('opacity', d.pollHoverId === pollHover ? 1 : 0.3),
       // exit => exit.remove()
   );
 
@@ -151,7 +151,7 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
 }
 
 // Initiate equity legend
-function initEquityLegend(equityIndicator: EquityIndicator) {
+function initEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
 
   const data = [{variable: 'percentage_race_black_african_american', label: 'Less than 15%', id: '0'},
                 {variable: 'percentage_race_black_african_american', label: 'Between 15% and 30%', id: '1'},
@@ -177,7 +177,7 @@ function initEquityLegend(equityIndicator: EquityIndicator) {
         .attr('stroke-width', 1)
       //   ,
       // update => update
-      //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
+      //   .attr('opacity', d => d.geoHoverId === geoHover ? 1 : 0.3),
       // exit => exit.remove()
   );
 
@@ -206,11 +206,11 @@ function ColorTypeCounty () {
   );
 }
 
-export function StateLegend () {
+export function StateLegend (pollHover: any) {
   // Initiate legends
   useEffect(() => {
-    initPollLegend('state');
-    initSizeLegend();
+    initPollLegend('state', pollHover);
+    initSizeLegend(pollHover);
   }, []);
 
   return (
@@ -221,10 +221,10 @@ export function StateLegend () {
   );
 }
 
-export function CountyLegend () {
+export function CountyLegend (pollHover: any) {
   // Initiate legends
   useEffect(() => {
-    initPollLegend('county');
+    initPollLegend('county', pollHover);
   }, []);
 
   return (
@@ -234,7 +234,7 @@ export function CountyLegend () {
   );
 }
 
-export function EquityLegend ({equityIndicator} : {equityIndicator: EquityIndicator}) {
+export function EquityLegend ({equityIndicator, geoHover} : {equityIndicator: EquityIndicator, geoHover: any}) {
 
   useEffect(() => {
     initLegend(equityLegendId);
@@ -242,7 +242,7 @@ export function EquityLegend ({equityIndicator} : {equityIndicator: EquityIndica
 
   // Initiate legends
   useEffect(() => {
-    initEquityLegend(equityIndicator);
+    initEquityLegend(equityIndicator, geoHover);
   }, [equityIndicator]);
 
   return (
