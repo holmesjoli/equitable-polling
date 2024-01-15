@@ -15,18 +15,6 @@ const circleStart = 17;
 
 const textStart = circleStart + 20;
 
-const colorDataState = [{'overall': 'increase', 'label': 'Increase of more than 10', id: '3' },
-                        {'overall': 'increase', 'label': "Increase of 4 to 10", id: '2' },
-                        {'overall': 'increase', 'label': "Increase of 1 to 3" , id: '1' },
-                        {'overall': 'nochange', 'label': "No change", id: '0' },
-                        {'overall': 'decrease', 'label': "Decrease of 1 to 3", id: '-1' },
-                        {'overall': 'decrease', 'label': "Decrease of 4 to 10", id: '-2' },
-                        {'overall': 'decrease', 'label': "Decrease of more than 10", id: '-3' }];
-
-const colorDataCounty = [{'overall': 'added', 'label': 'Added', id: '3' },
-                        {'overall': 'nochange', 'label': "No change", id: '0' },
-                        {'overall': 'decrease', 'label': "Removed", id: '-3' }];
-
 function initLegend(selector: string) {
   d3.select(`.Legend #${selector}`)
     .append('svg')
@@ -95,35 +83,46 @@ function initSizeLegend() {
     );
 }
 
-function initColorLegend(data: any) {
+function initPollLegend(geo: string) {
+  
+const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3', geo: 'state' },
+              { overall: 'increase', label: "Increase of 4 to 10", id: '2', geo: 'state' },
+              { overall: 'increase', label: "Increase of 1 to 3" , id: '1', geo: 'state' },
+              { overall: 'nochange', label: "No change", id: '0', geo: 'state' },
+              { overall: 'decrease', label: "Decrease of 1 to 3", id: '-1', geo: 'state' },
+              { overall: 'decrease', label: "Decrease of 4 to 10", id: '-2', geo: 'state' },
+              { overall: 'decrease', label: "Decrease of more than 10", id: '-3', geo: 'state' },
+              { overall: 'added', label: 'Added', id: '3', geo: 'county' },
+              { overall: 'nochange', label: "No change", id: '0', geo: 'county' },
+              { overall: 'decrease', label: "Removed", id: '-3', geo: 'county' }];
 
   initLegend(colorLegendId);
 
   const svg = d3.select(`#${colorLegendId} svg`)
-    .attr('height', legendHeight(data));
+    .attr('height', legendHeight(data.filter(d => d.geo === geo)));
 
   svg
-  .selectAll('path')
-  .data(data, (d: any) => d.rSize)
-  .join(
-    enter => enter
-      .append('circle')
-      .attr('r', 6)
-      .attr('transform', function (d, i) {
-        return 'translate(' + circleStart + ', ' + (i * 23 + 15) + ')';
-      })
-      .attr('fill', (d: any) => fillColorScale(d.id) as string) // Add type assertion
-      .attr("stroke", (d: any) => strokeColorScale(d.overall) as string) // Add type assertion
-      .attr('stroke-width', 1)
-    //   ,
-    // update => update
-    //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
-    // exit => exit.remove()
+    .selectAll('path')
+    .data(data.filter(d => d.geo === geo), (d: any) => d.rSize)
+    .join(
+      enter => enter
+        .append('circle')
+        .attr('r', 6)
+        .attr('transform', function (d, i) {
+          return 'translate(' + circleStart + ', ' + (i * 23 + 15) + ')';
+        })
+        .attr('fill', (d: any) => fillColorScale(d.id) as string) // Add type assertion
+        .attr("stroke", (d: any) => strokeColorScale(d.overall) as string) // Add type assertion
+        .attr('stroke-width', 1)
+      //   ,
+      // update => update
+      //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
+      // exit => exit.remove()
   );
 
   svg
     .selectAll('text')
-    .data(data, (d: any) => d.rSize)
+    .data(data.filter(d => d.geo === geo), (d: any) => d.rSize)
     .join(
       enter => enter
         .append('text')
@@ -137,6 +136,15 @@ function initColorLegend(data: any) {
       //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
       // exit => exit.remove()
     );
+
+}
+
+function initEquityLegend() {
+
+  const data = [{variable: 'percentage_race_black_african_american', label: 'Less than 15%'},
+                {variable: 'percentage_race_black_african_american', label: 'Between 15% and 30%'},
+                {variable: 'percentage_race_black_african_american', label: 'Between 30% and 45%'},
+                {variable: 'percentage_race_black_african_american', label: 'Greater than 45%'}];
 
 }
 
@@ -172,7 +180,7 @@ export function StateLegend () {
   // Initiate legends
   useEffect(() => {
     initSizeLegend();
-    initColorLegend(colorDataState);
+    initPollLegend('state');
   }, []);
 
   return (
@@ -187,7 +195,7 @@ export function StateLegend () {
 export function CountyLegend () {
   // Initiate legends
   useEffect(() => {
-    initColorLegend(colorDataCounty);
+    initPollLegend('county');
   }, []);
 
   return (
