@@ -22,7 +22,7 @@ import { EquityIndicator } from '../utils/Types';
 function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIndicator: EquityIndicator, setEquityIndicator: any}) : JSX.Element {
 
   const handleChange = (event: SelectChangeEvent) => {
-      setEquityIndicator(selectVariable.equityIndicator.find(d => d.id === event.target.value) as EquityIndicator);
+      setEquityIndicator(selectVariable.equityIndicator.find(d => d.variable === event.target.value) as EquityIndicator);
   };
 
   return (
@@ -30,11 +30,11 @@ function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIn
         <FormControl fullWidth size="small">
             <Select
                 id="select-equity-indicator"
-                value={equityIndicator.id}
+                value={equityIndicator.variable}
                 onChange={handleChange}
             >
             {selectVariable.equityIndicator.map((equityIndicator: EquityIndicator) => (
-                <MenuItem key={equityIndicator.id} value={equityIndicator.id}>{equityIndicator.descr}</MenuItem>
+                <MenuItem key={equityIndicator.variable} value={equityIndicator.variable}>{equityIndicator.descr}</MenuItem>
             ))}
             </Select>
         </FormControl>

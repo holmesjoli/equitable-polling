@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 
 // Components
 import { ComponentGroupInner } from "./Query";
-import { fillColorScale, strokeColorScale, rScale, theme } from "../utils/Theme";
+import { pollFillScale, pollStrokeScale, geoFillScale, rScale, theme } from "../utils/Theme";
 
 // Types
 import { EquityIndicator } from '../utils/Types';
@@ -138,8 +138,8 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
         .attr('transform', function (d, i) {
           return 'translate(' + circleStart + ', ' + (i * 23 + 15) + ')';
         })
-        .attr('fill', (d: any) => fillColorScale(d.id) as string) // Add type assertion
-        .attr("stroke", (d: any) => strokeColorScale(d.overall) as string) // Add type assertion
+        .attr('fill', (d: any) => pollFillScale(d.id) as string) // Add type assertion
+        .attr("stroke", (d: any) => pollStrokeScale(d.overall) as string) // Add type assertion
         .attr('stroke-width', 1)
       //   ,
       // update => update
@@ -153,17 +153,17 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
 // Initiate equity legend
 function initEquityLegend(equityIndicator: EquityIndicator) {
 
-  const data = [{id: 'percentage_race_black_african_american', label: 'Less than 15%'},
-                {id: 'percentage_race_black_african_american', label: 'Between 15% and 30%'},
-                {id: 'percentage_race_black_african_american', label: 'Between 30% and 45%'},
-                {id: 'percentage_race_black_african_american', label: 'Greater than 45%'}];
+  const data = [{variable: 'percentage_race_black_african_american', label: 'Less than 15%'},
+                {variable: 'percentage_race_black_african_american', label: 'Between 15% and 30%'},
+                {variable: 'percentage_race_black_african_american', label: 'Between 30% and 45%'},
+                {variable: 'percentage_race_black_african_american', label: 'Greater than 45%'}];
 
   const svg = d3.select(`#${equityLegendId} svg`)
-    .attr('height', legendHeight(data.filter(d => d.id === equityIndicator.id)));
+    .attr('height', legendHeight(data.filter(d => d.variable === equityIndicator.variable)));
 
   svg
     .selectAll('rect')
-    .data(data.filter(d => d.id === equityIndicator.id), (d: any) => d.id)
+    .data(data.filter(d => d.variable === equityIndicator.variable), (d: any) => d.id)
     .join(
       enter => enter
         .append('rect')
@@ -181,7 +181,7 @@ function initEquityLegend(equityIndicator: EquityIndicator) {
       // exit => exit.remove()
   );
 
-  legendText(svg, data.filter(d => d.id === equityIndicator.id));
+  legendText(svg, data.filter(d => d.variable === equityIndicator.variable));
 }
 
 function SizeTypeState () {

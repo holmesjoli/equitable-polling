@@ -17,6 +17,6 @@ export type State = {type: string, stfp: string, geoid: string, name: string, co
 
 export type ChangeYear = {id: string, descr: string, baseYear: number};
 
-export type EquityIndicator = {id: string, descr: string};
+export type EquityIndicator = {variable: string, descr: string};
 
 export type Indicator = {id: string, descr: string};

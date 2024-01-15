@@ -5,6 +5,7 @@ export const theme = {
     grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#047391',
+    focusColorDark : '#035C74',
     fontFamily: 'Inter'
 }
 
@@ -18,13 +19,18 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                           }
 
 // Scales
-export const strokeColorScale = d3.scaleOrdinal()
+export const pollStrokeScale = d3.scaleOrdinal()
   .domain(["increase", "nochange", "decrease"] )
   .range(["#610063", theme.grey.primary, "#E45729"] );
 
-export const fillColorScale = d3.scaleOrdinal()
+export const pollFillScale = d3.scaleOrdinal()
   .domain(['-3', '-2', '-1', '0', '1', '2', '3'] )
   .range(["#E45729", "#F28559", "#FBB18A", theme.grey.secondary, "#C498A6", "#935485", "#610063"] );
+
+// Created using https://gka.github.io/palettes/#/6|s|2a8ca7,eaeaea|ffffe0,ff005e,93003a|1|1
+export const geoFillScale = d3.scaleOrdinal()
+  .domain(['4', '3', '2', '1', '0'])
+  .range(['#2a8ca7', '#5d9eb4', '#83b1c1', '#a6c4cf', '#c8d7dc'])
 
 export const rScale = d3.scaleSqrt()
   .domain([1, 30])
@@ -69,7 +75,7 @@ export function tractStyle(feature: any) {
 
 export function vdStyle(feature: any) {
   return {
-    color: theme.focusColor,
+    color: theme.focusColorDark,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: 0
