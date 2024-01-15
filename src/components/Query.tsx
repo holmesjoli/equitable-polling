@@ -1,14 +1,8 @@
-// React
-import { useEffect, useState } from "react";
-
 // MUI
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -94,8 +88,6 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
                     properties: {name: 'All counties', geoid: '0'}, 
                     geometry: {} as GeoJSON.Geometry} as GeoJSON.Feature];
 
-    // setGeoJsonId({geoid: selectedCounty.geoid, name: selectedCounty.name, type: selectedCounty.type, latlng: selectedCounty.latlng, zoom: selectedCounty.zoom} as GeoID);
-
     return (
         <div id="SelectCounty" className="QueryComponent">
             <Autocomplete
@@ -174,34 +166,6 @@ function SelectChangeYear({changeYear, setChangeYear} : {changeYear: ChangeYear,
     )
 }
 
-function SelectIndicator({indicator, setIndicator} : {indicator: Indicator, setIndicator: any}) : JSX.Element {
-
-    const handleChange = (event: SelectChangeEvent) => {
-        setIndicator(selectVariable.indicator.find(d => d.id === event.target.value) as Indicator);
-    };
-
-    return(
-        <ComponentGroup title="Select indicator">
-            <div id="SelectIndicator" className="QueryComponent">
-                <FormControl fullWidth size="small">
-                    <InputLabel id="select-indicator-label">Indicator</InputLabel>
-                    <Select
-                    labelId="select-indicator-label"
-                    id="select-indicator"
-                    value={indicator.id}
-                    label="indicator"
-                    onChange={handleChange}
-                    >
-                    {selectVariable.indicator.map((indicator: Indicator) => (
-                        <MenuItem key={indicator.id} value={indicator.id}>{indicator.descr}</MenuItem>
-                    ))}
-                    </Select>
-                </FormControl>
-            </div>
-        </ComponentGroup>
-    )
-}
-
 export const Menu = styled.div<{ $geojsonid: GeoID; }>`
     z-index: +9;
     position: absolute;
@@ -216,8 +180,8 @@ export const Menu = styled.div<{ $geojsonid: GeoID; }>`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({ geoJsonId, indicator, setIndicator, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId} : 
-                          { geoJsonId: GeoID, indicator: Indicator, setIndicator: any, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any}) {
+export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId} : 
+                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any}) {
 
     return(
         <Menu $geojsonid={geoJsonId}>
@@ -225,7 +189,6 @@ export function QueryMenu({ geoJsonId, indicator, setIndicator, changeYear, setC
                 <PageDescription>
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
                 </PageDescription>
-                {/* <SelectIndicator indicator={indicator} setIndicator={setIndicator} /> */}
                 <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
                 <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
             </div>

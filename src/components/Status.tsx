@@ -1,6 +1,7 @@
 // Libraries
 import Draggable from 'react-draggable';
 
+// MUI
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -17,7 +18,7 @@ import { CountyLegend, StateLegend, EquityLegend } from "./Legend";
 import { selectVariable } from "../utils/Global";
 
 // Types
-import { EquityIndicator } from '../utils/Types';
+import { EquityIndicator, Indicator } from '../utils/Types';
 
 function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIndicator: EquityIndicator, setEquityIndicator: any}) : JSX.Element {
 
@@ -42,8 +43,36 @@ function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIn
   );
 }
 
+function SelectIndicator({indicator, setIndicator} : {indicator: Indicator, setIndicator: any}) : JSX.Element {
+
+  const handleChange = (event: SelectChangeEvent) => {
+      setIndicator(selectVariable.indicator.find(d => d.id === event.target.value) as Indicator);
+  };
+
+  return(
+      <ComponentGroup title="Select indicator">
+          <div id="SelectIndicator" className="QueryComponent">
+              <FormControl fullWidth size="small">
+                  <InputLabel id="select-indicator-label">Indicator</InputLabel>
+                  <Select
+                  labelId="select-indicator-label"
+                  id="select-indicator"
+                  value={indicator.id}
+                  label="indicator"
+                  onChange={handleChange}
+                  >
+                  {selectVariable.indicator.map((indicator: Indicator) => (
+                      <MenuItem key={indicator.id} value={indicator.id}>{indicator.descr}</MenuItem>
+                  ))}
+                  </Select>
+              </FormControl>
+          </div>
+      </ComponentGroup>
+  )
+}
+
 function PollsSwitch({showPolls, setShowPolls}: {showPolls: boolean, setShowPolls: any}) : JSX.Element {
-  
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setShowPolls(event.target.checked);
     };

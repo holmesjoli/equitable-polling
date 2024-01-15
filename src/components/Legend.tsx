@@ -209,14 +209,14 @@ function ColorTypeCounty () {
 export function StateLegend () {
   // Initiate legends
   useEffect(() => {
-    initPollLegend('state');
     initSizeLegend();
+    initPollLegend('state');
   }, []);
 
   return (
     <div className="Legend">
-      <ColorTypeState />
       <SizeTypeState />
+      <ColorTypeState />
     </div>
   );
 }

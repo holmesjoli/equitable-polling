@@ -8,14 +8,15 @@ export const selectVariable = {
                  {id: '2', descr: '2016 – 2018', baseYear: 2018}],
     equityIndicator: [{variable: 'none', descr: 'None'},
                     //   {id: '', descr: 'Total # registered voters'},
-                    //   {id: '', descr: '# polls per # registered voters'},
+                    //   {id: '', descr: '# registered voters per polling location'},
                       {variable: 'percentage_race_black_african_american', descr: '% Black'},
                     //   {id: '4', variable: '', descr: 'Age demographics'},
                       {variable: 'population_density', descr: 'Population density'},
                     //   {id: '', descr: 'Nearest time to poll'}
                 ],
-    indicator: [{id: '0', descr: '# polls per registered voters'},
-                {id: '1', descr: '# polls'}],
+    indicator: [{id: '0', descr: '# registered voters per polling location'},
+                {id: '1', descr: '# polling locations'},
+                {id: '2', descr: '# of poll location changes in last year'}]
 }
 
 export const outerBounds: [number, number][] = 
