@@ -6,6 +6,9 @@ import * as d3 from 'd3';
 import { ComponentGroupInner } from "./Query";
 import { fillColorScale, strokeColorScale, rScale, theme } from "../utils/Theme";
 
+// Types
+import { EquityIndicator } from '../utils/Types';
+
 const equityLegendId = 'Equity-Legend';
 const sizeLegendId = 'Size-Legend';
 const colorLegendId = 'Color-Legend';
@@ -148,28 +151,26 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
 }
 
 // Initiate equity legend
-function initEquityLegend(equityVariable: string) {
+function initEquityLegend(equityIndicator: EquityIndicator) {
 
-  const data = [{equityVariable: 'percentage_race_black_african_american', label: 'Less than 15%'},
-                {equityVariable: 'percentage_race_black_african_american', label: 'Between 15% and 30%'},
-                {equityVariable: 'percentage_race_black_african_american', label: 'Between 30% and 45%'},
-                {equityVariable: 'percentage_race_black_african_american', label: 'Greater than 45%'}];
-
-  initLegend(equityLegendId);
+  const data = [{id: 'percentage_race_black_african_american', label: 'Less than 15%'},
+                {id: 'percentage_race_black_african_american', label: 'Between 15% and 30%'},
+                {id: 'percentage_race_black_african_american', label: 'Between 30% and 45%'},
+                {id: 'percentage_race_black_african_american', label: 'Greater than 45%'}];
 
   const svg = d3.select(`#${equityLegendId} svg`)
-    .attr('height', legendHeight(data.filter(d => d.equityVariable === equityVariable)));
+    .attr('height', legendHeight(data.filter(d => d.id === equityIndicator.id)));
 
   svg
     .selectAll('rect')
-    .data(data.filter(d => d.equityVariable === equityVariable), (d: any) => d.id)
+    .data(data.filter(d => d.id === equityIndicator.id), (d: any) => d.id)
     .join(
       enter => enter
         .append('rect')
-        .attr('height', 6)
-        .attr('width', 6)
+        .attr('height', 10)
+        .attr('width', 10)
         .attr('transform', function (d, i) {
-          return 'translate(' + circleStart + ', ' + (i * 23 + 15) + ')';
+          return 'translate(' + (circleStart - 6) + ', ' + (i * 23 + 10) + ')';
         })
         .attr('fill', theme.grey.secondary)
         .attr("stroke", theme.grey.primary)
@@ -180,14 +181,7 @@ function initEquityLegend(equityVariable: string) {
       // exit => exit.remove()
   );
 
-  legendText(svg, data.filter(d => d.equityVariable === equityVariable));
-
-}
-
-function EquityType () {
-  return (
-    <div id={equityLegendId}></div>
-  );
+  legendText(svg, data.filter(d => d.id === equityIndicator.id));
 }
 
 function SizeTypeState () {
@@ -221,7 +215,6 @@ export function StateLegend () {
 
   return (
     <div className="Legend">
-      <EquityType />
       <SizeTypeState />
       <ColorTypeState />
     </div>
@@ -236,8 +229,27 @@ export function CountyLegend () {
 
   return (
     <div className="Legend">
-      <EquityType />
       <ColorTypeCounty />
+    </div>
+  );
+}
+
+export function EquityLegend ({equityIndicator} : {equityIndicator: EquityIndicator}) {
+
+  console.log(equityIndicator);
+
+  useEffect(() => {
+    initLegend(equityLegendId);
+  }, []);
+
+  // Initiate legends
+  useEffect(() => {
+    initEquityLegend(equityIndicator);
+  }, [equityIndicator]);
+
+  return (
+    <div className="Legend">
+      <div id={equityLegendId}></div>
     </div>
   );
 }
