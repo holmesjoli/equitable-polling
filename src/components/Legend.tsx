@@ -236,8 +236,6 @@ export function CountyLegend () {
 
 export function EquityLegend ({equityIndicator} : {equityIndicator: EquityIndicator}) {
 
-  console.log(equityIndicator);
-
   useEffect(() => {
     initLegend(equityLegendId);
   }, []);
