@@ -15,23 +15,46 @@ const circleStart = 17;
 
 const textStart = circleStart + 20;
 
+// Reusable function to initialize legend
 function initLegend(selector: string) {
   d3.select(`.Legend #${selector}`)
     .append('svg')
     .attr('width', width);
 }
 
+// Reusable function to add text to legend
+function legendText(svg: any, data: any[]) {
+  svg
+    .selectAll('text')
+    .data(data, (d: any) => d.id)
+    .join(
+      (enter: any) => enter
+        .append('text')
+        .attr('x', textStart)
+        .attr('y', (d: any, i: number) => i * 23 + 20)
+        .text((d: any) => d.label)
+        .attr('font-size', theme.fontSize)
+        .attr('fill', theme.grey.primary)
+        // ,
+      // update => update
+      //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
+      // exit => exit.remove()
+    );
+}
+
+// Calculate legend height according to number of items in the data to represent
 function legendHeight(data: any[], margin: number = 0) {
   const height = margin + (data.length) * 24;
   return height;
 }
 
+// Initiate size legend
 function initSizeLegend() {
 
-  const data = [{'rSize': 2, 'label': '0' },
-                {'rSize': 5, 'label': "Between 1 and 5" },
-                {'rSize': 15, 'label': "Between 15 and 30" },
-                {'rSize': 30, 'label': "Greater than 30" }];
+  const data = [{id: 0, rSize: 2, label: '0' },
+                {id: 1, rSize: 5, label: "Between 1 and 5" },
+                {id: 2, rSize: 15, label: "Between 15 and 30" },
+                {id: 3, rSize: 30, label: "Greater than 30" }];
 
   initLegend(sizeLegendId);
 
@@ -39,7 +62,7 @@ function initSizeLegend() {
     .attr('height', legendHeight(data, 15));
 
   svg
-  .selectAll('path')
+  .selectAll('circle')
   .data(data, (d: any) => d.rSize)
   .join(
     enter => enter
@@ -83,6 +106,7 @@ function initSizeLegend() {
     );
 }
 
+// Initiate poll legend
 function initPollLegend(geo: string) {
   
 const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3', geo: 'state' },
@@ -102,8 +126,8 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
     .attr('height', legendHeight(data.filter(d => d.geo === geo)));
 
   svg
-    .selectAll('path')
-    .data(data.filter(d => d.geo === geo), (d: any) => d.rSize)
+    .selectAll('circle')
+    .data(data.filter(d => d.geo === geo), (d: any) => d.id)
     .join(
       enter => enter
         .append('circle')
@@ -120,31 +144,43 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
       // exit => exit.remove()
   );
 
+  legendText(svg, data.filter(d => d.geo === geo));
+}
+
+// Initiate equity legend
+function initEquityLegend(equityVariable: string) {
+
+  const data = [{equityVariable: 'percentage_race_black_african_american', label: 'Less than 15%'},
+                {equityVariable: 'percentage_race_black_african_american', label: 'Between 15% and 30%'},
+                {equityVariable: 'percentage_race_black_african_american', label: 'Between 30% and 45%'},
+                {equityVariable: 'percentage_race_black_african_american', label: 'Greater than 45%'}];
+
+  initLegend(equityLegendId);
+
+  const svg = d3.select(`#${equityLegendId} svg`)
+    .attr('height', legendHeight(data.filter(d => d.equityVariable === equityVariable)));
+
   svg
-    .selectAll('text')
-    .data(data.filter(d => d.geo === geo), (d: any) => d.rSize)
+    .selectAll('rect')
+    .data(data.filter(d => d.equityVariable === equityVariable), (d: any) => d.id)
     .join(
       enter => enter
-        .append('text')
-        .attr('x', textStart)
-        .attr('y', (d, i) => i * 23 + 20)
-        .text((d: any) => d.label)
-        .attr('font-size', theme.fontSize)
-        .attr('fill', theme.grey.primary)
-        // ,
+        .append('rect')
+        .attr('height', 6)
+        .attr('width', 6)
+        .attr('transform', function (d, i) {
+          return 'translate(' + circleStart + ', ' + (i * 23 + 15) + ')';
+        })
+        .attr('fill', theme.grey.secondary)
+        .attr("stroke", theme.grey.primary)
+        .attr('stroke-width', 1)
+      //   ,
       // update => update
       //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),
       // exit => exit.remove()
-    );
+  );
 
-}
-
-function initEquityLegend() {
-
-  const data = [{variable: 'percentage_race_black_african_american', label: 'Less than 15%'},
-                {variable: 'percentage_race_black_african_american', label: 'Between 15% and 30%'},
-                {variable: 'percentage_race_black_african_american', label: 'Between 30% and 45%'},
-                {variable: 'percentage_race_black_african_american', label: 'Greater than 45%'}];
+  legendText(svg, data.filter(d => d.equityVariable === equityVariable));
 
 }
 
