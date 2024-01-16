@@ -16,7 +16,7 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 // Data
 import { stateData, countyData, tractData, vdData, pollingLocData } from "../utils/DM";
 
-// Styles 
+// Styles
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle } from "../utils/Theme";
 
 console.log(pollingLocData);
@@ -68,23 +68,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
-
-    // console.log(mapRef.current?.getZoom());
-
-    // mapRef.current
-    //     ?.on('zoom', () => {
-    //         if (mapRef.current?.getZoom() <= 5) {
-    //             setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
-    //             setGeoJsonData(stateData);
-    //         } else if (mapRef.current?.getZoom() > 5 && mapRef.current?.getZoom() <= 7) {
-    //             setGeoJsonBoundaryData(stateData);
-    //             setGeoJsonData(countyData);
-    //         } else {
-    //             setGeoJsonBoundaryData(countyData);
-    //             setGeoJsonData(filterByBounds(mapRef, tractData));
-    //             setGeoJsonVdData(filterByBounds(mapRef, vdData));
-    //         }
-    // });
 
     // Functions ---------------------------------------------------
 
