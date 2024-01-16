@@ -6,7 +6,7 @@ import vdGeo from "../data/processed/votingDistrictGeoJSON.json";
 import pollingLoc from "../data/processed/polling_loc.json";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -126,17 +126,21 @@ export function getVd() {
             features: features} as GeoJSON.FeatureCollection;
 }
 
+// TODO Update the filter to be responsive to change year
+// TODO update the cntyfp to be the correct county
 export function getPollingLoc() {
-    const data: any[] = [];
+    const data: PollingLoc[] = [];
 
     (pollingLoc as any[])
         .filter((d: any) => [2012, 2014].includes(d.change_year))
         .forEach((d: any) => {
             data.push({type: 'Poll',
-                        descr: 'Polling location',
-                        name: d.name,
-                        latlng: {lat: d.Y, lng: d.X} as LatLng,
-                        changeType: d.change_type
+                       descr: 'Polling location',
+                       name: d.name,
+                       latlng: {lat: d.Y, lng: d.X} as LatLng,
+                       cntyfp: 'TODO',
+                       changeType: d.change_type,
+                       selected: false
                 });
         });
 

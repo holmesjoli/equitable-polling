@@ -20,3 +20,5 @@ export type ChangeYear = {id: string, descr: string, baseYear: number};
 export type EquityIndicator = {variable: string, descr: string};
 
 export type Indicator = {id: string, descr: string};
+
+export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, changeType: number | string, selected: boolean, cntyfp: string};

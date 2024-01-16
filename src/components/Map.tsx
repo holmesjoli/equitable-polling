@@ -8,7 +8,7 @@ import * as d3 from 'd3';
 import * as Tooltip from "./Tooltip";
 
 // Types
-import { State, County, GeoID } from "../utils/Types";
+import { State, County, GeoID, PollingLoc } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
@@ -18,8 +18,6 @@ import { stateData, countyData, tractData, vdData, pollingLocData } from "../uti
 
 // Styles
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle } from "../utils/Theme";
-
-console.log(pollingLocData);
 
 export function mouseOut(event: any) {
     var layer = event.target;
@@ -68,10 +66,10 @@ function filterPointByBounds(mapRef: any, data: any) {
 
     const mapBounds = getMapBounds(mapRef);
 
-    const points: any[] = [];
+    const points: PollingLoc[] = [];
 
     data.forEach((d: any) => {
-        var p = point(d.latlng.lat, d.latlng.lng)
+        const p = point(d.latlng.lat, d.latlng.lng);
         if (mapBounds.contains(p)) {
             points.push(d);
         }
@@ -100,12 +98,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-    const [geoJsonPollingData, setGeoJsonPollingData] = useState(pollingLocData);
+    const [geoJsonPollingData, setGeoJsonPollingData] = useState<any[]>([]);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonPollRef = useRef(null);
+
+    console.log(geoJsonPollingData);
 
     // Functions ---------------------------------------------------
 
