@@ -83,6 +83,7 @@ export function vdStyle(feature: any) {
 }
 
 export function pollStyle(point: any) {
+  // console.log(point);
 
   return {
     fillColor: theme.focusColor,

@@ -139,6 +139,7 @@ export function getPollingLoc() {
                        name: d.name,
                        latlng: {lat: d.Y, lng: d.X} as LatLng,
                        overall: d.overall,
+                       id: d.id,
                        selected: false
                     });
         });
