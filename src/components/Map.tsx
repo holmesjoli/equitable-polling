@@ -80,17 +80,32 @@ function filterPointByBounds(mapRef: any, data: any) {
     return points;
 }
 
+// Updates feature data within the selected county to and make it distinct from surrounding voting districts
+function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) {
+
+    data.features.forEach((d: GeoJSON.Feature) => {
+        if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
+            d.properties!.selected = true;
+        } else {
+            d.properties!.selected = false;
+        }
+    });
+
+    return data;
+}
+
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
                          { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-    const [geoJsonPollingLocData, setGeoJsonPollingLocData] = useState(pollingLocData);
+    const [geoJsonPollingData, setGeoJsonPollingData] = useState(pollingLocData);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
+    const geoJsonPollRef = useRef(null);
 
     // Functions ---------------------------------------------------
 
@@ -186,7 +201,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         } else {
             let county = {} as County;
 
-            // Updates selected county which is need to style the county and make it distinct from surrounding counties
+            // Updates counties within the selected county to and make it distinct from surrounding counties
             countyData.features.forEach((d: GeoJSON.Feature) => {
                 if (d.properties!.geoid === geoJsonId.geoid) {
                     d.properties!.selected = true;
@@ -196,23 +211,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 }
             });
 
-            // Updates selected county which is need to style the county and make it distinct from surrounding counties
-            tractData.features.forEach((d: GeoJSON.Feature) => {
-                if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
-                    d.properties!.selected = true;
-                } else {
-                    d.properties!.selected = false;
-                }
-            });
+            // Updates tract within the selected county to and make it distinct from surrounding tracts
+            updateSelectedFeature(tractData, county);
 
-            // Updates selected county which is need to style the county and make it distinct from surrounding counties
-            vdData.features.forEach((d: GeoJSON.Feature) => {
-                if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
-                    d.properties!.selected = true;
-                } else {
-                    d.properties!.selected = false;
-                }
-            });
+            // Updates voting districts within the selected county to and make it distinct from surrounding voting districts
+            updateSelectedFeature(vdData, county);
 
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
@@ -222,12 +225,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 .on('zoomend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setGeoJsonPollingLocData(filterPointByBounds(mapRef, pollingLocData));
+                    setGeoJsonPollingData(filterPointByBounds(mapRef, pollingLocData));
                 })
                 .on('moveend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setGeoJsonPollingLocData(filterPointByBounds(mapRef, pollingLocData));
+                    setGeoJsonPollingData(filterPointByBounds(mapRef, pollingLocData));
                 });
         }
 
