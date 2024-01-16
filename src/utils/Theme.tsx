@@ -81,3 +81,14 @@ export function vdStyle(feature: any) {
     fillOpacity: 0
   };
 }
+
+export function pollStyle(point: any) {
+
+  return {
+    fillColor: theme.focusColor,
+    color: theme.focusColor,
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 1
+  };
+}

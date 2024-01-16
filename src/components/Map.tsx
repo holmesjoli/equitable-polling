@@ -18,7 +18,7 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { stateData, countyData, tractData, vdData, pollingLocData } from "../utils/DM";
 
 // Styles
-import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, pollStyle } from "../utils/Theme";
 
 export function mouseOut(event: any) {
     var layer = event.target;
@@ -260,8 +260,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
     }, [geoJsonVdData]);
 
+    console.log(pollRef.current)
+
     // useEffect(() => {
-    //     pollRef.current?.clearLayers().addData(pollingData);
+    //     (pollRef.current as L.LayerGroup)?.clearLayers().addData(pollingData);
     // }, [pollingData]);
 
     return(
@@ -271,10 +273,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
                 {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
-                {showPolls ? <FeatureGroup ref={pollRef} key="pollingLoc"> 
-                    {pollingData.map((d: PollingLoc) => (
-                        <Circle center={[d.latlng.lat, d.latlng.lng]} pathOptions={{ fillColor: 'blue' }} radius={100} />
-                    ))}
+                {showPolls ? 
+                    <FeatureGroup ref={pollRef} key="pollingLoc"> 
+                        {pollingData.map((d: PollingLoc, i: number) => (
+                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={100} />
+                        ))}
                     </FeatureGroup> : null}
             </FeatureGroup>
         </>
