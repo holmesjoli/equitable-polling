@@ -138,9 +138,9 @@ export function getPollingLoc() {
                        descr: 'Polling location',
                        name: d.name,
                        latlng: {lat: d.Y, lng: d.X} as LatLng,
-                       changeType: d.change_type,
+                       overall: d.overall,
                        selected: false
-                });
+                    });
         });
 
     return data;

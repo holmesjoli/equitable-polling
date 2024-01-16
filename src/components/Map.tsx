@@ -6,6 +6,7 @@ import * as d3 from 'd3';
 
 // Components
 import * as Tooltip from "./Tooltip";
+import { initPolls } from "./PollingLocations";
 
 // Types
 import { State, County, GeoID, PollingLoc } from "../utils/Types";
@@ -99,14 +100,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-    const [geoJsonPollingData, setGeoJsonPollingData] = useState<any[]>([]);
+    const [pollingData, setPollingData] = useState<any[]>([]);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
-    const geoJsonPollRef = useRef(null);
+    const pollRef = useRef(null);
 
-    console.log(geoJsonPollingData);
+    console.log(pollingData);
 
     // Functions ---------------------------------------------------
 
@@ -226,12 +227,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 .on('zoomend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setGeoJsonPollingData(filterPointByBounds(mapRef, pollingLocData));
+                    setPollingData(filterPointByBounds(mapRef, pollingLocData));
                 })
                 .on('moveend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setGeoJsonPollingData(filterPointByBounds(mapRef, pollingLocData));
+                    setPollingData(filterPointByBounds(mapRef, pollingLocData));
                 });
         }
 
@@ -258,6 +259,18 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             geoJsonVdRef.current?.clearLayers().addData({} as GeoJSON.FeatureCollection);
         }
     }, [geoJsonVdData]);
+
+    useEffect(() => {
+       initPolls();
+    }, []);
+
+    useEffect(() => {
+        // if (showPolls) {
+        //     pollRef.current?.clearLayers().addData(pollingData);
+        // } else {
+        //     pollRef.current?.clearLayers().addData([]);
+        // }
+    }, [pollingData]);
 
     return(
         <>

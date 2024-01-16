@@ -110,7 +110,7 @@ function initSizeLegend() {
 }
 
 // Initiate poll legend
-function initPollLegend(geo: string) {
+function initPollLegend (geo: string) {
   
 const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3', geo: 'state' },
               { overall: 'increase', label: "Increase of 4 to 10", id: '2', geo: 'state' },
@@ -121,7 +121,7 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
               { overall: 'decrease', label: "Decrease of more than 10", id: '-3', geo: 'state' },
               { overall: 'added', label: 'Added', id: '3', geo: 'county' },
               { overall: 'nochange', label: "No change", id: '0', geo: 'county' },
-              { overall: 'decrease', label: "Removed", id: '-3', geo: 'county' }];
+              { overall: 'removed', label: "Removed", id: '-3', geo: 'county' }];
 
   initLegend(colorLegendId);
 
@@ -151,7 +151,7 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
 }
 
 // Initiate equity legend
-function initEquityLegend(equityIndicator: EquityIndicator) {
+function initEquityLegend (equityIndicator: EquityIndicator) {
 
   const data = [{variable: 'percentage_race_black_african_american', label: 'Less than 15%', id: '0'},
                 {variable: 'percentage_race_black_african_american', label: 'Between 15% and 30%', id: '1'},

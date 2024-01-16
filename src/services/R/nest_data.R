@@ -7,8 +7,12 @@ polling_loc <- readr::read_csv("../data/raw/polling_location_initial_removed_add
   select(location_name_clean, r3latitude, r3longitude, change_year, change_type) %>% 
   rename(name = location_name_clean,
          X = r3longitude,
-         Y = r3latitude) %>% 
-  mutate(change_type = ifelse(change_type == "NULL", "nochange", change_type))
+         Y = r3latitude,
+         overall = change_type) %>% 
+  mutate(change_type = ifelse(change_type == "NULL", "nochange", change_type),
+         id = case_when(overall == "added" ~ "3",
+                        overall == "nochange" ~ "0",
+                        overall == "removed" ~ "-3")) 
 
 exportJSON <- toJSON(polling_loc)
 write(exportJSON, "../data/processed/polling_loc.json")
