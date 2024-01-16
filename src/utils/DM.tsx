@@ -3,6 +3,7 @@ import stateGeo from "../data/processed/stateGeoJSON.json";
 import countyGeo from "../data/processed/countyGeoJSON.json";  
 import tractGeo from "../data/processed/tractGeoJSON.json";
 import vdGeo from "../data/processed/votingDistrictGeoJSON.json";
+import pollingLoc from "../data/processed/polling_loc.json";
 
 // Types
 import { State, County, Tract, Bounds, VotingDistrict } from "./Types";
@@ -14,6 +15,7 @@ export const stateData = getStates();
 export const countyData = getCounties();
 export const tractData = getTracts();
 export const vdData = getVd();
+export const pollingLocData = getPollingLoc();
 
 function getStates() {
 
@@ -122,4 +124,21 @@ export function getVd() {
 
     return {type: 'FeatureCollection', 
             features: features} as GeoJSON.FeatureCollection;
+}
+
+export function getPollingLoc() {
+    const data: any[] = [];
+
+    (pollingLoc as any[])
+        .filter((d: any) => [2012, 2014].includes(d.change_year))
+        .forEach((d: any) => {
+            data.push({type: 'Poll',
+                        descr: 'Polling location',
+                        name: d.name,
+                        latlng: {lat: d.Y, lng: d.X} as LatLng,
+                        changeType: d.change_type
+                });
+        });
+
+    return data;
 }

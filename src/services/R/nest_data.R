@@ -3,6 +3,16 @@ library(jsonlite)
 library(dplyr)
 library(magrittr)
 
+polling_loc <- readr::read_csv("../data/raw/polling_location_initial_removed_added_2012-2022_final.csv") %>% 
+  select(location_name_clean, r3latitude, r3longitude, change_year, change_type) %>% 
+  rename(name = location_name_clean,
+         X = r3longitude,
+         Y = r3latitude) %>% 
+  mutate(change_type = ifelse(change_type == "NULL", "nochange", change_type))
+
+exportJSON <- toJSON(polling_loc)
+write(exportJSON, "../data/processed/polling_loc.json")
+
 stfp <- c("13", "45", "28", "55") #state fips codes
 year <- c(2012, 2014, 2016, 2018, 2020, 2022)
 

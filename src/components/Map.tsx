@@ -14,10 +14,12 @@ import { State, County, GeoID } from "../utils/Types";
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { stateData, countyData, tractData, vdData } from "../utils/DM";
+import { stateData, countyData, tractData, vdData, pollingLocData } from "../utils/DM";
 
 // Styles 
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle } from "../utils/Theme";
+
+console.log(pollingLocData);
 
 export function mouseOut(event: any) {
     var layer = event.target;
