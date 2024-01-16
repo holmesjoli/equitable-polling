@@ -1,6 +1,6 @@
 // Libraries
 import { useEffect, useMemo, useState, useRef } from "react";
-import { MapContainer, TileLayer, GeoJSON, ZoomControl, Rectangle, FeatureGroup } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, Rectangle, FeatureGroup, Circle } from "react-leaflet";
 import { point, bounds } from 'leaflet';
 import * as d3 from 'd3';
 
@@ -260,18 +260,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
     }, [geoJsonVdData]);
 
-    useEffect(() => {
-       initPolls();
-    }, []);
-
-    useEffect(() => {
-        // if (showPolls) {
-           drawPolls(pollingData);
-        // }
-        // else {
-        //     pollRef.current?.clearLayers().addData([]);
-        // }
-    }, [pollingData]);
+    // useEffect(() => {
+    //     pollRef.current?.clearLayers().addData(pollingData);
+    // }, [pollingData]);
 
     return(
         <>
@@ -280,6 +271,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
                 {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
+                {showPolls ? <FeatureGroup ref={pollRef} key="pollingLoc"> 
+                    {pollingData.map((d: PollingLoc) => (
+                        <Circle center={[d.latlng.lat, d.latlng.lng]} pathOptions={{ fillColor: 'blue' }} radius={100} />
+                    ))}
+                    </FeatureGroup> : null}
             </FeatureGroup>
         </>
     )
