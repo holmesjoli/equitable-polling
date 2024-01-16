@@ -34,13 +34,19 @@ export function mouseOutTract(event: any) {
     Tooltip.pointerOut();
 }
 
-// Returns a list of geographies which are current in view
-function filterByBounds(mapRef: any, data: any) {
-
+// Returns the bounds of the current map view
+function getMapBounds(mapRef: any) {
     const mapBounds = mapRef.current.getBounds();
     const mapNE = mapBounds?.getNorthEast();
     const mapSW = mapBounds?.getSouthWest();
-    const mapBounds2 = bounds(point(mapSW!.lat, mapSW!.lng), point(mapNE!.lat, mapNE!.lng));                                   
+
+    return bounds(point(mapSW!.lat, mapSW!.lng), point(mapNE!.lat, mapNE!.lng));
+}
+
+// Returns a list of geographies which are current in view
+function filterGeoByBounds(mapRef: any, data: any) {
+
+    const mapBounds = getMapBounds(mapRef);                                   
 
     const features: any[] = [];
 
@@ -50,12 +56,16 @@ function filterByBounds(mapRef: any, data: any) {
             p2 = point(d.properties.bounds.northEast.lat, d.properties.bounds.northEast.lng),
             tractBounds = bounds(p1, p2);
 
-        if (mapBounds2.intersects(tractBounds)) {
+        if (mapBounds.intersects(tractBounds)) {
             features.push(d);
         }
     });
 
     return {type: 'FeatureCollection', features: features} as GeoJSON.FeatureCollection;
+}
+
+function filterPointByBounds(mapRef: any, data: any) {
+
 }
 
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
@@ -197,12 +207,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             mapRef.current
                 .flyTo(county.latlng, county.zoom) // zooms to county level
                 .on('zoomend', () => {
-                    setGeoJsonData(filterByBounds(mapRef, tractData));
-                    setGeoJsonVdData(filterByBounds(mapRef, vdData));
+                    setGeoJsonData(filterGeoByBounds(mapRef, tractData));
+                    setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
                 })
                 .on('moveend', () => {
-                    setGeoJsonData(filterByBounds(mapRef, tractData));
-                    setGeoJsonVdData(filterByBounds(mapRef, vdData));
+                    setGeoJsonData(filterGeoByBounds(mapRef, tractData));
+                    setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
                 });
         }
 
