@@ -9,7 +9,7 @@ polling_loc <- readr::read_csv("../data/raw/polling_location_initial_removed_add
          X = r3longitude,
          Y = r3latitude,
          overall = change_type) %>% 
-  mutate(change_type = ifelse(change_type == "NULL", "nochange", change_type),
+  mutate(overall = ifelse(overall == "NULL", "nochange", overall),
          id = case_when(overall == "added" ~ "3",
                         overall == "nochange" ~ "0",
                         overall == "removed" ~ "-3")) 

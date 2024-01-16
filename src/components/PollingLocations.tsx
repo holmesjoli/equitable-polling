@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { PollingLoc } from '../utils/Types';
 
-import { pollFillScale, pollStrokeScale, geoFillScale, rScale, theme } from "../utils/Theme";
+import { pollFillScale, pollStrokeScale } from "../utils/Theme";
 
 // Reusable function to initialize legend
 export function initPolls() {

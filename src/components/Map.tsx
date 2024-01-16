@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 
 // Components
 import * as Tooltip from "./Tooltip";
-import { initPolls } from "./PollingLocations";
+import { initPolls, drawPolls } from "./PollingLocations";
 
 // Types
 import { State, County, GeoID, PollingLoc } from "../utils/Types";
@@ -264,13 +264,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
        initPolls();
     }, []);
 
-    useEffect(() => {
-        // if (showPolls) {
-        //     pollRef.current?.clearLayers().addData(pollingData);
-        // } else {
-        //     pollRef.current?.clearLayers().addData([]);
-        // }
-    }, [pollingData]);
+    // useEffect(() => {
+    //     // if (showPolls) {
+    //        drawPolls(pollingData);
+    //     // } 
+    //     // else {
+    //     //     pollRef.current?.clearLayers().addData([]);
+    //     // }
+    // }, [pollingData]);
 
     return(
         <>
