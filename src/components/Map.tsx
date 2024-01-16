@@ -46,7 +46,7 @@ function getMapBounds(mapRef: any) {
 // Returns a list of geographies which are current in view
 function filterGeoByBounds(mapRef: any, data: any) {
 
-    const mapBounds = getMapBounds(mapRef);                                   
+    const mapBounds = getMapBounds(mapRef);                                
 
     const features: any[] = [];
 
@@ -66,6 +66,18 @@ function filterGeoByBounds(mapRef: any, data: any) {
 
 function filterPointByBounds(mapRef: any, data: any) {
 
+    const mapBounds = getMapBounds(mapRef);
+
+    const points: any[] = [];
+
+    data.forEach((d: any) => {
+        var p = point(d.latlng.lat, d.latlng.lng)
+        if (mapBounds.contains(p)) {
+            points.push(d);
+        }
+    });
+
+    return points;
 }
 
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
@@ -74,6 +86,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
+    const [geoJsonPollingLocData, setGeoJsonPollingLocData] = useState(pollingLocData);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
@@ -209,10 +222,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 .on('zoomend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
+                    setGeoJsonPollingLocData(filterPointByBounds(mapRef, pollingLocData));
                 })
                 .on('moveend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
+                    setGeoJsonPollingLocData(filterPointByBounds(mapRef, pollingLocData));
                 });
         }
 
