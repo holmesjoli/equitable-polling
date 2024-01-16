@@ -18,7 +18,7 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { stateData, countyData, tractData, vdData, pollingLocData } from "../utils/DM";
 
 // Styles
-import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, pollStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, pollStyle, pollFillScale } from "../utils/Theme";
 
 export function mouseOut(event: any) {
     var layer = event.target;
@@ -276,7 +276,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 {showPolls ? 
                     <FeatureGroup ref={pollRef} key="pollingLoc"> 
                         {pollingData.map((d: PollingLoc, i: number) => (
-                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={100} />
+                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} />
                         ))}
                     </FeatureGroup> : null}
             </FeatureGroup>

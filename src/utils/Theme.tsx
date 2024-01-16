@@ -52,6 +52,7 @@ function getFillOpacity(d: any) {
   return d ? .3 : .1;
 }
 
+// Selected county styles
 export function highlightSelectedCounty(feature: any) {
     return {
       color: theme.grey.primary,
@@ -62,6 +63,7 @@ export function highlightSelectedCounty(feature: any) {
     };
 }
 
+// Census tract styles
 export function tractStyle(feature: any) {
 
   return {
@@ -73,6 +75,7 @@ export function tractStyle(feature: any) {
   };
 }
 
+// Voting district styles
 export function vdStyle(feature: any) {
   return {
     color: theme.focusColorDark,
@@ -82,12 +85,11 @@ export function vdStyle(feature: any) {
   };
 }
 
+// Poll styles
 export function pollStyle(point: any) {
-  // console.log(point);
-
   return {
-    fillColor: theme.focusColor,
-    color: theme.focusColor,
+    fillColor: pollFillScale(point.id) as string,
+    color: pollStrokeScale(point.overall) as string,
     weight: 1,
     opacity: 1,
     fillOpacity: 1
