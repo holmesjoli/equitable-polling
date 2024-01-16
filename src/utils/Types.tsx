@@ -1,5 +1,7 @@
 import { LatLng } from "leaflet";
 
+export type PixelCoords = {x: number, y: number};
+
 export type Bounds = {northEast: LatLng, southWest: LatLng};
 
 export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, zoom: number};
@@ -21,4 +23,6 @@ export type EquityIndicator = {variable: string, descr: string};
 
 export type Indicator = {id: string, descr: string};
 
-export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, changeType: number | string, selected: boolean, cntyfp: string};
+export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, 
+                          changeType: number | string, selected: boolean, cntyfp?: string,
+                          pixelCoords?: PixelCoords};

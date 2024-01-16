@@ -71,6 +71,7 @@ function filterPointByBounds(mapRef: any, data: any) {
     data.forEach((d: any) => {
         const p = point(d.latlng.lat, d.latlng.lng);
         if (mapBounds.contains(p)) {
+            d.pixelCoord = mapRef.current.latLngToLayerPoint(d.latlng);
             points.push(d);
         }
     });

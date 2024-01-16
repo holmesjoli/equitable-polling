@@ -138,7 +138,6 @@ export function getPollingLoc() {
                        descr: 'Polling location',
                        name: d.name,
                        latlng: {lat: d.Y, lng: d.X} as LatLng,
-                       cntyfp: 'TODO',
                        changeType: d.change_type,
                        selected: false
                 });
