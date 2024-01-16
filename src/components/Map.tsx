@@ -264,14 +264,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
        initPolls();
     }, []);
 
-    // useEffect(() => {
-    //     // if (showPolls) {
-    //        drawPolls(pollingData);
-    //     // } 
-    //     // else {
-    //     //     pollRef.current?.clearLayers().addData([]);
-    //     // }
-    // }, [pollingData]);
+    useEffect(() => {
+        // if (showPolls) {
+           drawPolls(pollingData);
+        // }
+        // else {
+        //     pollRef.current?.clearLayers().addData([]);
+        // }
+    }, [pollingData]);
 
     return(
         <>

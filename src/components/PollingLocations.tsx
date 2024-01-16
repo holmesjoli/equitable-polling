@@ -9,7 +9,8 @@ export function initPolls() {
       .append('svg')
       .attr('class', 'poll-layer')
       .attr('height', '80vh')
-      .attr('width', '100vw');
+      .attr('width', '100vw')
+      .attr('z-index', 2000);
 }
 
 export function drawPolls(data: PollingLoc[]) {
@@ -23,11 +24,12 @@ export function drawPolls(data: PollingLoc[]) {
             enter => enter
             .append('circle')
                 .attr('r', 6)
-                .attr('cx', (d: any) => d.pixelCoords.x)
-                .attr('cy', (d: any) => d.pixelCoords.y)
+                .attr('cx', (d: any) => d.pixelCoord.x)
+                .attr('cy', (d: any) => d.pixelCoord.y)
                 .attr('fill', (d: any) => pollFillScale(d.id) as string) // Add type assertion
                 .attr("stroke", (d: any) => pollStrokeScale(d.overall) as string) // Add type assertion
                 .attr('stroke-width', 1)
+                .attr('z-index', 2000)
         //   ,
         // update => update
         //   .attr('opacity', d => viewHoverValue === "" || d.color === viewHoverValue ? 1 : 0.3),

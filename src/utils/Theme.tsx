@@ -20,7 +20,7 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
 
 // Scales
 export const pollStrokeScale = d3.scaleOrdinal()
-  .domain(["increase", "nochange", "decrease"] )
+  .domain(["added", "nochange", "removed"] )
   .range(["#610063", theme.grey.primary, "#E45729"] );
 
 export const pollFillScale = d3.scaleOrdinal()
