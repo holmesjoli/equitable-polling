@@ -112,16 +112,18 @@ function updatePollLegend(geo: string, pollHover: any) {
 
   const id = pollHover.pollHover.id;
   
-  const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3', geo: 'state' },
-                { overall: 'increase', label: "Increase of 4 to 10", id: '2', geo: 'state' },
-                { overall: 'increase', label: "Increase of 1 to 3" , id: '1', geo: 'state' },
+  const data = [{ overall: 'added', label: 'Increase of more than 10', id: '3', geo: 'state' },
+                { overall: 'added', label: "Increase of 4 to 10", id: '2', geo: 'state' },
+                { overall: 'added', label: "Increase of 1 to 3" , id: '1', geo: 'state' },
                 { overall: 'nochange', label: "No change", id: '0', geo: 'state' },
-                { overall: 'decrease', label: "Decrease of 1 to 3", id: '-1', geo: 'state' },
-                { overall: 'decrease', label: "Decrease of 4 to 10", id: '-2', geo: 'state' },
-                { overall: 'decrease', label: "Decrease of more than 10", id: '-3', geo: 'state' },
+                { overall: 'removed', label: "Decrease of 1 to 3", id: '-1', geo: 'state' },
+                { overall: 'removed', label: "Decrease of 4 to 10", id: '-2', geo: 'state' },
+                { overall: 'removed', label: "Decrease of more than 10", id: '-3', geo: 'state' },
                 { overall: 'added', label: 'Added', id: '3', geo: 'county' },
                 { overall: 'nochange', label: "No change", id: '0', geo: 'county' },
                 { overall: 'removed', label: "Removed", id: '-3', geo: 'county' }];
+
+  console.log(data.filter(d => d.geo === geo));
 
   const svg = d3.select(`#${pollLegendId} svg`)
     .attr('height', legendHeight(data.filter(d => d.geo === geo)));
@@ -203,6 +205,12 @@ function ColorTypeCounty () {
 }
 
 export function StateLegend (pollHover: any) {
+
+  // Initiate legends
+  useEffect(() => {
+    initLegend(pollLegendId);
+  }, []);
+
   // Initiate legends
   useEffect(() => {
     updatePollLegend('state', pollHover);
