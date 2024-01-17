@@ -170,7 +170,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         // Tooltip.pointerOut();
     }
 
-
     // React Hooks ---------------------------------------------------
 
     // on Click Rectangle - Resets the zoom and full screen to the us map
@@ -253,13 +252,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonId]);
 
-    // useEffect(() => {
-    //     mapRef.current?.removeLayer(pollRef.current);
-    //     pollRef.current?.bringToFront();
-    //     mapRef.current?.addLayer(pollRef.current);
-    // }, [showPolls])
-
-
     // Updates main geography and main boundary
     useEffect(() => {
         // Update boundary and interactive layer
@@ -281,14 +273,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             geoJsonVdRef.current?.clearLayers().addData({} as GeoJSON.FeatureCollection);
         }
     }, [geoJsonVdData]);
-
-
-
-    // rectRef.current?.setZIndex(-1000);
-    // geoJsonBoundaryRef.current?.setZIndex(-999);
-    // geoJsonRef.current?.setZIndex(100);
-    // geoJsonVdRef.current?.setZIndex(200);
-    // pollRef.current?.setZIndex(2000);
 
     return(
         <>
