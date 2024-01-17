@@ -110,10 +110,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Functions ---------------------------------------------------
 
-    function mouseOverPollingLoc(event: any) {
-        var layer = event.target;
-        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
+    function mouseOverPollingLoc(d: any) {
+        var coords = mapRef.current.latLngToContainerPoint(d.latlng);
+        Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${d.descr}: <span>${d.name}</span>`);
     }
 
     function mouseOverTract(event: any) {
@@ -159,15 +158,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
           mouseout: mouseOutTract
         });
         Tooltip.pointerOut();
-    }
-
-    function onEachPollingLoc(_: any, layer: any) {
-
-        layer.on({
-          mouseover: mouseOverPollingLoc,
-          mouseout: Tooltip.pointerOut()
-        });
-        // Tooltip.pointerOut();
     }
 
     // React Hooks ---------------------------------------------------
@@ -288,7 +278,17 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             {showPolls ?
                 <FeatureGroup ref={pollRef} key="pollingLocFeatureGroup">
                     {pollingData.map((d: PollingLoc, i: number) => (
-                        <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} />
+                        <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} eventHandlers={{
+                            click: () => {
+                            //   console.log('marker clicked')
+                            },
+                            mouseover: () => {
+                                mouseOverPollingLoc(d);
+                            },
+                            mouseout: () => {    
+                                Tooltip.pointerOut();
+                            }
+                          }}/>
                     ))}
                 </FeatureGroup> : null}
             </Pane>
