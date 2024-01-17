@@ -123,8 +123,6 @@ function updatePollLegend(geo: string, pollHover: any) {
                 { overall: 'nochange', label: "No change", id: '0', geo: 'county' },
                 { overall: 'removed', label: "Removed", id: '-3', geo: 'county' }];
 
-  console.log(data.filter(d => d.geo === geo));
-
   const svg = d3.select(`#${pollLegendId} svg`)
     .attr('height', legendHeight(data.filter(d => d.geo === geo)));
 
