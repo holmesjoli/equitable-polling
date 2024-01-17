@@ -105,7 +105,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
-    const pollRef = useRef(null);
+    const pollRef = useRef<L.FeatureGroup>(null);
 
     console.log(pollingData);
 
@@ -260,11 +260,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
     }, [geoJsonVdData]);
 
-    console.log(pollRef.current)
+    console.log(pollRef.current);
 
-    // useEffect(() => {
-    //     (pollRef.current as L.LayerGroup)?.clearLayers().addData(pollingData);
-    // }, [pollingData]);
+   
+
+    useEffect(() => {
+        pollRef.current?.bringToFront();
+    }, [pollingData]);
 
     return(
         <>
@@ -274,7 +276,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
                 {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
                 {showPolls ? 
-                    <FeatureGroup ref={pollRef} key="pollingLoc"> 
+                    <FeatureGroup ref={pollRef} key="pollingLoc">
                         {pollingData.map((d: PollingLoc, i: number) => (
                             <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} />
                         ))}
