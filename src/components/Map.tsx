@@ -1,6 +1,6 @@
 // Libraries
 import { useEffect, useMemo, useState, useRef } from "react";
-import { MapContainer, TileLayer, GeoJSON, ZoomControl, Rectangle, FeatureGroup, Circle } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, Rectangle, FeatureGroup, Circle, Pane } from "react-leaflet";
 import { point, bounds } from 'leaflet';
 import * as d3 from 'd3';
 
@@ -102,14 +102,19 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [pollingData, setPollingData] = useState<any[]>([]);
 
+    const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
     const pollRef = useRef<L.FeatureGroup>(null);
 
-    console.log(pollingData);
-
     // Functions ---------------------------------------------------
+
+    function mouseOverPollingLoc(event: any) {
+        var layer = event.target;
+        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
+        Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${layer.feature.properties.descr}: <span>${layer.feature.properties.name}</span>`);
+    }
 
     function mouseOverTract(event: any) {
         var layer = event.target;
@@ -138,6 +143,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         Tooltip.pointerOut();
     }
 
+    function onClickFeature(event: any) {
+        const layer = event.target;
+        const properties = layer.feature.properties;
+
+        if (properties.type !== "Tract") {
+            setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
+        }        
+    }
+
     function onEachVD(_: any, layer: any) {
 
         layer.on({
@@ -147,14 +161,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         Tooltip.pointerOut();
     }
 
-    function onClickFeature(event: any) {
-        const layer = event.target;
-        const properties = layer.feature.properties;
+    function onEachPollingLoc(_: any, layer: any) {
 
-        if (properties.type !== "Tract") {
-            setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
-        }        
+        layer.on({
+          mouseover: mouseOverPollingLoc,
+          mouseout: Tooltip.pointerOut()
+        });
+        // Tooltip.pointerOut();
     }
+
 
     // React Hooks ---------------------------------------------------
 
@@ -238,14 +253,21 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonId]);
 
+    // useEffect(() => {
+    //     mapRef.current?.removeLayer(pollRef.current);
+    //     pollRef.current?.bringToFront();
+    //     mapRef.current?.addLayer(pollRef.current);
+    // }, [showPolls])
+
+
     // Updates main geography and main boundary
     useEffect(() => {
         // Update boundary and interactive layer
         if (geoJsonId.type === 'County') {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty).bringToBack();
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
             geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
         } else {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).bringToBack();
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
 
@@ -260,20 +282,32 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
     }, [geoJsonVdData]);
 
+
+
+    // rectRef.current?.setZIndex(-1000);
+    // geoJsonBoundaryRef.current?.setZIndex(-999);
+    // geoJsonRef.current?.setZIndex(100);
+    // geoJsonVdRef.current?.setZIndex(200);
+    // pollRef.current?.setZIndex(2000);
+
     return(
         <>
-            <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            <FeatureGroup>
+            <Pane name="background-pane" style={{ zIndex: -100 }}>
+                <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect} ref={rectRef}/>
+            </Pane>
+            <Pane name="geo-pane" style={{ zIndex: 100 }}>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
                 {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
-                {showPolls ?
-                    <FeatureGroup ref={pollRef} key="pollingLoc">
-                        {pollingData.map((d: PollingLoc, i: number) => (
-                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} />
-                        ))}
-                    </FeatureGroup> : null}
-            </FeatureGroup>
+            </Pane>
+            <Pane name="poll-pane" style={{ zIndex: 200 }}>
+            {showPolls ?
+                <FeatureGroup ref={pollRef} key="pollingLocFeatureGroup">
+                    {pollingData.map((d: PollingLoc, i: number) => (
+                        <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} />
+                    ))}
+                </FeatureGroup> : null}
+            </Pane>
         </>
     )
 }
@@ -294,10 +328,12 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
             zoomControl={false}
             ref={mapRef}
             >
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
-            />
+            <Pane name="custom" style={{ zIndex: -1000 }}>
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
+                />
+            </Pane>
             <LayersComponent mapRef={mapRef} geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
                              setSelectedCounty={setSelectedCounty}
