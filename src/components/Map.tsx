@@ -93,8 +93,8 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
     return data;
 }
 
-function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls,  showVD, setShowVD, setPollHover }: 
-                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, showVD: boolean, setShowVD: any, setPollHover: any}) {
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, setPollHover: any}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -183,8 +183,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedState(defaultState);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
-            setPollingData([]);
             setShowVD(false);
+            setShowPolls(false);
 
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
                 .on('zoomend', () => {
@@ -201,8 +201,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData(stateData);
-            setPollingData([]);
             setShowVD(false);
+            setShowPolls(false);
 
             mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
             .on('zoomend', () => {
@@ -234,6 +234,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
+            setShowPolls(true);
 
             mapRef.current
                 .flyTo(county.latlng, county.zoom) // zooms to county level
@@ -305,8 +306,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, showVD, setShowVD, setPollHover }: 
-                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, 
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, 
                               showVD: boolean, setShowVD: any, setPollHover: any }): JSX.Element {
 
     const mapRef = useRef(null);
@@ -331,7 +332,8 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
             <LayersComponent mapRef={mapRef} geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
                              setSelectedCounty={setSelectedCounty}
-                             showPolls={showPolls} showVD={showVD} setShowVD={setShowVD} setPollHover={setPollHover}
+                             showPolls={showPolls} setShowPolls={setShowPolls}
+                             showVD={showVD} setShowVD={setShowVD} setPollHover={setPollHover}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>
