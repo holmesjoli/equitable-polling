@@ -242,10 +242,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     useEffect(() => {
         // Update boundary and interactive layer
         if (geoJsonId.type === 'County') {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty).bringToBack();
             geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
         } else {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).bringToBack();
             geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
         }
 
@@ -260,14 +260,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
     }, [geoJsonVdData]);
 
-    console.log(pollRef.current);
-
-   
-
-    useEffect(() => {
-        pollRef.current?.bringToFront();
-    }, [pollingData]);
-
     return(
         <>
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
@@ -275,7 +267,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
                 {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
-                {showPolls ? 
+                {showPolls ?
                     <FeatureGroup ref={pollRef} key="pollingLoc">
                         {pollingData.map((d: PollingLoc, i: number) => (
                             <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} />
