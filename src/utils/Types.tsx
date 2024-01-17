@@ -25,4 +25,4 @@ export type Indicator = {id: string, descr: string};
 
 export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, 
                           overall: string, selected: boolean, cntyfp?: string,
-                          pixelCoords?: PixelCoords, id: string};
+                          pixelCoords?: PixelCoords, id: string, status: string};

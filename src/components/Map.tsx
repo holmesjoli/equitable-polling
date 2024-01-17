@@ -6,7 +6,6 @@ import * as d3 from 'd3';
 
 // Components
 import * as Tooltip from "./Tooltip";
-import { initPolls, drawPolls } from "./PollingLocations";
 
 // Types
 import { State, County, GeoID, PollingLoc } from "../utils/Types";
@@ -112,7 +111,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOverPollingLoc(d: any) {
         var coords = mapRef.current.latLngToContainerPoint(d.latlng);
-        Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${d.descr}: <span>${d.name}</span>`);
+        Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${d.name}</span><br><span class=${d.status}>Status: ${d.status}</span>`);
     }
 
     function mouseOverTract(event: any) {

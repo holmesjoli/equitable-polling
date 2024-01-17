@@ -137,6 +137,7 @@ export function getPollingLoc() {
             data.push({type: 'Poll',
                        descr: 'Polling location',
                        name: d.name,
+                       status: d.status,
                        latlng: {lat: d.Y, lng: d.X} as LatLng,
                        overall: d.overall,
                        id: d.id,

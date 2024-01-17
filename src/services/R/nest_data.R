@@ -12,7 +12,10 @@ polling_loc <- readr::read_csv("../data/raw/polling_location_initial_removed_add
   mutate(overall = ifelse(overall == "NULL", "nochange", overall),
          id = case_when(overall == "added" ~ "3",
                         overall == "nochange" ~ "0",
-                        overall == "removed" ~ "-3")) 
+                        overall == "removed" ~ "-3"),
+         status = case_when(overall == "added" ~ "Added",
+                            overall == "nochange" ~ "No change",
+                            overall == "removed" ~ "Removed")) 
 
 exportJSON <- toJSON(polling_loc)
 write(exportJSON, "../data/processed/polling_loc.json")
