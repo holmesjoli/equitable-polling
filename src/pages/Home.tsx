@@ -26,6 +26,9 @@ export default function Home({}): JSX.Element {
     const [isFullScreen, setFullScreen] = useState(true);
     const [geoJsonId, setGeoJsonId] = useState<GeoID>(defaultMap);
 
+    const [pollHover, setPollHover] = useState({});
+    const [geoHover, setGeoHover] = useState({});
+
     useEffect(() => {
         Tooltip.init();
     }, []);
@@ -39,6 +42,8 @@ export default function Home({}): JSX.Element {
                         <StateStatus
                             equityIndicator={equityIndicator}
                             setEquityIndicator={setEquityIndicator}
+                            pollHover={pollHover}
+                            geoHover={geoHover}
                         />
                 ) : (
                         <CountyStatus
@@ -48,6 +53,8 @@ export default function Home({}): JSX.Element {
                             setShowPolls={setShowPolls}
                             showVD={showVD}
                             setShowVD={setShowVD}
+                            pollHover={pollHover}
+                            geoHover={geoHover}
                         />
                 )}
                 </>
