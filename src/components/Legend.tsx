@@ -11,7 +11,7 @@ import { EquityIndicator } from '../utils/Types';
 
 const equityLegendId = 'Equity-Legend';
 const sizeLegendId = 'Size-Legend';
-const colorLegendId = 'Color-Legend';
+const pollLegendId = 'Poll-Legend';
 const width = 200;
 
 const circleStart = 17;
@@ -26,7 +26,7 @@ function initLegend(selector: string) {
 }
 
 // Reusable function to add text to legend
-function legendText(svg: any, data: any[]) {
+function legendText(svg: any, data: any[], id: string | undefined = undefined) {
   svg
     .selectAll('text')
     .data(data, (d: any) => d.id)
@@ -37,11 +37,9 @@ function legendText(svg: any, data: any[]) {
         .attr('y', (d: any, i: number) => i * 23 + 20)
         .text((d: any) => d.label)
         .attr('font-size', theme.fontSize)
-        .attr('fill', theme.grey.primary)
-        // ,
-      // update => update
-      //   .attr('opacity', d.pollHoverId === hoverValue ? 1 : 0.3),
-      // exit => exit.remove()
+        .attr('fill', theme.grey.primary),
+      (update: any) => update
+        .attr('opacity', (d: any) => d.id === id || id === undefined? 1 : 0.3)
     );
 }
 
@@ -110,22 +108,22 @@ function initSizeLegend(pollHover: any) {
 }
 
 // Initiate poll legend
-function initPollLegend(geo: string, pollHover: any) {
+function updatePollLegend(geo: string, pollHover: any) {
+
+  const id = pollHover.pollHover.id;
   
-const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3', geo: 'state' },
-              { overall: 'increase', label: "Increase of 4 to 10", id: '2', geo: 'state' },
-              { overall: 'increase', label: "Increase of 1 to 3" , id: '1', geo: 'state' },
-              { overall: 'nochange', label: "No change", id: '0', geo: 'state' },
-              { overall: 'decrease', label: "Decrease of 1 to 3", id: '-1', geo: 'state' },
-              { overall: 'decrease', label: "Decrease of 4 to 10", id: '-2', geo: 'state' },
-              { overall: 'decrease', label: "Decrease of more than 10", id: '-3', geo: 'state' },
-              { overall: 'added', label: 'Added', id: '3', geo: 'county' },
-              { overall: 'nochange', label: "No change", id: '0', geo: 'county' },
-              { overall: 'removed', label: "Removed", id: '-3', geo: 'county' }];
+  const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3', geo: 'state' },
+                { overall: 'increase', label: "Increase of 4 to 10", id: '2', geo: 'state' },
+                { overall: 'increase', label: "Increase of 1 to 3" , id: '1', geo: 'state' },
+                { overall: 'nochange', label: "No change", id: '0', geo: 'state' },
+                { overall: 'decrease', label: "Decrease of 1 to 3", id: '-1', geo: 'state' },
+                { overall: 'decrease', label: "Decrease of 4 to 10", id: '-2', geo: 'state' },
+                { overall: 'decrease', label: "Decrease of more than 10", id: '-3', geo: 'state' },
+                { overall: 'added', label: 'Added', id: '3', geo: 'county' },
+                { overall: 'nochange', label: "No change", id: '0', geo: 'county' },
+                { overall: 'removed', label: "Removed", id: '-3', geo: 'county' }];
 
-  initLegend(colorLegendId);
-
-  const svg = d3.select(`#${colorLegendId} svg`)
+  const svg = d3.select(`#${pollLegendId} svg`)
     .attr('height', legendHeight(data.filter(d => d.geo === geo)));
 
   svg
@@ -140,14 +138,12 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
         })
         .attr('fill', (d: any) => pollFillScale(d.id) as string) // Add type assertion
         .attr("stroke", (d: any) => pollStrokeScale(d.overall) as string) // Add type assertion
-        .attr('stroke-width', 1)
-      //   ,
-      // update => update
-      //   .attr('opacity', d.pollHoverId === pollHover ? 1 : 0.3),
-      // exit => exit.remove()
+        .attr('stroke-width', 1),
+      update => update
+        .attr('opacity', (d: any) => d.id === id || id === undefined? 1 : 0.3)
   );
 
-  legendText(svg, data.filter(d => d.geo === geo));
+  legendText(svg, data.filter(d => d.geo === geo), id);
 }
 
 // Initiate equity legend
@@ -195,21 +191,21 @@ function SizeTypeState () {
 function ColorTypeState () {
   return (
     <ComponentGroupInner title="Net change in # of polls">
-      <div id={colorLegendId}></div>
+      <div id={pollLegendId}></div>
     </ComponentGroupInner>
   );
 }
 
 function ColorTypeCounty () {
   return (
-      <div id={colorLegendId}></div>
+      <div id={pollLegendId}></div>
   );
 }
 
 export function StateLegend (pollHover: any) {
   // Initiate legends
   useEffect(() => {
-    initPollLegend('state', pollHover);
+    updatePollLegend('state', pollHover);
     initSizeLegend(pollHover);
   }, []);
 
@@ -224,8 +220,13 @@ export function StateLegend (pollHover: any) {
 export function CountyLegend (pollHover: any) {
   // Initiate legends
   useEffect(() => {
-    initPollLegend('county', pollHover);
+    initLegend(pollLegendId);
   }, []);
+
+  // Initiate legends
+  useEffect(() => {
+    updatePollLegend('county', pollHover);
+  }, [pollHover]);
 
   return (
     <div className="Legend">

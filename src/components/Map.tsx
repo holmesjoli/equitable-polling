@@ -19,14 +19,14 @@ import { stateData, countyData, tractData, vdData, pollingLocData } from "../uti
 // Styles
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, pollStyle, pollFillScale } from "../utils/Theme";
 
-export function mouseOut(event: any) {
+function mouseOut(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.default);
     Tooltip.pointerOut();
     d3.select(".Status .ComponentGroupInner span").attr("class", "");
 }
 
-export function mouseOutTract(event: any) {
+function mouseOutTract(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.defaultTract);
     Tooltip.pointerOut();
@@ -93,8 +93,8 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
     return data;
 }
 
-function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any}) {
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls,  showVD, setPollHover }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, showVD: boolean, setPollHover: any}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -112,6 +112,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     function mouseOverPollingLoc(d: any) {
         var coords = mapRef.current.latLngToContainerPoint(d.latlng);
         Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${d.name}</span><br><span class=${d.status}>Status: ${d.status}</span>`);
+        setPollHover(d);
     }
 
     function mouseOverTract(event: any) {
@@ -128,6 +129,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${layer.feature.properties.name} ${layer.feature.properties.descr}</span>`);
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus");
     }
+
+    function mouseOutPollingLoc() {
+        Tooltip.pointerOut();
+        setPollHover({});
+    }    
 
     function onEachFeature(_: any, layer: any) {
 
@@ -285,7 +291,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                                 mouseOverPollingLoc(d);
                             },
                             mouseout: () => {    
-                                Tooltip.pointerOut();
+                                mouseOutPollingLoc();
                             }
                           }}/>
                     ))}
@@ -295,8 +301,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD }: 
-                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, showVD, setPollHover }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, 
+                                showVD: boolean, setPollHover: any }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -320,8 +327,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
             <LayersComponent mapRef={mapRef} geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
                              setSelectedCounty={setSelectedCounty}
-                             showPolls={showPolls} setShowPolls={setShowPolls}
-                             showVD={showVD} setShowVD={setShowVD}
+                             showPolls={showPolls} showVD={showVD} setPollHover={setPollHover}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>
