@@ -99,25 +99,33 @@ export function getTracts() {
             features: features} as GeoJSON.FeatureCollection;
 }
 
-export function getVd() {
+export function getVd(baseYear: number = 2020) {
 
     const features: Feature[] = [];
 
-    (vdGeo as any[]).forEach((c: any) => {
+    let dataYear = baseYear;
+
+    if (baseYear === 2022) {
+        dataYear = 2020;
+    }
+
+    (vdGeo as any[])
+    .filter((d: any) => d.year === dataYear)
+    .forEach((d: any) => {
 
         features.push({type: 'Feature', 
             properties: {type: 'Voting district',
                          descr: 'Voting district',
-                         name: c.name,
-                         stfp: c.stfp, 
-                         cntyfp: c.cntyfp,
-                         geoid: c.geoid,
-                         vtdst: c.vtdst,
+                         name: d.name,
+                         stfp: d.stfp, 
+                         baseYear: baseYear,
+                         dataYear: dataYear,
+                         cntyfp: d.cntyfp,
                          selected: false,
-                         latlng: {lat: c.Y, lng: c.X} as LatLng,
-                         bounds: {northEast: {lat: c.ymax, lng: c.xmin} as LatLng,
-                                  southWest: {lat: c.ymin, lng: c.xmax} as LatLng } as Bounds} as VotingDistrict, 
-            geometry: c.geometry as GeoJSON.Geometry})
+                         latlng: {lat: d.Y, lng: d.X} as LatLng,
+                         bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
+                                  southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as VotingDistrict, 
+            geometry: d.geometry as GeoJSON.Geometry})
     });
 
     return {type: 'FeatureCollection', 

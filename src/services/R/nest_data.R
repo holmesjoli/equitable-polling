@@ -142,11 +142,11 @@ vd_geo <- lapply(stfp, function(st) {
                        ymin = bb[2],
                        ymax = bb[4]))
     }) %>% bind_rows()
-    
+
     row.names(bbox) <- NULL
-    
+
     df <- cbind(df, bbox)
-    
+
     df <- df %>% 
       bind_cols(df %>% 
                   sf::st_centroid() %>% 

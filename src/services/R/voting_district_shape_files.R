@@ -3,36 +3,102 @@ library(magrittr)
 library(dplyr)
 library(glue)
 
+sf_use_s2(FALSE)
+
 years <- c(16, 18, 20)
 
-lapply(years, function(year) {
+state <- c("wi", "ga", "ms", "sc")
 
-  df <- sf::read_sf(glue::glue('../data/raw/GA/ga_vest_{year}/ga_vest_{year}.shp', year = year)) %>% 
-    # select(FIPS2, geometry) %>% 
-    rename(cntyfp = FIPS2) %>% 
-    mutate(stfp = '13',
-           geoid = paste0(stfp, cntyfp),
-           year = paste0('20', year))
+county_geo <- tigris::counties(cb = T)
 
-  bbox <- lapply(1:nrow(df), function(x) {
-    bb <- df %>% 
-      slice(x) %>% 
-      sf::st_bbox()
+crs <- sf::st_crs(county_geo)
 
-    df <- data.frame(xmin = bb[1],
-                     xmax = bb[3],
-                     ymin = bb[2],
-                     ymax = bb[4])
+vds <- lapply(years, function(year) {
+
+  states <- lapply(state, function(st) {
+
+    df <- sf::read_sf(glue::glue('../data/raw/{toupper(st)}/{st}_vest_{year}/{st}_vest_{year}.shp', year = year, st = st)) 
+
+    if (st == "ga") {
+      df <- df %>% 
+        rename(cntyfp = FIPS2,
+               name = PRECINCT_N)
+    } else if(st == "wi") {
+      if (year == 16) {
+        df <- df %>% 
+          rename(cntyfp = CNTY_FIPS) %>% 
+          mutate(name = paste(NAME, STR_WARDS))
+      } else if (year == 18) {
+        df <- df %>% 
+          rename(cntyfp = CNTY_FIPS,
+                 name = LABEL)
+      } else if (year == 20) {
+        df <- df %>% 
+          rename(cntyfp = CNTY_FIPS,
+                 name = LABEL)
+      }
+
+    } else if(st == "ms") {
+      df <- df %>% 
+        rename(cntyfp = paste0('COUNTYFP', year),
+               name = paste0('NAME', year))
+    } else if (st == "sc") {
+
+      if (year == 20) {
+        df <- df %>%
+          rename(cntyfp = COUNTY,
+                 name = CODE_NAME)
+      } else {
+        df <- df %>%
+          rename(cntyfp = COUNTYFP,
+                 name = NAME)
+      }
+    }
+
+    df <- df %>%
+      mutate(year = paste0('20', year),
+             stfp = case_when(st == "ga" ~ "13",
+                              st == "wi" ~ "55",
+                              st == "ms" ~ "28",
+                              st == "sc" ~ "45")) %>% 
+      select(stfp, cntyfp, name, year, geometry)
+
+    bbox <- lapply(1:nrow(df), function(x) {
+      bb <- df %>% 
+        slice(x) %>% 
+        sf::st_bbox()
+
+      df <- data.frame(xmin = bb[1],
+                       xmax = bb[3],
+                       ymin = bb[2],
+                       ymax = bb[4])
+      return(df)
+    }) %>% bind_rows()
+
+    row.names(bbox) <- NULL
+
+    df <- cbind(df, bbox)
+
+    df <- df %>% 
+      bind_cols(df %>% 
+                  sf::st_centroid() %>% 
+                  sf::st_coordinates()) %>% 
+      st_transform(crs) %>% 
+      rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
+    
+    sf::st_crs(df) <- crs
+
     return(df)
   }) %>% bind_rows()
+  
+  # exportJSON <- toJSON(vds)
+  # write(exportJSON, glue::glue("../data/processed/votingDistrictGeoJSON_{year}.json", year = year))
 
-  row.names(bbox) <- NULL
-
-  df <- cbind(df, bbox)
-
-  # df <- df %>% 
-  #   bind_cols(df %>% 
-  #               sf::st_centroid() %>% 
-  #               sf::st_coordinates())
-
+  return(states)
+  
 })
+
+exportJSON <- toJSON(vds)
+write(exportJSON, glue::glue("../data/processed/votingDistrictGeoJSON.json", year = year))
+
+
