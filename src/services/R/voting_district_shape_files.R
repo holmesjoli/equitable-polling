@@ -17,10 +17,9 @@ vds <- lapply(years, function(year) {
 
   states <- lapply(state, function(st) {
 
+    print(st)
     df <- sf::read_sf(glue::glue('../data/raw/{toupper(st)}/{st}_vest_{year}/{st}_vest_{year}.shp', year = year, st = st)) 
 
-    # print(sf::st_crs(df))
-    
     if (st == "ga") {
       df <- df %>%
         rename(cntyfp = FIPS2,
@@ -66,7 +65,10 @@ vds <- lapply(years, function(year) {
                               st == "wi" ~ "55",
                               st == "ms" ~ "28",
                               st == "sc" ~ "45")) %>% 
-      select(stfp, cntyfp, name, year, geometry)
+      select(stfp, cntyfp, name, year, geometry) %>% 
+      st_transform(crs)
+    
+    sf::st_crs(df) <- crs
 
     bbox <- lapply(1:nrow(df), function(x) {
       bb <- df %>% 
@@ -88,10 +90,7 @@ vds <- lapply(years, function(year) {
       bind_cols(df %>% 
                   sf::st_centroid() %>% 
                   sf::st_coordinates()) %>% 
-      st_transform(crs) %>% 
       rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
-    
-    sf::st_crs(df) <- crs
 
     return(df)
   }) %>% bind_rows()
@@ -105,5 +104,3 @@ vds <- lapply(years, function(year) {
 
 exportJSON <- toJSON(vds)
 write(exportJSON, glue::glue("../data/processed/votingDistrictGeoJSON.json", year = year))
-
-

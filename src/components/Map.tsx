@@ -42,13 +42,19 @@ function filterByBounds(mapRef: any, data: any) {
 
     const features: any[] = [];
 
+    // console.log(mapBounds2);
+
     data.features.forEach((d: any) => {
 
         var p1 = point(d.properties.bounds.southWest.lat, d.properties.bounds.southWest.lng),
             p2 = point(d.properties.bounds.northEast.lat, d.properties.bounds.northEast.lng),
             tractBounds = bounds(p1, p2);
 
+            // console.log(mapBounds2.intersects(tractBounds));
+
         if (mapBounds2.intersects(tractBounds)) {
+
+            // console.log(d.properties.bounds);
             features.push(d);
         }
     });
@@ -66,23 +72,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
-
-    // console.log(mapRef.current?.getZoom());
-
-    // mapRef.current
-    //     ?.on('zoom', () => {
-    //         if (mapRef.current?.getZoom() <= 5) {
-    //             setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
-    //             setGeoJsonData(stateData);
-    //         } else if (mapRef.current?.getZoom() > 5 && mapRef.current?.getZoom() <= 7) {
-    //             setGeoJsonBoundaryData(stateData);
-    //             setGeoJsonData(countyData);
-    //         } else {
-    //             setGeoJsonBoundaryData(countyData);
-    //             setGeoJsonData(filterByBounds(mapRef, tractData));
-    //             setGeoJsonVdData(filterByBounds(mapRef, vdData));
-    //         }
-    // });
 
     // Functions ---------------------------------------------------
 
@@ -149,6 +138,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedState(defaultState);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
+            setGeoJsonVdData({} as GeoJSON.FeatureCollection);
+            setShowVD(false);
+            setShowPolls(false);
 
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
                 .on('zoomend', () => {
@@ -165,6 +157,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData(stateData);
+            setGeoJsonVdData({} as GeoJSON.FeatureCollection);
+            setShowVD(false);
+            setShowPolls(false);
 
             mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
             .on('zoomend', () => {
@@ -208,6 +203,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
             setSelectedCounty(county);
             setGeoJsonBoundaryData(countyData);
+            setShowPolls(true);
 
             mapRef.current
                 .flyTo(county.latlng, county.zoom) // zooms to county level
