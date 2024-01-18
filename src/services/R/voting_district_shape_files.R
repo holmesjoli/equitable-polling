@@ -19,23 +19,28 @@ vds <- lapply(years, function(year) {
 
     df <- sf::read_sf(glue::glue('../data/raw/{toupper(st)}/{st}_vest_{year}/{st}_vest_{year}.shp', year = year, st = st)) 
 
+    # print(sf::st_crs(df))
+    
     if (st == "ga") {
-      df <- df %>% 
+      df <- df %>%
         rename(cntyfp = FIPS2,
                name = PRECINCT_N)
     } else if(st == "wi") {
       if (year == 16) {
-        df <- df %>% 
+        df <- df %>%
           rename(cntyfp = CNTY_FIPS) %>% 
-          mutate(name = paste(NAME, STR_WARDS))
+          mutate(name = paste(NAME, STR_WARDS),
+                 cntyfp = stringr::str_sub(cntyfp, 3, 5))
       } else if (year == 18) {
-        df <- df %>% 
+        df <- df %>%
           rename(cntyfp = CNTY_FIPS,
-                 name = LABEL)
+                 name = LABEL) %>% 
+          mutate(cntyfp = stringr::str_sub(cntyfp, 3, 5))
       } else if (year == 20) {
-        df <- df %>% 
+        df <- df %>%
           rename(cntyfp = CNTY_FIPS,
-                 name = LABEL)
+                 name = LABEL) %>% 
+          mutate(cntyfp = stringr::str_sub(cntyfp, 3, 5))
       }
 
     } else if(st == "ms") {
@@ -56,7 +61,7 @@ vds <- lapply(years, function(year) {
     }
 
     df <- df %>%
-      mutate(year = paste0('20', year),
+      mutate(year = as.numeric(paste0('20', year)),
              stfp = case_when(st == "ga" ~ "13",
                               st == "wi" ~ "55",
                               st == "ms" ~ "28",
@@ -96,7 +101,7 @@ vds <- lapply(years, function(year) {
 
   return(states)
   
-})
+}) %>% bind_rows()
 
 exportJSON <- toJSON(vds)
 write(exportJSON, glue::glue("../data/processed/votingDistrictGeoJSON.json", year = year))
