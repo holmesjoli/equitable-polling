@@ -79,13 +79,11 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
                          latlng: {lat: d.Y, lng: d.X} as LatLng,
                          zoom: 10,
                          selected: false,
-                        equityMeasure: equityIndicator.variable !== 'none' ? long.find((e: Longitudinal) => e.geoid === d.geoid)?.pctBlack : -1,
+                         equityMeasure: equityIndicator.variable !== 'none' ? long.find((e: Longitudinal) => e.geoid === d.geoid)?.pctBlack : -1,
                          bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
                                   southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
             geometry: d.geometry as GeoJSON.Geometry})
     });
-
-    console.log(features);
 
     return {type: 'FeatureCollection', 
             features: features} as GeoJSON.FeatureCollection;

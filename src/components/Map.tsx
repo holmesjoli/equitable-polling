@@ -63,6 +63,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
+    const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(getCounties(changeYear, equityIndicator));
+
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
@@ -151,10 +153,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
             mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
             .on('zoomend', () => {
-                setGeoJsonData(getCounties(changeYear, equityIndicator));
+                setGeoJsonData(countyData);
             })
             .on('moveend', () => {
-                setGeoJsonData(getCounties(changeYear, equityIndicator));
+                setGeoJsonData(countyData);
             }); 
         
         // Selected County
@@ -162,7 +164,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             let county = {} as County;
 
             // Updates selected county which is need to style the county and make it distinct from surrounding counties
-            getCounties(changeYear, equityIndicator).features.forEach((d: GeoJSON.Feature) => {
+            countyData.features.forEach((d: GeoJSON.Feature) => {
                 if (d.properties!.geoid === geoJsonId.geoid) {
                     d.properties!.selected = true;
                     county = d.properties as County;
@@ -170,6 +172,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     d.properties!.selected = false;
                 }
             });
+
+            console.log(countyData.features.find(d => d.properties?.selected));
 
             // Updates selected county which is need to style the county and make it distinct from surrounding counties
             tractData.features.forEach((d: GeoJSON.Feature) => {
@@ -190,7 +194,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             });
 
             setSelectedCounty(county);
-            setGeoJsonBoundaryData(getCounties(changeYear, equityIndicator));
+            setGeoJsonBoundaryData(countyData);
 
             mapRef.current
                 .flyTo(county.latlng, county.zoom) // zooms to county level
@@ -244,8 +248,6 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                             { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator }): JSX.Element {
 
     const mapRef = useRef(null);
-
-    console.log(getCounties(changeYear, equityIndicator));
 
     return(
         <MapContainer
