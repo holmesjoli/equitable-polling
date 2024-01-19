@@ -7,7 +7,7 @@ import countyLong from "../data/processed/countyLongitudinal.json";
 import tractLong from "../data/processed/tractLongitudinal.json"; 
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, Longitudinal } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, Longitudinal, ChangeYear } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -15,7 +15,6 @@ import { Feature } from "geojson";
 export const countyLongitudinal = getLongitudinal(countyLong);
 export const tractLongitudinal = getLongitudinal(tractLong);
 export const stateData = getStates();
-export const countyData = getCounties();
 export const tractData = getTracts();
 export const vdData = getVd();
 
@@ -62,9 +61,9 @@ function getStates() {
 }
 
 // Returns a feature collection of all the counties for the selected project states
-export function getCounties(baseYear: number = 2022) {
+export function getCounties(changeYear: ChangeYear) {
 
-    const long = countyLongitudinal.filter(d => d.baseYear === baseYear);
+    const long = countyLongitudinal.filter(d => d.baseYear === changeYear.baseYear);
 
     const features: Feature[] = [];
 
