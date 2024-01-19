@@ -20,3 +20,5 @@ export type ChangeYear = {id: string, descr: string, baseYear: number};
 export type EquityIndicator = {variable: string, descr: string};
 
 export type Indicator = {id: string, descr: string};
+
+export type Longitudinal = {geoid: string, stfp: string, cntyfp: string, pctBlack: number, baseYear: number};

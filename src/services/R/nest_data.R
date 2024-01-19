@@ -146,5 +146,5 @@ getTractsLongitudinal <- function(df, state_fips, years, pth) {
 
   df <- getLongitudinal(df, state_fips, years)
   exportJSON <- toJSON(df)
-  write(exportJSON, file.path(pth, "tractsLongitudinal.json"))
+  write(exportJSON, file.path(pth, "tractLongitudinal.json"))
 }

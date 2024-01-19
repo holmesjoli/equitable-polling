@@ -3,9 +3,11 @@ import stateGeo from "../data/processed/stateGeoJSON.json";
 import countyGeo from "../data/processed/countyGeoJSON.json";  
 import tractGeo from "../data/processed/tractGeoJSON.json";
 import vdGeo from "../data/processed/votingDistrictGeoJSON.json";
+import countyLong from "../data/processed/countyLongitudinal.json"; 
+import tractLong from "../data/processed/tractLongitudinal.json"; 
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, Longitudinal } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -14,6 +16,8 @@ export const stateData = getStates();
 export const countyData = getCounties();
 export const tractData = getTracts();
 export const vdData = getVd();
+export const countyLongitudinal = getLongitudinal(countyLong);
+export const tractLongitudinal = getLongitudinal(tractLong);
 
 function getStates() {
 
@@ -122,4 +126,20 @@ export function getVd() {
 
     return {type: 'FeatureCollection', 
             features: features} as GeoJSON.FeatureCollection;
+}
+
+function getLongitudinal(dataJson: any[]) {
+
+    const data: Longitudinal[] = [];
+
+    (dataJson as any[]).forEach((d: any) => {
+        data.push({geoid: d.geoid,
+                   stfp: d.stfp,
+                   cntyfp: d.cntyfp,
+                   baseYear: d.baseYear,
+                   pctBlack: d.pctBlack} as Longitudinal)
+    });
+
+    return data;
+
 }
