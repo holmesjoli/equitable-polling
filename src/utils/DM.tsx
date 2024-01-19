@@ -12,12 +12,12 @@ import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
 // Processed Data
+export const countyLongitudinal = getLongitudinal(countyLong);
+export const tractLongitudinal = getLongitudinal(tractLong);
 export const stateData = getStates();
 export const countyData = getCounties();
 export const tractData = getTracts();
 export const vdData = getVd();
-export const countyLongitudinal = getLongitudinal(countyLong);
-export const tractLongitudinal = getLongitudinal(tractLong);
 
 function getStates() {
 
@@ -62,7 +62,9 @@ function getStates() {
 }
 
 // Returns a feature collection of all the counties for the selected project states
-export function getCounties() {
+export function getCounties(baseYear: number = 2022) {
+
+    const long = countyLongitudinal.filter(d => d.baseYear === baseYear);
 
     const features: Feature[] = [];
 
@@ -78,10 +80,13 @@ export function getCounties() {
                          latlng: {lat: d.Y, lng: d.X} as LatLng,
                          zoom: 10,
                          selected: false,
+                         equityMeasure: long.find((e: Longitudinal ) => e.geoid === d.geoid).pctBlack,
                          bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
                                   southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
             geometry: d.geometry as GeoJSON.Geometry})
     });
+
+    console.log(features);
 
     return {type: 'FeatureCollection', 
             features: features} as GeoJSON.FeatureCollection;
@@ -132,7 +137,7 @@ export function getVd() {
                          latlng: {lat: d.Y, lng: d.X} as LatLng,
                          bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
                                   southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as VotingDistrict, 
-            geometry: c.geometry as GeoJSON.Geometry})
+            geometry: d.geometry as GeoJSON.Geometry})
     });
 
     return {type: 'FeatureCollection', 
