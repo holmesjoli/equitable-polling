@@ -66,10 +66,21 @@ export function getCounties() {
 
     const features: Feature[] = [];
 
-    stateData.features.forEach((e: any) => {
-        e.properties.counties.features.forEach((d: any) => {
-            features.push(d);
-        });
+    (countyGeo as any[]).forEach((d: any) => {
+
+        features.push({type: 'Feature', 
+            properties: {type: 'County',
+                         descr: 'County',
+                         name: d.name,
+                         cntyfp: d.cntyfp,
+                         stfp: d.stfp,
+                         geoid: d.geoid,
+                         latlng: {lat: d.Y, lng: d.X} as LatLng,
+                         zoom: 10,
+                         selected: false,
+                         bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
+                                  southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
+            geometry: d.geometry as GeoJSON.Geometry})
     });
 
     return {type: 'FeatureCollection', 
@@ -82,21 +93,21 @@ export function getTracts() {
     const features: Feature[] = [];
 
     (tractGeo as any[])
-        .forEach((c: any) => {
+        .forEach((d: any) => {
             features.push({type: 'Feature', 
                 properties: {type: 'Tract',
                             descr: 'Census tract',
-                            name: c.name,
-                            stfp: c.stfp, 
-                            cntyfp: c.cntyfp,
-                            tractfp: c.tractfp,
-                            geoid: c.geoid,
-                            latlng: {lat: c.Y, lng: c.X} as LatLng,
+                            name: d.name,
+                            stfp: d.stfp, 
+                            cntyfp: d.cntyfp,
+                            tractfp: d.tractfp,
+                            geoid: d.geoid,
+                            latlng: {lat: d.Y, lng: d.X} as LatLng,
                             zoom: 12,
                             selected: false,
-                            bounds: {northEast: {lat: c.ymax, lng: c.xmin} as LatLng,
-                                    southWest: {lat: c.ymin, lng: c.xmax} as LatLng } as Bounds} as Tract, 
-                geometry: c.geometry as GeoJSON.Geometry})
+                            bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
+                                    southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as Tract, 
+                geometry: d.geometry as GeoJSON.Geometry})
     });
 
     return {type: 'FeatureCollection', 
@@ -107,20 +118,20 @@ export function getVd() {
 
     const features: Feature[] = [];
 
-    (vdGeo as any[]).forEach((c: any) => {
+    (vdGeo as any[]).forEach((d: any) => {
 
         features.push({type: 'Feature', 
             properties: {type: 'Voting district',
                          descr: 'Voting district',
-                         name: c.name,
-                         stfp: c.stfp, 
-                         cntyfp: c.cntyfp,
-                         geoid: c.geoid,
-                         vtdst: c.vtdst,
+                         name: d.name,
+                         stfp: d.stfp, 
+                         cntyfp: d.cntyfp,
+                         geoid: d.geoid,
+                         vtdst: d.vtdst,
                          selected: false,
-                         latlng: {lat: c.Y, lng: c.X} as LatLng,
-                         bounds: {northEast: {lat: c.ymax, lng: c.xmin} as LatLng,
-                                  southWest: {lat: c.ymin, lng: c.xmax} as LatLng } as Bounds} as VotingDistrict, 
+                         latlng: {lat: d.Y, lng: d.X} as LatLng,
+                         bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
+                                  southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as VotingDistrict, 
             geometry: c.geometry as GeoJSON.Geometry})
     });
 
@@ -141,5 +152,4 @@ function getLongitudinal(dataJson: any[]) {
     });
 
     return data;
-
 }
