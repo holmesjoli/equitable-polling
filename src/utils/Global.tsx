@@ -4,8 +4,10 @@ import { County, State, GeoID } from "./Types"
 
 export const selectVariable = {
     changeYear: [{id: '0', descr: 'Overall 2012 – 2022', baseYear: 2022},
-                 {id: '1', descr: '2018 – 2020', baseYear: 2020},
-                 {id: '2', descr: '2016 – 2018', baseYear: 2018}],
+                 {id: '2', descr: '2020 – 2022', baseYear: 2022},
+                 {id: '3', descr: '2018 – 2020', baseYear: 2020},
+                 {id: '4', descr: '2016 – 2018', baseYear: 2018},
+                 {id: '5', descr: '2014 – 2016', baseYear: 2016}],
     equityIndicator: [{variable: 'none', descr: 'None'},
                     //   {id: '', descr: 'Total # registered voters'},
                     //   {id: '', descr: '# registered voters per polling location'},
