@@ -12,7 +12,7 @@ lapply(c("LA", "AL", "FL"), function(state) {
              state = state)
     
     return(df)
-    
+  
   }) %>% bind_rows()
   
  df %>% 
