@@ -67,23 +67,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
 
-    // console.log(mapRef.current?.getZoom());
-
-    // mapRef.current
-    //     ?.on('zoom', () => {
-    //         if (mapRef.current?.getZoom() <= 5) {
-    //             setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
-    //             setGeoJsonData(stateData);
-    //         } else if (mapRef.current?.getZoom() > 5 && mapRef.current?.getZoom() <= 7) {
-    //             setGeoJsonBoundaryData(stateData);
-    //             setGeoJsonData(countyData);
-    //         } else {
-    //             setGeoJsonBoundaryData(countyData);
-    //             setGeoJsonData(filterByBounds(mapRef, tractData));
-    //             setGeoJsonVdData(filterByBounds(mapRef, vdData));
-    //         }
-    // });
-
     // Functions ---------------------------------------------------
 
     function mouseOverTract(event: any) {
