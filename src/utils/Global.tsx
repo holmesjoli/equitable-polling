@@ -11,7 +11,7 @@ export const selectVariable = {
     equityIndicator: [{variable: 'none', descr: 'None'},
                     //   {id: '', descr: 'Total # registered voters'},
                     //   {id: '', descr: '# registered voters per polling location'},
-                      {variable: 'percentage_race_black_african_american', descr: '% Black'},
+                      {variable: 'pctBlack', descr: '% Black'},
                     //   {id: '4', variable: '', descr: 'Age demographics'},
                       // {variable: 'population_density', descr: 'Population density'},
                     //   {id: '', descr: 'Nearest time to poll'}

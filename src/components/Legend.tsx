@@ -153,10 +153,10 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
 // Initiate equity legend
 function initEquityLegend(equityIndicator: EquityIndicator) {
 
-  const data = [{variable: 'percentage_race_black_african_american', label: 'Less than 15%', id: '0'},
-                {variable: 'percentage_race_black_african_american', label: 'Between 15% and 30%', id: '1'},
-                {variable: 'percentage_race_black_african_american', label: 'Between 30% and 45%', id: '2'},
-                {variable: 'percentage_race_black_african_american', label: 'Greater than 45%', id: '3'}];
+  const data = [{variable: 'pctBlack', label: 'Less than 15%', id: '0'},
+                {variable: 'pctBlack', label: 'Between 15% and 30%', id: '1'},
+                {variable: 'pctBlack', label: 'Between 30% and 45%', id: '2'},
+                {variable: 'pctBlack', label: 'Greater than 45%', id: '3'}];
 
   const svg = d3.select(`#${equityLegendId} svg`)
     .attr('height', legendHeight(data.filter(d => d.variable === equityIndicator.variable)));
