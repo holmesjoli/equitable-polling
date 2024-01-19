@@ -8,7 +8,7 @@ import * as d3 from 'd3';
 import * as Tooltip from "./Tooltip";
 
 // Types
-import { State, County, GeoID, ChangeYear } from "../utils/Types";
+import { State, County, GeoID, ChangeYear, EquityIndicator } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
@@ -56,8 +56,8 @@ function filterByBounds(mapRef: any, data: any) {
     return {type: 'FeatureCollection', features: features} as GeoJSON.FeatureCollection;
 }
 
-function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, changeYear }: 
-                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear}) {
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, changeYear, equityIndicator }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -151,10 +151,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
             mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
             .on('zoomend', () => {
-                setGeoJsonData(getCounties(changeYear));
+                setGeoJsonData(getCounties(changeYear, equityIndicator));
             })
             .on('moveend', () => {
-                setGeoJsonData(getCounties(changeYear));
+                setGeoJsonData(getCounties(changeYear, equityIndicator));
             }); 
         
         // Selected County
@@ -162,7 +162,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             let county = {} as County;
 
             // Updates selected county which is need to style the county and make it distinct from surrounding counties
-            getCounties(changeYear).features.forEach((d: GeoJSON.Feature) => {
+            getCounties(changeYear, equityIndicator).features.forEach((d: GeoJSON.Feature) => {
                 if (d.properties!.geoid === geoJsonId.geoid) {
                     d.properties!.selected = true;
                     county = d.properties as County;
@@ -190,7 +190,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             });
 
             setSelectedCounty(county);
-            setGeoJsonBoundaryData(getCounties(changeYear));
+            setGeoJsonBoundaryData(getCounties(changeYear, equityIndicator));
 
             mapRef.current
                 .flyTo(county.latlng, county.zoom) // zooms to county level
@@ -240,12 +240,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, changeYear }: 
-                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, changeYear, equityIndicator }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator }): JSX.Element {
 
     const mapRef = useRef(null);
 
-    console.log(getCounties(changeYear))
+    console.log(getCounties(changeYear, equityIndicator));
 
     return(
         <MapContainer
@@ -267,7 +267,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                              setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
                              showVD={showVD} setShowVD={setShowVD}
-                             changeYear={changeYear}
+                             changeYear={changeYear} equityIndicator={equityIndicator}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>

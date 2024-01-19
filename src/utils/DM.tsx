@@ -7,7 +7,7 @@ import countyLong from "../data/processed/countyLongitudinal.json";
 import tractLong from "../data/processed/tractLongitudinal.json"; 
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, Longitudinal, ChangeYear } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, Longitudinal, ChangeYear, EquityIndicator } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -39,7 +39,7 @@ function getStates() {
                              zoom: 10,
                              selected: false,
                              bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
-                                      southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
+                                      southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds}, 
                 geometry: d.geometry as GeoJSON.Geometry})
         });
 
@@ -61,7 +61,7 @@ function getStates() {
 }
 
 // Returns a feature collection of all the counties for the selected project states
-export function getCounties(changeYear: ChangeYear) {
+export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndicator) {
 
     const long = countyLongitudinal.filter(d => d.baseYear === changeYear.baseYear);
 
@@ -79,7 +79,7 @@ export function getCounties(changeYear: ChangeYear) {
                          latlng: {lat: d.Y, lng: d.X} as LatLng,
                          zoom: 10,
                          selected: false,
-                         equityMeasure: long.find((e: Longitudinal ) => e.geoid === d.geoid).pctBlack,
+                        equityMeasure: equityIndicator.variable !== 'none' ? long.find((e: Longitudinal) => e.geoid === d.geoid)?.pctBlack : -1,
                          bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
                                   southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
             geometry: d.geometry as GeoJSON.Geometry})

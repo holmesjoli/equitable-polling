@@ -11,7 +11,7 @@ export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst:
                               selected: boolean, latlng: LatLng};
 
 export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string,
-                      latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds};
+                      latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds, equityMeasure: number};
 
 export type State = {type: string, stfp: string, geoid: string, name: string, counties: GeoJSON.FeatureCollection, latlng: LatLng, zoom: number};
 

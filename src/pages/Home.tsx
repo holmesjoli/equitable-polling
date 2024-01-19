@@ -62,7 +62,7 @@ export default function Home({}): JSX.Element {
                 setSelectedCounty={setSelectedCounty} 
                 showPolls={showPolls} setShowPolls={setShowPolls}
                 showVD={showVD} setShowVD={setShowVD}
-                changeYear={changeYear}/>
+                changeYear={changeYear} equityIndicator={equityIndicator}/>
         </Main>
     )
 }
