@@ -13,7 +13,7 @@ export const selectVariable = {
                     //   {id: '', descr: '# registered voters per polling location'},
                       {variable: 'percentage_race_black_african_american', descr: '% Black'},
                     //   {id: '4', variable: '', descr: 'Age demographics'},
-                      {variable: 'population_density', descr: 'Population density'},
+                      // {variable: 'population_density', descr: 'Population density'},
                     //   {id: '', descr: 'Nearest time to poll'}
                 ],
     indicator: [{id: '0', descr: '# registered voters per polling location'},
