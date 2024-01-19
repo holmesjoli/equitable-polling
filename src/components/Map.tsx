@@ -65,6 +65,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(getCounties(changeYear, equityIndicator));
 
+    console.log(countyData);
+
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
@@ -127,6 +129,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }),
         [geoJsonId]
     );
+
+    useEffect(() => {
+        setCountyData(getCounties(changeYear, equityIndicator));
+    }, [equityIndicator, changeYear]);
 
     useEffect(() => {
         // United State
