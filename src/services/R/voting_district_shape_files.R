@@ -65,10 +65,7 @@ vds <- lapply(years, function(year) {
                               st == "wi" ~ "55",
                               st == "ms" ~ "28",
                               st == "sc" ~ "45")) %>% 
-      select(stfp, cntyfp, name, year, geometry) %>% 
-      st_transform(crs)
-    
-    sf::st_crs(df) <- crs
+      select(stfp, cntyfp, name, year, geometry)
 
     bbox <- lapply(1:nrow(df), function(x) {
       bb <- df %>% 
@@ -90,6 +87,11 @@ vds <- lapply(years, function(year) {
       bind_cols(df %>% 
                   sf::st_centroid() %>% 
                   sf::st_coordinates()) %>% 
+      st_transform(crs)
+    
+    sf::st_crs(df) <- crs
+
+    df <- df %>% 
       rmapshaper::ms_simplify(keep = 0.05, keep_shapes = TRUE)
 
     return(df)
