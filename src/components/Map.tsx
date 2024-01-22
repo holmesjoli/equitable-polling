@@ -65,7 +65,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(getCounties(changeYear, equityIndicator));
 
-    console.log(countyData);
+    // console.log(countyData);
+    console.log(geoJsonData);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
@@ -130,9 +131,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         [geoJsonId]
     );
 
-    useEffect(() => {
-        setCountyData(getCounties(changeYear, equityIndicator));
-    }, [equityIndicator, changeYear]);
+    // useEffect(() => {
+    //     setCountyData(getCounties(changeYear, equityIndicator));
+    // }, [equityIndicator, changeYear]);
 
     useEffect(() => {
         // United State
@@ -159,12 +160,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
             mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
             .on('zoomend', () => {
-                setGeoJsonData(countyData);
+                setGeoJsonData(filterByBounds(mapRef, countyData));
             })
             .on('moveend', () => {
-                setGeoJsonData(countyData);
-            }); 
-        
+                setGeoJsonData(filterByBounds(mapRef, countyData));
+            });
+
         // Selected County
         } else {
             let county = {} as County;
@@ -178,8 +179,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     d.properties!.selected = false;
                 }
             });
-
-            console.log(countyData.features.find(d => d.properties?.selected));
 
             // Updates selected county which is need to style the county and make it distinct from surrounding counties
             tractData.features.forEach((d: GeoJSON.Feature) => {
@@ -200,15 +199,16 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             });
 
             setSelectedCounty(county);
-            setGeoJsonBoundaryData(countyData);
 
             mapRef.current
                 .flyTo(county.latlng, county.zoom) // zooms to county level
                 .on('zoomend', () => {
+                    setGeoJsonBoundaryData(filterByBounds(mapRef, countyData));
                     setGeoJsonData(filterByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterByBounds(mapRef, vdData));
                 })
                 .on('moveend', () => {
+                    setGeoJsonBoundaryData(filterByBounds(mapRef, countyData));
                     setGeoJsonData(filterByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterByBounds(mapRef, vdData));
                 });
