@@ -21,23 +21,35 @@ export const tractLongitudinal = getLongitudinal(tractLong);
 export const stateData = getStates();
 export const vdData = getVd();
 
+// Returns the equity measure for the selected equity indicator
 function findEquityMeasure(equityIndicator: EquityIndicator, long : Longitudinal[], d: any) {
 
     const equityMeasure = equityIndicator.variable === 'none' ? -1 : long.find((e: Longitudinal) => e.geoid === d.geoid)?.pctBlack as number | undefined;
 
-    return  {
+    return {
         variable: equityIndicator.variable,
         descr: equityIndicator.descr,
         equityMeasure: equityMeasure,
         strokeColor: equityIndicator.variable === 'none' ? theme.grey.primary: theme.focusColor,
         fillColor: equityIndicator.variable === 'none' ? theme.backgroundFill : thresholdScale(equityMeasure ?? -1) as string,   
-     }
+    }
 }
 
+// Structures the bounds for each geometry
 function getBounds(d: any) {
     
     return {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
             southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds;
+}
+
+// Structures lat long object
+function getLatLng(d: any) {
+    return {lat: d.Y, lng: d.X} as LatLng;
+}
+
+// Refturns a feature collection 
+function returnFeatureCollection(features: Feature[]) {
+    return {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 }
 
 function getStates() {
@@ -57,7 +69,7 @@ function getStates() {
                              cntyfp: d.cntyfp,
                              stfp: d.stfp,
                              geoid: d.geoid,
-                             latlng: {lat: d.Y, lng: d.X} as LatLng,
+                             latlng: getLatLng(d),
                              zoom: 10,
                              selected: false,
                              bounds: getBounds(d) 
@@ -73,13 +85,14 @@ function getStates() {
                          name: e.name,
                          stfp: e.stfp,
                          geoid: e.geoid, 
-                         latlng: {lat: e.Y, lng: e.X} as LatLng,
+                         latlng: getLatLng(d),
                          counties: countyData,
                          zoom: e.zoom} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
     });
 
-    return {type: 'FeatureCollection', features: stateFeatures as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;;
+
+    return returnFeatureCollection(stateFeatures);
 }
 
 // Returns a feature collection of all the counties for the selected project states
@@ -98,7 +111,7 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
                          cntyfp: d.cntyfp,
                          stfp: d.stfp,
                          geoid: d.geoid,
-                         latlng: {lat: d.Y, lng: d.X} as LatLng,
+                         latlng: getLatLng(d),
                          zoom: 10,
                          selected: false,
                          equityIndicator: findEquityMeasure(equityIndicator, long, d),
@@ -107,8 +120,7 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
             geometry: d.geometry as GeoJSON.Geometry})
     });
 
-    return {type: 'FeatureCollection', 
-            features: features} as GeoJSON.FeatureCollection;
+    return returnFeatureCollection(features);
 }
 
 // Returns a feature collection of all the tracts for the selected project states
@@ -129,7 +141,7 @@ export function getTracts(changeYear: ChangeYear, equityIndicator: EquityIndicat
                              cntyfp: d.cntyfp,
                              tractfp: d.tractfp,
                              geoid: d.geoid,
-                             latlng: {lat: d.Y, lng: d.X} as LatLng,
+                             latlng: getLatLng(d),
                              zoom: 12,
                              selected: false,
                              equityIndicator: findEquityMeasure(equityIndicator, long, d),
@@ -138,8 +150,7 @@ export function getTracts(changeYear: ChangeYear, equityIndicator: EquityIndicat
                 geometry: d.geometry as GeoJSON.Geometry})
     });
 
-    return {type: 'FeatureCollection', 
-            features: features} as GeoJSON.FeatureCollection;
+    return returnFeatureCollection(features);
 }
 
 export function getVd() {
@@ -157,14 +168,13 @@ export function getVd() {
                          geoid: d.geoid,
                          vtdst: d.vtdst,
                          selected: false,
-                         latlng: {lat: d.Y, lng: d.X} as LatLng,
+                         latlng: getLatLng(d),
                          bounds: getBounds(d)
                         } as VotingDistrict, 
             geometry: d.geometry as GeoJSON.Geometry})
     });
 
-    return {type: 'FeatureCollection', 
-            features: features} as GeoJSON.FeatureCollection;
+    return returnFeatureCollection(features);
 }
 
 function getLongitudinal(dataJson: any[]) {
