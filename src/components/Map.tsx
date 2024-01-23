@@ -1,7 +1,7 @@
 // Libraries
 import { useEffect, useMemo, useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, Rectangle, FeatureGroup } from "react-leaflet";
-import { point, bounds } from 'leaflet';
+import { point, bounds, PathOptions } from 'leaflet';
 import * as d3 from 'd3';
 
 // Components
@@ -245,7 +245,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         } else {
 
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(chloroplethStyle);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(chloroplethStyle as PathOptions);
         }
 
     }, [geoJsonBoundaryData, geoJsonData, countyData]);
