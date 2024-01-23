@@ -65,13 +65,25 @@ export function highlightSelectedCounty(feature: any) {
 }
 
 export function chloroplethStyle(feature: any) {
-  return {
-    color: theme.focusColor,
-    fillColor: feature.properties!.fillColor,
-    weight: 1,
-    opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: .6
-  };
+
+  if (feature.properties.type === "State") {
+    return {
+      color: theme.grey.primary,
+      fillColor: theme.backgroundFill,
+      weight: 1,
+      opacity: getStrokeOpacity(feature.properties!.selected),
+      fillOpacity: .6
+    };
+
+  } else if (feature.properties.type === "County") {
+    return {
+      color: feature.properties!.equityIndicator.strokeColor,
+      fillColor: feature.properties!.equityIndicator.fillColor,
+      weight: 1,
+      opacity: getStrokeOpacity(feature.properties!.selected),
+      fillOpacity: .6
+    };
+  }
 }
 
 export function tractStyle(feature: any) {

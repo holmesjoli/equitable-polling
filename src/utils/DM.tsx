@@ -13,6 +13,7 @@ import { Feature } from "geojson";
 
 // Scales
 import { thresholdScale } from "./Scales";
+import { theme } from "./Theme";
 
 // Processed Data
 export const countyLongitudinal = getLongitudinal(countyLong);
@@ -84,10 +85,15 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
                          latlng: {lat: d.Y, lng: d.X} as LatLng,
                          zoom: 10,
                          selected: false,
-                         equityMeasure: equityMeasure,
-                         fillColor: thresholdScale(equityMeasure ?? -1) as string,
-                         bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
-                                  southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
+                         equityIndicator: {
+                            variable: equityIndicator.variable,
+                            descr: equityIndicator.descr,
+                            equityMeasure: equityMeasure,
+                            strokeColor: equityIndicator.variable === 'none' ? theme.grey.primary: theme.focusColor,
+                            fillColor: equityIndicator.variable === 'none' ? theme.backgroundFill : thresholdScale(equityMeasure ?? -1) as string,   
+                         },
+                        bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
+                                 southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
             geometry: d.geometry as GeoJSON.Geometry})
     });
 

@@ -19,17 +19,21 @@ import { stateData, getCounties, tractData, vdData } from "../utils/DM";
 // Styles 
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, chloroplethStyle } from "../utils/Theme";
 
-export function mouseOut(event: any) {
-    var layer = event.target;
-    layer.setStyle(layersStyle.default);
-    Tooltip.pointerOut();
-    d3.select(".Status .ComponentGroupInner span").attr("class", "");
-}
-
 export function mouseOutTract(event: any) {
     var layer = event.target;
     layer.setStyle(layersStyle.defaultTract);
     Tooltip.pointerOut();
+}
+
+function mouseOverText(properties: any) {
+
+    if (properties.type === 'State') {
+        return `<span class="SemiBold">${properties.name} ${properties.descr} </span>`
+    } else if (properties.type === 'County') {
+        return `<span class="SemiBold">${properties.name} ${properties.descr} <br>${properties.equityIndicator.variable === 'none'? '': properties.equityIndicator.descr + ':'} ${properties.equityIndicator.equityMeasure === -1? '': properties.equityIndicator.equityMeasure}</span>`
+    } else {
+        return `<span class="SemiBold">${properties.name} ${properties.descr} </span>`
+    }
 }
 
 // Returns a list of geographies which are current in view
@@ -85,8 +89,16 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         var layer = event.target;
         layer.setStyle(layersStyle.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        Tooltip.pointerOver(coords.x, coords.y, `<span class="SemiBold">${layer.feature.properties.name} ${layer.feature.properties.descr}</span>`);
+        Tooltip.pointerOver(coords.x, coords.y, mouseOverText(layer.feature.properties));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus");
+    }
+
+    function mouseOut(event: any) {
+        var layer = event.target;
+        console.log(layer.feature);
+        layer.setStyle(chloroplethStyle(layer.feature));
+        Tooltip.pointerOut();
+        d3.select(".Status .ComponentGroupInner span").attr("class", "");
     }
 
     function onEachFeature(_: any, layer: any) {
