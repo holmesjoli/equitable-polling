@@ -37,7 +37,6 @@ function findEquityMeasure(equityIndicator: EquityIndicator, long : Longitudinal
 
 // Structures the bounds for each geometry
 function getBounds(d: any) {
-    
     return {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
             southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds;
 }
@@ -70,8 +69,6 @@ function getStates() {
                              stfp: d.stfp,
                              geoid: d.geoid,
                              latlng: getLatLng(d),
-                             zoom: 10,
-                             selected: false,
                              bounds: getBounds(d) 
                             }, 
                 geometry: d.geometry as GeoJSON.Geometry})
@@ -85,7 +82,7 @@ function getStates() {
                          name: e.name,
                          stfp: e.stfp,
                          geoid: e.geoid, 
-                         latlng: getLatLng(d),
+                         latlng: getLatLng(e),
                          counties: countyData,
                          zoom: e.zoom} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
