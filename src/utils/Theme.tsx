@@ -32,6 +32,8 @@ export const geoFillScale = d3.scaleOrdinal()
   .domain(['3', '2', '1', '0'])
   .range(['#2a8ca7', '#67a3b7', '#95bac8', '#c0d2d9'])
 
+export const thresholdScale = d3.scaleThreshold([.15, .3, .45], ['#2a8ca7', '#67a3b7', '#95bac8', '#c0d2d9']);
+
 export const rScale = d3.scaleSqrt()
   .domain([1, 30])
   .range([3, 15]);
@@ -60,6 +62,16 @@ export function highlightSelectedCounty(feature: any) {
       opacity: getStrokeOpacity(feature.properties!.selected),
       fillOpacity: getFillOpacity(feature.properties!.selected)
     };
+}
+
+export function chloroplethStyle(feature: any) {
+  return {
+    color: theme.focusColor,
+    fillColor: feature.properties!.fillColor,
+    weight: 1,
+    opacity: getStrokeOpacity(feature.properties!.selected),
+    fillOpacity: .6
+  };
 }
 
 export function tractStyle(feature: any) {

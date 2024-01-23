@@ -11,6 +11,9 @@ import { State, County, Tract, Bounds, VotingDistrict, Longitudinal, ChangeYear,
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
+// Scales
+import { thresholdScale } from "./Scales";
+
 // Processed Data
 export const countyLongitudinal = getLongitudinal(countyLong);
 export const tractLongitudinal = getLongitudinal(tractLong);
@@ -69,6 +72,8 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
 
     (countyGeo as any[]).forEach((d: any) => {
 
+        const equityMeasure = equityIndicator.variable === 'none' ? -1 : long.find((e: Longitudinal) => e.geoid === d.geoid)?.pctBlack as number | undefined;
+
         features.push({type: 'Feature', 
             properties: {type: 'County',
                          descr: 'County',
@@ -79,7 +84,8 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
                          latlng: {lat: d.Y, lng: d.X} as LatLng,
                          zoom: 10,
                          selected: false,
-                         equityMeasure: equityIndicator.variable === 'none' ? -1: long.find((e: Longitudinal) => e.geoid === d.geoid)?.pctBlack,
+                         equityMeasure: equityMeasure,
+                         fillColor: thresholdScale(equityMeasure ?? -1) as string,
                          bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
                                   southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
             geometry: d.geometry as GeoJSON.Geometry})

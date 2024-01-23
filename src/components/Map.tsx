@@ -17,7 +17,7 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { stateData, getCounties, tractData, vdData } from "../utils/DM";
 
 // Styles 
-import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, chloroplethStyle } from "../utils/Theme";
 
 export function mouseOut(event: any) {
     var layer = event.target;
@@ -218,16 +218,25 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Updates main geography and main boundary
     useEffect(() => {
-        // Update boundary and interactive layer
-        if (geoJsonId.type === 'County') {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
-            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
+
+        if (equityIndicator.variable === 'none') {
+
+            // Update boundary and interactive layer
+            if (geoJsonId.type === 'County') {
+                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
+                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
+            } else {
+                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
+                geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+            }
+
         } else {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-            geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
+            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(chloroplethStyle);
         }
 
-    }, [geoJsonBoundaryData, geoJsonData]);
+    }, [geoJsonBoundaryData, geoJsonData, countyData]);
 
     // Updates the voting districts
     useEffect(() => {
