@@ -4,7 +4,9 @@ import * as d3 from 'd3';
 
 // Components
 import { ComponentGroupInner } from "./Query";
-import { pollFillScale, pollStrokeScale, geoFillScale, rScale, theme } from "../utils/Theme";
+import {  theme } from "../utils/Theme";
+import { pollFillScale, pollStrokeScale, geoFillScale, rScale, 
+         sizeData, equityIndicatorData } from "../utils/Scales";
 
 // Types
 import { EquityIndicator } from '../utils/Types';
@@ -54,26 +56,21 @@ function legendHeight(data: any[], margin: number = 0) {
 // Initiate size legend
 function initSizeLegend() {
 
-  const data = [{id: 0, rSize: 2, label: '0' },
-                {id: 1, rSize: 5, label: "Between 1 and 5" },
-                {id: 2, rSize: 15, label: "Between 15 and 30" },
-                {id: 3, rSize: 30, label: "Greater than 30" }];
-
   initLegend(sizeLegendId);
 
   const svg = d3.select(`#${sizeLegendId} svg`)
-    .attr('height', legendHeight(data, 15));
+    .attr('height', legendHeight(sizeData, 15));
 
   svg
   .selectAll('circle')
-  .data(data, (d: any) => d.rSize)
+  .data(sizeData, (d: any) => d.rSize)
   .join(
     enter => enter
       .append('circle')
       .attr('r', d => rScale(d.rSize))
       .attr('transform', function (d, i) {
 
-        let x = data.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
+        let x = sizeData.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
 
         return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.rSize) + 8) + ')';
       })
@@ -88,14 +85,14 @@ function initSizeLegend() {
 
   svg
     .selectAll('text')
-    .data(data, (d: any) => d.rSize)
+    .data(sizeData, (d: any) => d.rSize)
     .join(
       enter => enter
         .append('text')
         .attr('x', textStart)
         .attr('y', function(d, i) { 
 
-          let x = data.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
+          let x = sizeData.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
           
           return i * 16 + x + rScale(d.rSize) + 8})
         .text(d => d.label)
@@ -153,17 +150,12 @@ const data = [{ overall: 'increase', label: 'Increase of more than 10', id: '3',
 // Initiate equity legend
 function initEquityLegend(equityIndicator: EquityIndicator) {
 
-  const data = [{variable: 'pctBlack', label: 'Less than 15%', id: '0'},
-                {variable: 'pctBlack', label: 'Between 15% and 30%', id: '1'},
-                {variable: 'pctBlack', label: 'Between 30% and 45%', id: '2'},
-                {variable: 'pctBlack', label: 'Greater than 45%', id: '3'}];
-
   const svg = d3.select(`#${equityLegendId} svg`)
-    .attr('height', legendHeight(data.filter(d => d.variable === equityIndicator.variable)));
+    .attr('height', legendHeight(equityIndicatorData.filter(d => d.variable === equityIndicator.variable)));
 
   svg
     .selectAll('rect')
-    .data(data.filter(d => d.variable === equityIndicator.variable), (d: any) => d.id)
+    .data(equityIndicatorData.filter(d => d.variable === equityIndicator.variable), (d: any) => d.id)
     .join(
       enter => enter
         .append('rect')
@@ -181,7 +173,7 @@ function initEquityLegend(equityIndicator: EquityIndicator) {
       // exit => exit.remove()
   );
 
-  legendText(svg, data.filter(d => d.variable === equityIndicator.variable));
+  legendText(svg, equityIndicatorData.filter(d => d.variable === equityIndicator.variable));
 }
 
 function SizeTypeState () {
