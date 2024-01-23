@@ -19,8 +19,26 @@ import { theme } from "./Theme";
 export const countyLongitudinal = getLongitudinal(countyLong);
 export const tractLongitudinal = getLongitudinal(tractLong);
 export const stateData = getStates();
-export const tractData = getTracts();
 export const vdData = getVd();
+
+function findEquityMeasure(equityIndicator: EquityIndicator, long : Longitudinal[], d: any) {
+
+    const equityMeasure = equityIndicator.variable === 'none' ? -1 : long.find((e: Longitudinal) => e.geoid === d.geoid)?.pctBlack as number | undefined;
+
+    return  {
+        variable: equityIndicator.variable,
+        descr: equityIndicator.descr,
+        equityMeasure: equityMeasure,
+        strokeColor: equityIndicator.variable === 'none' ? theme.grey.primary: theme.focusColor,
+        fillColor: equityIndicator.variable === 'none' ? theme.backgroundFill : thresholdScale(equityMeasure ?? -1) as string,   
+     }
+}
+
+function getBounds(d: any) {
+    
+    return {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
+            southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds;
+}
 
 function getStates() {
 
@@ -42,8 +60,8 @@ function getStates() {
                              latlng: {lat: d.Y, lng: d.X} as LatLng,
                              zoom: 10,
                              selected: false,
-                             bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
-                                      southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds}, 
+                             bounds: getBounds(d) 
+                            }, 
                 geometry: d.geometry as GeoJSON.Geometry})
         });
 
@@ -73,8 +91,6 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
 
     (countyGeo as any[]).forEach((d: any) => {
 
-        const equityMeasure = equityIndicator.variable === 'none' ? -1 : long.find((e: Longitudinal) => e.geoid === d.geoid)?.pctBlack as number | undefined;
-
         features.push({type: 'Feature', 
             properties: {type: 'County',
                          descr: 'County',
@@ -85,15 +101,9 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
                          latlng: {lat: d.Y, lng: d.X} as LatLng,
                          zoom: 10,
                          selected: false,
-                         equityIndicator: {
-                            variable: equityIndicator.variable,
-                            descr: equityIndicator.descr,
-                            equityMeasure: equityMeasure,
-                            strokeColor: equityIndicator.variable === 'none' ? theme.grey.primary: theme.focusColor,
-                            fillColor: equityIndicator.variable === 'none' ? theme.backgroundFill : thresholdScale(equityMeasure ?? -1) as string,   
-                         },
-                        bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
-                                 southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as County, 
+                         equityIndicator: findEquityMeasure(equityIndicator, long, d),
+                         bounds: getBounds(d)
+                        } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
     });
 
@@ -102,25 +112,29 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
 }
 
 // Returns a feature collection of all the tracts for the selected project states
-export function getTracts() {
+export function getTracts(changeYear: ChangeYear, equityIndicator: EquityIndicator) {
+
+    const long = tractLongitudinal.filter(d => d.baseYear === changeYear.baseYear);
 
     const features: Feature[] = [];
 
     (tractGeo as any[])
         .forEach((d: any) => {
+
             features.push({type: 'Feature', 
                 properties: {type: 'Tract',
-                            descr: 'Census tract',
-                            name: d.name,
-                            stfp: d.stfp, 
-                            cntyfp: d.cntyfp,
-                            tractfp: d.tractfp,
-                            geoid: d.geoid,
-                            latlng: {lat: d.Y, lng: d.X} as LatLng,
-                            zoom: 12,
-                            selected: false,
-                            bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
-                                    southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as Tract, 
+                             descr: 'Census tract',
+                             name: d.name,
+                             stfp: d.stfp, 
+                             cntyfp: d.cntyfp,
+                             tractfp: d.tractfp,
+                             geoid: d.geoid,
+                             latlng: {lat: d.Y, lng: d.X} as LatLng,
+                             zoom: 12,
+                             selected: false,
+                             equityIndicator: findEquityMeasure(equityIndicator, long, d),
+                             bounds: getBounds(d)
+                            } as Tract, 
                 geometry: d.geometry as GeoJSON.Geometry})
     });
 
@@ -144,8 +158,8 @@ export function getVd() {
                          vtdst: d.vtdst,
                          selected: false,
                          latlng: {lat: d.Y, lng: d.X} as LatLng,
-                         bounds: {northEast: {lat: d.ymax, lng: d.xmin} as LatLng,
-                                  southWest: {lat: d.ymin, lng: d.xmax} as LatLng } as Bounds} as VotingDistrict, 
+                         bounds: getBounds(d)
+                        } as VotingDistrict, 
             geometry: d.geometry as GeoJSON.Geometry})
     });
 

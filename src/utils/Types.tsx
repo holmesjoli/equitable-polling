@@ -5,13 +5,17 @@ export type Bounds = {northEast: LatLng, southWest: LatLng};
 export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, zoom: number};
 
 export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, 
-                    geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean};
+                    geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean,
+                    equityIndicator: {
+                      variable: string, equityMeasure: number, fillColor:string, strokeColor: string
+                    }};
 
 export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst: string, name: string, geoid: string, bounds: Bounds,
                               selected: boolean, latlng: LatLng};
 
 export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string,
-                      latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds, equityIndicator: {
+                      latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds, 
+                      equityIndicator: {
                         variable: string, equityMeasure: number, fillColor:string, strokeColor: string
                       }};
 

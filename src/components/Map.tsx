@@ -14,7 +14,7 @@ import { State, County, GeoID, ChangeYear, EquityIndicator } from "../utils/Type
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { stateData, getCounties, tractData, vdData } from "../utils/DM";
+import { stateData, getCounties, getTracts, vdData } from "../utils/DM";
 
 // Styles 
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, chloroplethStyle } from "../utils/Theme";
@@ -68,6 +68,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
     const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(getCounties(changeYear, equityIndicator));
+    const [tractData, setTractData] = useState<GeoJSON.FeatureCollection>(getTracts(changeYear, equityIndicator));
 
     // console.log(countyData);
     // console.log(geoJsonData);
