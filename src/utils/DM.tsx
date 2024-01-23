@@ -31,7 +31,8 @@ function findEquityMeasure(equityIndicator: EquityIndicator, long : Longitudinal
         descr: equityIndicator.descr,
         equityMeasure: equityMeasure,
         strokeColor: equityIndicator.variable === 'none' ? theme.grey.primary: theme.darkGradientColor,
-        fillColor: equityIndicator.variable === 'none' ? theme.backgroundFill : thresholdScale(equityMeasure ?? -1) as string,   
+        fillColor: equityIndicator.variable === 'none' ? theme.backgroundFill : thresholdScale(equityMeasure ?? -1) as string,
+        baseYear: long[0].baseYear
     }
 }
 

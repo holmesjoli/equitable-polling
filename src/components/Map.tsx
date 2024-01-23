@@ -26,20 +26,30 @@ function mouseOut(event: any) {
     d3.select(".Status .ComponentGroupInner span").attr("class", "");
 }
 
+function mouseOverGeo(properties: any) {
+    return `${properties.name} ${properties.descr} <br>`;
+}
+
+function mouseOverEquityMeasure(properties: any) {
+    if(properties.equityIndicator.variable !== 'none') {
+    return `${properties.equityIndicator.equityMeasure} ${properties.equityIndicator.descr}`
+    }
+}
+
 function mouseOverTextVD(properties: any) {
-    return `<span class="SemiBold">${properties.name} ${properties.descr}</span>`
+    return `<span class="SemiBold">${mouseOverGeo(properties)}</span>`
 }
 
 function mouseOverTextTract(properties: any) {
-    return `<span class="SemiBold">${properties.name} ${properties.descr} <br>${properties.equityIndicator.equityMeasure === -1? '': properties.equityIndicator.equityMeasure} ${properties.equityIndicator.variable === 'none'? '': properties.equityIndicator.descr}</span>`
+    return `<span class="SemiBold">${mouseOverGeo(properties)} ${mouseOverEquityMeasure(properties)}</span>`
 }
 
 function mouseOverTextCounty(properties: any) {
-    return `<span class="SemiBold">${properties.name} ${properties.descr} <br>${properties.equityIndicator.equityMeasure === -1? '': properties.equityIndicator.equityMeasure} ${properties.equityIndicator.variable === 'none'? '': properties.equityIndicator.descr}</span>`
+    return `<span class="SemiBold"> ${mouseOverGeo(properties)} ${mouseOverEquityMeasure(properties)}</span>`
 }
 
 function mouseOverTextState(properties: any) {
-    return `<span class="SemiBold">${properties.name} ${properties.descr} </span>`
+    return `<span class="SemiBold">${mouseOverGeo(properties)} </span>`
 }
 
 // Returns a list of geographies which are current in view
