@@ -27,11 +27,11 @@ function getColor(d: any) {
 }
 
 function getStrokeOpacity(d: any) {
-  return d ? 1 : .25;
+  return d ? 1 : .35;
 }
 
 function getFillOpacity(d: any) {
-  return d ? .5 : .25;
+  return d ? .6 : .35;
 }
 
 export function highlightSelectedCounty(feature: any) {

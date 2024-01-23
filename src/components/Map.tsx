@@ -32,7 +32,9 @@ function mouseOverGeo(properties: any) {
 
 function mouseOverEquityMeasure(properties: any) {
     if(properties.equityIndicator.variable !== 'none') {
-    return `${properties.equityIndicator.equityMeasure} ${properties.equityIndicator.descr}`
+        return `${properties.equityIndicator.equityMeasure}${properties.equityIndicator.descr}`
+    } else {
+        return '';
     }
 }
 
