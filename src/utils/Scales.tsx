@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { theme } from './Theme';
 
 // Created using https://gka.github.io/palettes/#/6|s|2a8ca7,eaeaea|ffffe0,ff005e,93003a|1|1
-export const thresholdScale = d3.scaleThreshold([-1, 15, 30, 45], ['#C6C6C6', '#c0d2d9', '#95bac8', '#67a3b7', '#2a8ca7']);
+export const thresholdScale = d3.scaleThreshold([-1, 15, 30, 45], ['#C6C6C6', '#a2c2d8', '#6999b8', '#437da3', '#1d6183']);
 
 export const pollStrokeScale = d3.scaleOrdinal()
   .domain(["increase", "nochange", "decrease"] )

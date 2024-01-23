@@ -165,7 +165,7 @@ function initEquityLegend(equityIndicator: EquityIndicator) {
           return 'translate(' + (circleStart - 6) + ', ' + (i * 23 + 10) + ')';
         })
         .attr('fill', (d: any) => thresholdScale(d.pctBlack) as string)
-        .attr("stroke", theme.focusColor)
+        .attr("stroke", theme.darkGradientColor)
         .attr('stroke-width', 1)
       //   ,
       // update => update

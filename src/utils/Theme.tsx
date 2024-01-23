@@ -4,8 +4,9 @@ export const theme = {
     fontSize: 13,
     grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
-    focusColor: '#047391',
-    focusColorDark : '#035C74',
+    focusColor: '#320E3B',
+    focusColorDark : '#72417F',
+    darkGradientColor: "#113A55",
     fontFamily: 'Inter'
 }
 
