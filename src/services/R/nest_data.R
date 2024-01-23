@@ -130,7 +130,8 @@ getLongitudinal <- function(df, state_fips, years) {
     select(fips_code, percentage_race_black_african_american, year, stfp, cntyfp) %>% 
     rename(geoid = fips_code,
            pctBlack = percentage_race_black_african_american,
-           baseYear = year)
+           baseYear = year) %>% 
+    mutate(pctBlack = round(pctBlack*100, ))
 
   return(df)
 }

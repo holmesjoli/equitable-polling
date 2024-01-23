@@ -30,7 +30,7 @@ function mouseOverText(properties: any) {
     if (properties.type === 'State') {
         return `<span class="SemiBold">${properties.name} ${properties.descr} </span>`
     } else if (properties.type === 'County') {
-        return `<span class="SemiBold">${properties.name} ${properties.descr} <br>${properties.equityIndicator.variable === 'none'? '': properties.equityIndicator.descr + ':'} ${properties.equityIndicator.equityMeasure === -1? '': properties.equityIndicator.equityMeasure}</span>`
+        return `<span class="SemiBold">${properties.name} ${properties.descr} <br>${properties.equityIndicator.equityMeasure === -1? '': properties.equityIndicator.equityMeasure} ${properties.equityIndicator.variable === 'none'? '': properties.equityIndicator.descr}</span>`
     } else {
         return `<span class="SemiBold">${properties.name} ${properties.descr} </span>`
     }
@@ -69,8 +69,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(getCounties(changeYear, equityIndicator));
 
-    console.log(countyData);
-    console.log(geoJsonData);
+    // console.log(countyData);
+    // console.log(geoJsonData);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
