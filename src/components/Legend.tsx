@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 // Components
 import { ComponentGroupInner } from "./Query";
 import {  theme } from "../utils/Theme";
-import { pollFillScale, pollStrokeScale, geoFillScale, rScale, 
+import { pollFillScale, pollStrokeScale, rScale, thresholdScale,
          sizeData, equityIndicatorData } from "../utils/Scales";
 
 // Types
@@ -164,7 +164,7 @@ function initEquityLegend(equityIndicator: EquityIndicator) {
         .attr('transform', function (d, i) {
           return 'translate(' + (circleStart - 6) + ', ' + (i * 23 + 10) + ')';
         })
-        .attr('fill', (d: any) => geoFillScale(d.id) as string)
+        .attr('fill', (d: any) => thresholdScale(d.pctBlack) as string)
         .attr("stroke", theme.focusColor)
         .attr('stroke-width', 1)
       //   ,
