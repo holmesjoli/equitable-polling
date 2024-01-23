@@ -17,7 +17,7 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { stateData, getCounties, getTracts, vdData } from "../utils/DM";
 
 // Styles 
-import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, chloroplethStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, choroplethStyle } from "../utils/Theme";
 
 export function mouseOutTract(event: any) {
     var layer = event.target;
@@ -71,7 +71,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [tractData, setTractData] = useState<GeoJSON.FeatureCollection>(getTracts(changeYear, equityIndicator));
 
     // console.log(countyData);
-    // console.log(geoJsonData);
+    console.log(geoJsonData);
 
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
@@ -96,8 +96,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOut(event: any) {
         var layer = event.target;
-        console.log(layer.feature);
-        layer.setStyle(chloroplethStyle(layer.feature));
+        layer.setStyle(choroplethStyle(layer.feature));
         Tooltip.pointerOut();
         d3.select(".Status .ComponentGroupInner span").attr("class", "");
     }
@@ -146,6 +145,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     useEffect(() => {
         setCountyData(getCounties(changeYear, equityIndicator));
+        setTractData(getTracts(changeYear, equityIndicator));
     }, [equityIndicator, changeYear]);
 
     useEffect(() => {
@@ -227,29 +227,32 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
         }
 
-    }, [geoJsonId, countyData]);
+    }, [geoJsonId, countyData, tractData]);
 
     // Updates main geography and main boundary
     useEffect(() => {
 
-        if (equityIndicator.variable === 'none') {
-
             // Update boundary and interactive layer
             if (geoJsonId.type === 'County') {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
+                if (equityIndicator.variable === 'none') {
+                    geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
+                    geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
+                } else {
+                    geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
+                    geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(choroplethStyle as PathOptions);
+                }
             } else {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-                geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+
+                if (equityIndicator.variable === 'none') {
+                    geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
+                    geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+                } else {
+                    geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
+                    geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(choroplethStyle as PathOptions);
+                }   
             }
 
-        } else {
-
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(chloroplethStyle as PathOptions);
-        }
-
-    }, [geoJsonBoundaryData, geoJsonData, countyData]);
+    }, [geoJsonBoundaryData, geoJsonData, countyData, tractData]);
 
     // Updates the voting districts
     useEffect(() => {
