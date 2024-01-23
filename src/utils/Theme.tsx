@@ -66,7 +66,7 @@ export function choroplethStyle(feature: any) {
 
   } else if(feature.properties.type === "Tract") {
     if (feature.properties.equityIndicator.variable === 'none') {
-      return highlightSelectedCounty(feature);
+      return tractStyle(feature);
     } else {
       return {
         color: feature.properties!.equityIndicator.strokeColor,
