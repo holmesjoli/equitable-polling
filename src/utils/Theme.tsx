@@ -1,5 +1,3 @@
-import * as d3 from 'd3';
-
 export const theme = {
     fontSize: 13,
     grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
@@ -13,10 +11,18 @@ export const theme = {
 export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
                             defaultTract: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 1 },
                             outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
-                            highlight: { color: theme.focusColor, fillColor: theme.focusColor, weight: 2, fillOpacity: 0.65},
-                            highlightTract: { color: theme.focusColor, fillColor: theme.focusColor, fillOpacity: .6},
-                            greyOut: { color: theme.grey.tertiary, fillOpacity: 0.75, weight: 0},
-                            vd: { color: theme.focusColor, fillOpacity: 0, weight: 1 }
+                            greyOut: { color: theme.grey.secondary, fillOpacity: 0.7, weight: 0},
+                            vd: { color: theme.focusColor, fillOpacity: 0, weight: 1 },
+
+                            State: {
+                              highlight: {weight: 2},
+                            },
+                            County: {
+                              highlight: {weight: 3},
+                            },
+                            Tract: {
+                              highlight: { color: theme.focusColor, fillColor: theme.focusColor, fillOpacity: .6},
+                            }
                           }
 
 function getColor(d: any) {
