@@ -9,19 +9,16 @@ export const theme = {
 }
 
 export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
-                            defaultTract: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 1 },
                             outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
                             greyOut: { color: theme.grey.secondary, fillOpacity: 0.7, weight: 0},
-                            vd: { color: theme.focusColor, fillOpacity: 0, weight: 1 },
-
                             State: {
-                              highlight: {weight: 2},
+                              highlight: { weight: 2 },
                             },
                             County: {
-                              highlight: {weight: 3},
+                              highlight: { weight: 3 },
                             },
                             Tract: {
-                              highlight: { color: theme.focusColor, fillColor: theme.focusColor, fillOpacity: .6},
+                              highlight: { weight: 3 },
                             }
                           }
 
@@ -34,7 +31,7 @@ function getStrokeOpacity(d: any) {
 }
 
 function getFillOpacity(d: any) {
-  return d ? .3 : .1;
+  return d ? .5 : .25;
 }
 
 export function highlightSelectedCounty(feature: any) {
@@ -58,7 +55,7 @@ export function choroplethStyle(feature: any) {
       fillOpacity: .6
     };
 
-  } else if (feature.properties.type === "County" || feature.properties.type === "Tract") {
+  } else if (feature.properties.type === "County") {
     return {
       color: feature.properties!.equityIndicator.strokeColor,
       fillColor: feature.properties!.equityIndicator.fillColor,
@@ -66,6 +63,19 @@ export function choroplethStyle(feature: any) {
       opacity: 1,
       fillOpacity: .6
     };
+
+  } else if(feature.properties.type === "Tract") {
+    if (feature.properties.equityIndicator.variable === 'none') {
+      return highlightSelectedCounty(feature);
+    } else {
+      return {
+        color: feature.properties!.equityIndicator.strokeColor,
+        fillColor: feature.properties!.equityIndicator.fillColor,
+        weight: 1,
+        opacity: getStrokeOpacity(feature.properties!.selected),
+        fillOpacity: getFillOpacity(feature.properties!.selected)
+      };
+    }
   }
 }
 
