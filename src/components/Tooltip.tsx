@@ -72,11 +72,11 @@ export function mouseOverTextVD(properties: any) {
 }
 
 export function mouseOverTextTract(properties: any) {
-    return `<span class="SemiBold">${properties.descr} ${properties.name} <br> ${mouseOverEquityMeasure(properties)}</span>`
+    return `<span class="SemiBold">${properties.descr} ${properties.name}</span> <br> <span>${mouseOverEquityMeasure(properties)}</span>`
 }
 
 export function mouseOverTextCounty(properties: any) {
-    return `<span class="SemiBold"> ${mouseOverGeo(properties)} ${mouseOverEquityMeasure(properties)}</span>`
+    return `<span class="SemiBold"> ${mouseOverGeo(properties)}</span> <br> <span>${mouseOverEquityMeasure(properties)}</span>`
 }
 
 export function mouseOverTextState(properties: any) {
