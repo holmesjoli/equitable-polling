@@ -3,7 +3,7 @@ export const theme = {
     grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#464646',
-    focusColorDark : '#232323',
+    focusColorDark: '#232323',
     darkGradientColor: "#113A55",
     fontFamily: 'Inter'
 }

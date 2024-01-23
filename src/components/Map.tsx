@@ -5,7 +5,7 @@ import { point, bounds, PathOptions } from 'leaflet';
 import * as d3 from 'd3';
 
 // Components
-import * as Tooltip from "./Tooltip";
+import {mouseOut, mouseOverTextVD, mouseOverTextState, mouseOverTextCounty, mouseOverTextTract, pointerOver, pointerOut} from "./Tooltip";
 
 // Types
 import { State, County, GeoID, ChangeYear, EquityIndicator } from "../utils/Types";
@@ -18,41 +18,6 @@ import { stateData, getCounties, getTracts, vdData } from "../utils/DM";
 
 // Styles 
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, choroplethStyle } from "../utils/Theme";
-
-function mouseOut(event: any) {
-    var layer = event.target;
-    layer.setStyle(choroplethStyle(layer.feature));
-    Tooltip.pointerOut();
-    d3.select(".Status .ComponentGroupInner span").attr("class", "");
-}
-
-function mouseOverGeo(properties: any) {
-    return `${properties.name} ${properties.descr} <br>`;
-}
-
-function mouseOverEquityMeasure(properties: any) {
-    if(properties.equityIndicator.variable !== 'none') {
-        return `${properties.equityIndicator.equityMeasure}${properties.equityIndicator.descr}`
-    } else {
-        return '';
-    }
-}
-
-function mouseOverTextVD(properties: any) {
-    return `<span class="SemiBold">${mouseOverGeo(properties)}</span>`
-}
-
-function mouseOverTextTract(properties: any) {
-    return `<span class="SemiBold">${mouseOverGeo(properties)} ${mouseOverEquityMeasure(properties)}</span>`
-}
-
-function mouseOverTextCounty(properties: any) {
-    return `<span class="SemiBold"> ${mouseOverGeo(properties)} ${mouseOverEquityMeasure(properties)}</span>`
-}
-
-function mouseOverTextState(properties: any) {
-    return `<span class="SemiBold">${mouseOverGeo(properties)} </span>`
-}
 
 // Returns a list of geographies which are current in view
 function filterByBounds(mapRef: any, data: any) {
@@ -101,21 +66,21 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         var layer = event.target;
         // layer.setStyle(layersStyle.VD.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        Tooltip.pointerOver(coords.x, coords.y, mouseOverTextVD(layer.feature.properties));
+        pointerOver(coords.x, coords.y, mouseOverTextVD(layer.feature.properties));
     }
 
     function mouseOverTract(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.Tract.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        Tooltip.pointerOver(coords.x, coords.y, mouseOverTextTract(layer.feature.properties));
+        pointerOver(coords.x, coords.y, mouseOverTextTract(layer.feature.properties));
     }
 
     function mouseOverCounty(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.County.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        Tooltip.pointerOver(coords.x, coords.y, mouseOverTextCounty(layer.feature.properties));
+        pointerOver(coords.x, coords.y, mouseOverTextCounty(layer.feature.properties));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus");
     }
 
@@ -123,7 +88,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         var layer = event.target;
         layer.setStyle(layersStyle.State.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        Tooltip.pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature.properties));
+        pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature.properties));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus");
     }
 
@@ -136,7 +101,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
           mouseout: mouseOut,
           click: onClickFeature
         });
-        Tooltip.pointerOut();
+        pointerOut();
     }
 
     function onEachVD(_: any, layer: any) {
@@ -145,7 +110,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
           mouseover: mouseOverVD,
           mouseout: mouseOut
         });
-        Tooltip.pointerOut();
+        pointerOut();
     }
 
     function onClickFeature(event: any) {

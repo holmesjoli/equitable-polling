@@ -2,7 +2,7 @@
 import * as d3 from 'd3';
 
 // Styles
-import { theme } from '../utils/Theme';
+import { theme, choroplethStyle } from '../utils/Theme';
 
 const selector = "root";
 
@@ -46,4 +46,39 @@ export function pointerOver(x: number, y: number, str: string) {
 export function pointerOut() {
     d3.select(`#${selector} .tooltip`)
         .style('visibility', 'hidden');
+}
+
+export function mouseOut(event: any) {
+    var layer = event.target;
+    layer.setStyle(choroplethStyle(layer.feature));
+    pointerOut();
+    d3.select(".Status .ComponentGroupInner span").attr("class", "");
+}
+
+function mouseOverGeo(properties: any) {
+    return `${properties.name} ${properties.descr} <br>`;
+}
+
+function mouseOverEquityMeasure(properties: any) {
+    if(properties.equityIndicator.variable !== 'none') {
+        return `${properties.equityIndicator.equityMeasure}${properties.equityIndicator.descr}`
+    } else {
+        return '';
+    }
+}
+
+export function mouseOverTextVD(properties: any) {
+    return `<span class="SemiBold">${mouseOverGeo(properties)}</span>`
+}
+
+export function mouseOverTextTract(properties: any) {
+    return `<span class="SemiBold">${properties.descr} ${properties.name} <br> ${mouseOverEquityMeasure(properties)}</span>`
+}
+
+export function mouseOverTextCounty(properties: any) {
+    return `<span class="SemiBold"> ${mouseOverGeo(properties)} ${mouseOverEquityMeasure(properties)}</span>`
+}
+
+export function mouseOverTextState(properties: any) {
+    return `<span class="SemiBold">${mouseOverGeo(properties)} </span>`
 }
