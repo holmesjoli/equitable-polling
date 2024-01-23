@@ -71,7 +71,7 @@ export function chloroplethStyle(feature: any) {
       color: theme.grey.primary,
       fillColor: theme.backgroundFill,
       weight: 1,
-      opacity: getStrokeOpacity(feature.properties!.selected),
+      opacity: 1,
       fillOpacity: .6
     };
 
