@@ -12,18 +12,14 @@ export const theme = {
 export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
                             defaultTract: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 1 },
                             outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
-                            highlight: { color: theme.focusColor, fillColor: theme.focusColor},
-                            highlightTract: { color: theme.focusColor, fillColor: theme.focusColor, fillOpacity: .5},
+                            highlight: { color: theme.focusColor, fillColor: theme.focusColor, weight: 2, fillOpacity: 0.65},
+                            highlightTract: { color: theme.focusColor, fillColor: theme.focusColor, fillOpacity: .6},
                             greyOut: { color: theme.grey.tertiary, fillOpacity: 0.75, weight: 0},
                             vd: { color: theme.focusColor, fillOpacity: 0, weight: 1 }
                           }
 
 function getColor(d: any) {
     return d ? theme.backgroundFill : theme.grey.primary;
-}
-
-function getWeight(d: any) {
-    return d ? 3 : 1;
 }
 
 function getStrokeOpacity(d: any) {
@@ -60,7 +56,7 @@ export function chloroplethStyle(feature: any) {
       color: feature.properties!.equityIndicator.strokeColor,
       fillColor: feature.properties!.equityIndicator.fillColor,
       weight: 1,
-      opacity: getStrokeOpacity(feature.properties!.selected),
+      opacity: 1,
       fillOpacity: .6
     };
   }
