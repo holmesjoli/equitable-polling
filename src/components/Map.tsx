@@ -26,6 +26,10 @@ function mouseOut(event: any) {
     d3.select(".Status .ComponentGroupInner span").attr("class", "");
 }
 
+function mouseOverTextVD(properties: any) {
+    return `<span class="SemiBold">${properties.name} ${properties.descr}</span>`
+}
+
 function mouseOverTextTract(properties: any) {
     return `<span class="SemiBold">${properties.name} ${properties.descr} <br>${properties.equityIndicator.equityMeasure === -1? '': properties.equityIndicator.equityMeasure} ${properties.equityIndicator.variable === 'none'? '': properties.equityIndicator.descr}</span>`
 }
@@ -81,6 +85,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Functions ---------------------------------------------------
 
+    function mouseOverVD(event: any) {
+        var layer = event.target;
+        // layer.setStyle(layersStyle.VD.highlight);
+        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
+        Tooltip.pointerOver(coords.x, coords.y, mouseOverTextVD(layer.feature.properties));
+    }
+
     function mouseOverTract(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.Tract.highlight);
@@ -98,8 +109,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOverState(event: any) {
         var layer = event.target;
-
-        console.log(layer.feature.properties.type);
         layer.setStyle(layersStyle.State.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         Tooltip.pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature.properties));
@@ -111,7 +120,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         const properties = layer.feature.properties;
 
         layer.on({
-          mouseover: properties.type === "Tract" ? mouseOverTract: properties.type === "County" ? mouseOverCounty: mouseOverState,
+          mouseover: properties.type === "State" ? mouseOverState : properties.type === "County" ? mouseOverCounty: mouseOverTract,
           mouseout: mouseOut,
           click: onClickFeature
         });
@@ -121,7 +130,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     function onEachVD(_: any, layer: any) {
 
         layer.on({
-          mouseover: mouseOverTract,
+          mouseover: mouseOverVD,
           mouseout: mouseOut
         });
         Tooltip.pointerOut();
