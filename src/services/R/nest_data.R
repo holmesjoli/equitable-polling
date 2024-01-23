@@ -69,6 +69,9 @@ getCounties <- function(state_fips, pth) {
   
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)
+  
+  df <- df %>% 
+    arrange(stfp, name)
 
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countyGeoJSON.json"))
@@ -131,7 +134,7 @@ getLongitudinal <- function(df, state_fips, years) {
     rename(geoid = fips_code,
            pctBlack = percentage_race_black_african_american,
            baseYear = year) %>% 
-    mutate(pctBlack = round(pctBlack*100, ))
+    mutate(pctBlack = round(pctBlack*100))
 
   return(df)
 }
