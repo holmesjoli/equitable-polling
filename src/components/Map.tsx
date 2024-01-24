@@ -99,9 +99,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-    const [pollingLocData, setPollingData] = useState<PollingLoc[]>(getPollingLoc(changeYear));
-
-    console.log(pollingLocData);
+    const [pollingLocDataAll, setPollingDataAll] = useState<PollingLoc[]>(getPollingLoc(changeYear));
+    const [pollingLocData, setPollingData] = useState<PollingLoc[]>(pollingLocDataAll);
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -180,7 +179,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     );
 
     useEffect(() => {
-        setPollingData(getPollingLoc(changeYear));
+        setPollingDataAll(getPollingLoc(changeYear));
     }, [changeYear]);
 
     useEffect(() => {
@@ -247,12 +246,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 .on('zoomend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingData(filterPointByBounds(mapRef, pollingLocData));
+                    setPollingData(filterPointByBounds(mapRef, pollingLocDataAll));
                 })
                 .on('moveend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingData(filterPointByBounds(mapRef, pollingLocData));
+                    setPollingData(filterPointByBounds(mapRef, pollingLocDataAll));
                 });
         }
 
