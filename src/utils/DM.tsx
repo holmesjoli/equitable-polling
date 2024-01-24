@@ -6,7 +6,7 @@ import vdGeo from "../data/processed/votingDistrictGeoJSON.json";
 import pollsChangeStatus from "../data/processed/pollsChangeStatus.json";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYear, PollChangeStatus } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -17,7 +17,7 @@ export const stateData = getStates();
 export const countyData = getCounties();
 export const tractData = getTracts();
 export const vdData = getVd();
-export const pollingLocDataChangeYear = getPollChangeStatus();
+export const changeYearDataAll = getChangeYearData();
 
 function getStates() {
 
@@ -129,9 +129,9 @@ export function getVd() {
 }
 
 // Get Polling Locations
-export function getPollChangeStatus() {
+export function getChangeYearData() {
 
-    const changeStatus: PollChangeStatus[] = [];
+    const changeStatus: ChangeYearData[] = [];
 
     selectVariable.changeYear.forEach((e) => {
 
@@ -153,8 +153,7 @@ export function getPollChangeStatus() {
                     } as PollingLoc );
             });
 
-        changeStatus.push({changeYear: e.changeYear, data: pollingLoc} as PollChangeStatus);
-
+        changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as ChangeYearData);
     });
 
     return changeStatus;

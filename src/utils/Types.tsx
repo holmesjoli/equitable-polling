@@ -26,4 +26,4 @@ export type Indicator = {id: string, descr: string};
 export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, 
                           pixelCoords?: PixelCoords, pollId: string, status: string | undefined, overall: string | undefined, id: string | undefined};
 
-export type PollChangeStatus = {changeYear: string, data: PollingLoc[]};
+export type ChangeYearData = {changeYear: string, pollingLocsData: PollingLoc[]};
