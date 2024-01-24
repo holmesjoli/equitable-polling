@@ -25,4 +25,6 @@ df <- getPollsChangeStatus(readr::read_csv("../data/raw/wi_polling_location_name
                       bind_rows(readr::read_csv("../data/raw/ms_polling_location_name_change.csv") %>% 
                                   mutate(stfp = '28')) %>% 
                       bind_rows(readr::read_csv("../data/raw/ga_polling_location_name_change.csv") %>% 
-                                  mutate(stfp = '13')))
+                                  mutate(stfp = '13')) %>% 
+                      bind_rows(readr::read_csv("../data/raw/sc_polling_location_name_change.csv") %>% 
+                                  mutate(stfp = '45')))

@@ -8,16 +8,16 @@ import * as d3 from 'd3';
 import * as Tooltip from "./Tooltip";
 
 // Types
-import { State, County, GeoID, PollingLoc, ChangeYear } from "../utils/Types";
+import { State, County, GeoID, PollingLoc, ChangeYear, PollChangeStatus } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { stateData, countyData, tractData, vdData, getPollingLoc } from "../utils/DM";
+import { stateData, countyData, tractData, vdData, getPollChangeStatus, pollingLocDataChangeYear } from "../utils/DM";
 
 // Styles
-import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, pollStyle, pollFillScale } from "../utils/Theme";
+import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, pollStyle } from "../utils/Theme";
 
 function mouseOut(event: any) {
     var layer = event.target;
@@ -99,8 +99,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-    const [pollingLocDataAll, setPollingDataAll] = useState<PollingLoc[]>(getPollingLoc(changeYear));
-    const [pollingLocData, setPollingData] = useState<PollingLoc[]>(pollingLocDataAll);
+    const [pollingLocData, setPollingData] = useState<PollingLoc[]>(pollingLocDataChangeYear.find((d: any) => d.changeYear === changeYear?.changeYear)?.data || []);
+
+    console.log(pollingLocDataChangeYear)
+    console.log(changeYear.changeYear);
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -178,9 +180,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         [geoJsonId]
     );
 
-    useEffect(() => {
-        setPollingDataAll(getPollingLoc(changeYear));
-    }, [changeYear]);
+    // useEffect(() => {
+    //     setPollingDataAll(getPollChangeStatus(changeYear));
+    // }, [changeYear]);
 
     useEffect(() => {
         // United State
@@ -246,16 +248,16 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 .on('zoomend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingData(filterPointByBounds(mapRef, pollingLocDataAll));
+                    setPollingData(filterPointByBounds(mapRef, pollingLocDataChangeYear.find((d: any) => d.changeYear === changeYear?.changeYear)?.data || []));
                 })
                 .on('moveend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingData(filterPointByBounds(mapRef, pollingLocDataAll));
+                    setPollingData(filterPointByBounds(mapRef, pollingLocDataChangeYear.find((d: any) => d.changeYear === changeYear?.changeYear)?.data || []));
                 });
         }
 
-    }, [geoJsonId]);
+    }, [geoJsonId, changeYear]);
 
     // Updates main geography and main boundary
     useEffect(() => {

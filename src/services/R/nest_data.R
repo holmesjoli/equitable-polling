@@ -177,11 +177,14 @@ getPollingLocations <- function(df) {
 getPollsChangeStatus <- function(df) {
 
   df <- df %>%
-    distinct(pollid, base_year, change_year, change_type, stfp) %>% 
+    distinct(pollid, base_year, change_year, change_type, stfp, r3latitude, r3longitude,location_name_clean) %>% 
     rename(pollId = pollid,
            baseYear = base_year,
            changeYear = change_year,
-           status = change_type) %>%
+           status = change_type,
+           X = r3longitude,
+           Y = r3latitude,
+           name = location_name_clean) %>%
     mutate(overall = ifelse(status == "no_change", "nochange", status),
            id = case_when(overall == "added" ~ "3",
                           overall == "nochange" ~ "0",
