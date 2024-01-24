@@ -18,7 +18,7 @@ export default function Home({}): JSX.Element {
 
     const [selectedState, setSelectedState] = useState(defaultState);
     const [selectedCounty, setSelectedCounty] = useState(defaultCounty);
-    const [changeYear, setChangeYear] = useState(selectVariable.changeYear[0]);
+    const [changeYear, setChangeYear] = useState(selectVariable.changeYear[1]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
     const [showPolls, setShowPolls] = useState(true);

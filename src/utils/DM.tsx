@@ -132,7 +132,7 @@ function getPollChangeStatus(changeYear: ChangeYear) {
     const data: PollChangeStatus[] = [];
 
     (pollsChangeStatus as any[])
-        .filter((d: any) => d.changeYear === changeYear.descr)
+        .filter((d: any) => d.changeYear === changeYear.changeYear)
         .forEach((d: any) => {
             data.push({pollId: d.pollId, 
                        baseYear: d.baseYear,

@@ -99,8 +99,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-    const [pollingLocData, setPollingData] = useState<any[]>(getPollingLoc(changeYear));
+    const [pollingLocData, setPollingData] = useState<PollingLoc[]>(getPollingLoc(changeYear));
 
+    console.log(pollingLocData);
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -177,6 +178,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }),
         [geoJsonId]
     );
+
+    useEffect(() => {
+        setPollingData(getPollingLoc(changeYear));
+    }, [changeYear]);
 
     useEffect(() => {
         // United State
