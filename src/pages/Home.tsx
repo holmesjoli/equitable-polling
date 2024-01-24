@@ -68,7 +68,7 @@ export default function Home({}): JSX.Element {
                 selectedState={selectedState} setSelectedState={setSelectedState} 
                 setSelectedCounty={setSelectedCounty} 
                 showPolls={showPolls} setShowPolls={setShowPolls} showVD={showVD} setShowVD={setShowVD}
-                setPollHover={setPollHover}/>
+                setPollHover={setPollHover} changeYear={changeYear}/>
         </Main>
     )
 }

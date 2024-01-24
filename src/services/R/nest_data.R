@@ -138,6 +138,8 @@ getLongitudinal <- function(df, state_fips, years) {
   return(df)
 }
 
+#' Get Counties longitudinal
+#' Writes out a json file at the year-cntyfp level
 getCountiesLongitudinal <- function(df, state_fips, years, pth) {
 
   df <- getLongitudinal(df, state_fips, years)
@@ -145,6 +147,8 @@ getCountiesLongitudinal <- function(df, state_fips, years, pth) {
   write(exportJSON, file.path(pth, "countyLongitudinal.json"))
 }
 
+#' Get Tracts longitudinal
+#' Writes out a json file at the year-tractfp level
 getTractsLongitudinal <- function(df, state_fips, years, pth) {
 
   df <- getLongitudinal(df, state_fips, years)
@@ -152,6 +156,8 @@ getTractsLongitudinal <- function(df, state_fips, years, pth) {
   write(exportJSON, file.path(pth, "tractsLongitudinal.json"))
 }
 
+#' Get Polling Locations
+#' Writes out a json file at the voting poll level
 getPollingLocations <- function(df) {
   df <- df %>% 
     distinct(pollid, location_name_clean, r3latitude, r3longitude, stfp) %>% 
@@ -161,24 +167,31 @@ getPollingLocations <- function(df) {
            X = r3longitude)
 
   exportJSON <- toJSON(df)
-  write(exportJSON, "../data/processed/polling_loc.json")
+  write(exportJSON, "../data/processed/pollsLocation.json")
+  
+  return(df)
 }
 
-polling_loc <- readr::read_csv("../data/raw/polling_location_initial_removed_added_2012-2022_final.csv") %>% 
-  select(location_name_clean, r3latitude, r3longitude, change_year, change_type) %>% 
-  rename(name = location_name_clean,
-         X = r3longitude,
-         Y = r3latitude,
-         overall = change_type) %>% 
-  mutate(overall = ifelse(overall == "NULL", "nochange", overall),
-         id = case_when(overall == "added" ~ "3",
-                        overall == "nochange" ~ "0",
-                        overall == "removed" ~ "-3"),
-         status = case_when(overall == "added" ~ "Added",
-                            overall == "nochange" ~ "No change",
-                            overall == "removed" ~ "Removed")) 
+#' Get poll changes status
+#' Writes out a json file at the change year level
+getPollsChangeStatus <- function(df) {
 
-exportJSON <- toJSON(polling_loc)
-write(exportJSON, "../data/processed/polling_loc.json")
+  df <- df %>%
+    distinct(pollid, base_year, change_year, change_type) %>% 
+    rename(pollId = pollid,
+           baseYear = base_year,
+           changeYear = change_year,
+           status = change_type) %>%
+    mutate(overall = ifelse(status == "no_change", "nochange", status),
+           id = case_when(overall == "added" ~ "3",
+                          overall == "nochange" ~ "0",
+                          overall == "removed" ~ "-3"),
+           status = case_when(overall == "added" ~ "Added",
+                              overall == "nochange" ~ "No change",
+                              overall == "removed" ~ "Removed"))
 
-
+  exportJSON <- toJSON(df)
+  write(exportJSON, "../data/processed/pollsChangeStatus.json")
+  
+  return(df)
+}

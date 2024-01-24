@@ -3,10 +3,11 @@ import stateGeo from "../data/processed/stateGeoJSON.json";
 import countyGeo from "../data/processed/countyGeoJSON.json";  
 import tractGeo from "../data/processed/tractGeoJSON.json";
 import vdGeo from "../data/processed/votingDistrictGeoJSON.json";
-import pollingLoc from "../data/processed/polling_loc.json";
+import pollsLocation from "../data/processed/pollsLocation.json";
+import pollsChangeStatus from "../data/processed/pollsChangeStatus.json";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, PollingLoc } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYear, PollChangeStatus } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -15,7 +16,6 @@ export const stateData = getStates();
 export const countyData = getCounties();
 export const tractData = getTracts();
 export const vdData = getVd();
-export const pollingLocData = getPollingLoc();
 
 function getStates() {
 
@@ -126,23 +126,49 @@ export function getVd() {
             features: features} as GeoJSON.FeatureCollection;
 }
 
-// TODO Update the filter to be responsive to change year
-// TODO update the cntyfp to be the correct county
-export function getPollingLoc() {
+// Get Poll Change Status
+function getPollChangeStatus(changeYear: ChangeYear) {
+
+    const data: PollChangeStatus[] = [];
+
+    (pollsChangeStatus as any[])
+        .filter((d: any) => d.changeYear === changeYear.descr)
+        .forEach((d: any) => {
+            data.push({pollId: d.pollId, 
+                       baseYear: d.baseYear,
+                       changeYear: d.changeYear,
+                       status: d.status,
+                       overall: d.overall,
+                       id: d.id
+           });
+    });
+
+    return data;
+}
+
+// Get Polling Locations
+export function getPollingLoc(changeYear: ChangeYear) {
+
+    const pollStatus = getPollChangeStatus(changeYear) as PollChangeStatus[];
+    const pollId = pollStatus.map((d: any)=> d.pollId);
+
     const data: PollingLoc[] = [];
 
-    (pollingLoc as any[])
-        .filter((d: any) => [2012, 2014].includes(d.change_year))
+    (pollsLocation as any[])
+        .filter((d: any) => pollId.includes(d.pollId))
         .forEach((d: any) => {
+
+            const status = pollStatus.find((e: any) => e.pollId === d.pollId);
+
             data.push({type: 'Poll',
                        descr: 'Polling location',
                        name: d.name,
-                       status: d.status,
                        latlng: {lat: d.Y, lng: d.X} as LatLng,
-                       overall: d.overall,
-                       id: d.id,
-                       selected: false
-                    });
+                       pollId: d.pollId,
+                       status: status?.status,
+                       overall: status?.overall,
+                       id: status?.id
+                      });
         });
 
     return data;

@@ -8,13 +8,13 @@ import * as d3 from 'd3';
 import * as Tooltip from "./Tooltip";
 
 // Types
-import { State, County, GeoID, PollingLoc } from "../utils/Types";
+import { State, County, GeoID, PollingLoc, ChangeYear } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { stateData, countyData, tractData, vdData, pollingLocData } from "../utils/DM";
+import { stateData, countyData, tractData, vdData, getPollingLoc } from "../utils/DM";
 
 // Styles
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, pollStyle, pollFillScale } from "../utils/Theme";
@@ -93,13 +93,14 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
     return data;
 }
 
-function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover }: 
-                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, setPollHover: any}) {
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover, changeYear }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, setPollHover: any, changeYear: ChangeYear}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-    const [pollingData, setPollingData] = useState<any[]>([]);
+    const [pollingLocData, setPollingData] = useState<any[]>(getPollingLoc(changeYear));
+
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -287,7 +288,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             <Pane name="poll-pane" style={{ zIndex: 200 }}>
             {showPolls ?
                 <FeatureGroup ref={pollRef} key="pollingLocFeatureGroup">
-                    {pollingData.map((d: PollingLoc, i: number) => (
+                    {pollingLocData.map((d: PollingLoc, i: number) => (
                         <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} eventHandlers={{
                             click: () => {
                             //   console.log('marker clicked')
@@ -306,9 +307,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover }: 
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover, changeYear }: 
                             { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, 
-                              showVD: boolean, setShowVD: any, setPollHover: any }): JSX.Element {
+                              showVD: boolean, setShowVD: any, setPollHover: any, changeYear: ChangeYear }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -334,6 +335,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                              setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
                              showVD={showVD} setShowVD={setShowVD} setPollHover={setPollHover}
+                             changeYear={changeYear}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>
