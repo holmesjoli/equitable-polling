@@ -6,7 +6,7 @@ import { point, bounds, PathOptions } from 'leaflet';
 import * as d3 from 'd3';
 
 // Components
-import {mouseOut, mouseOverTextVD, mouseOverTextState, mouseOverTextCounty, mouseOverTextTract, pointerOver, pointerOut} from "./Tooltip";
+import {mouseOverTextVD, mouseOverTextState, mouseOverTextCounty, mouseOverTextTract, pointerOver, pointerOut} from "./Tooltip";
 
 // Types
 import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator, ChangeYearData } from "../utils/Types";
@@ -19,6 +19,8 @@ import { stateData, countiesDataAll, tractsDataAll, vdData, changeYearDataAll } 
 
 // Styles 
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, choroplethStyle, pollStyle } from "../utils/Theme";
+
+console.log(countiesDataAll);
 
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
@@ -138,7 +140,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     function mouseOutPollingLoc() {
         pointerOut();
         setPollHover({});
-    }    
+    }
+
+    function mouseOut(event: any) {
+        var layer = event.target;
+        layer.setStyle(choroplethStyle(layer.feature, equityIndicator, changeYear) as PathOptions);
+        pointerOut();
+        d3.select(".Status .ComponentGroupInner span").attr("class", "");
+    }
 
     function onEachFeature(_: any, layer: any) {
 
@@ -183,10 +192,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     );
 
     useEffect(() => {
-        // setCountyData(getCounties(changeYear, equityIndicator));
-        // setTractData(getTracts(changeYear, equityIndicator));
         setChangeYearData(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
-    }, [equityIndicator, changeYear]);
+    }, [changeYear]);
 
     useEffect(() => {
         // United State
@@ -274,7 +281,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
                 } else {
                     geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-                    geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(choroplethStyle as PathOptions);
+                    geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
                 }
             } else {
 
@@ -283,11 +290,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
                 } else {
                     geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-                    geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(choroplethStyle as PathOptions);
+                    geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
                 }   
             }
 
-    }, [geoJsonBoundaryData, geoJsonData]);
+    }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
 
     // Updates the voting districts
     useEffect(() => {

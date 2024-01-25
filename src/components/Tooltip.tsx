@@ -2,7 +2,7 @@
 import * as d3 from 'd3';
 
 // Styles
-import { theme, choroplethStyle } from '../utils/Theme';
+import { theme } from '../utils/Theme';
 
 const selector = "root";
 
@@ -48,23 +48,17 @@ export function pointerOut() {
         .style('visibility', 'hidden');
 }
 
-export function mouseOut(event: any) {
-    var layer = event.target;
-    layer.setStyle(choroplethStyle(layer.feature));
-    pointerOut();
-    // d3.select(".Status .ComponentGroupInner span").attr("class", "");
-}
-
 function mouseOverGeo(properties: any) {
     return `${properties.name} ${properties.descr} <br>`;
 }
 
+// TODO add this back in
 function mouseOverEquityMeasure(properties: any) {
-    if(properties.equityIndicator.variable !== 'none') {
-        return `${properties.equityIndicator.equityMeasure}${properties.equityIndicator.descr}`
-    } else {
+    // if(properties.equityIndicator.variable !== 'none') {
+        // return `${properties.equityIndicator.equityMeasure}${properties.equityIndicator.descr}`
+    // } else {
         return '';
-    }
+    // }
 }
 
 export function mouseOverTextVD(properties: any) {

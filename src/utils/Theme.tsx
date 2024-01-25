@@ -1,5 +1,7 @@
 import * as d3 from 'd3';
 
+import { EquityIndicator, ChangeYear } from "./Types";
+
 export const theme = {
     fontSize: 13,
     grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
@@ -50,11 +52,9 @@ export function highlightSelectedCounty(feature: any) {
     };
 }
 
-export function choroplethStyle(feature: any) {
+export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
 
   if (feature.properties.type === "State") {
-
-
     return {
       color: theme.grey.primary,
       fillColor: theme.backgroundFill,
@@ -64,9 +64,11 @@ export function choroplethStyle(feature: any) {
     };
 
   } else if (feature.properties.type === "County") {
+
+    console.log(feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear))
     return {
-      color: feature.properties!.equityIndicator.strokeColor,
-      fillColor: feature.properties!.equityIndicator.fillColor,
+      color: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].strokeColor,
+      fillColor: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor,
       weight: 1,
       opacity: 1,
       fillOpacity: .6

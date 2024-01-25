@@ -8,7 +8,7 @@ export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, 
 
 export type EquityIndicatorData = {variable: string, descr: string, equityMeasure: number, fillColor:string, strokeColor: string};
 
-export type ChangeYearEquityIndicator = {changeYear: string, pctBlack: EquityIndicatorData};
+export type ChangeYearEquityIndicator = {changeYear: string, none:EquityIndicatorData, pctBlack: EquityIndicatorData};
 
 export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, 
                     geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean,
