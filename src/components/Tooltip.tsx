@@ -52,7 +52,7 @@ export function mouseOut(event: any) {
     var layer = event.target;
     layer.setStyle(choroplethStyle(layer.feature));
     pointerOut();
-    d3.select(".Status .ComponentGroupInner span").attr("class", "");
+    // d3.select(".Status .ComponentGroupInner span").attr("class", "");
 }
 
 function mouseOverGeo(properties: any) {

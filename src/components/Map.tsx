@@ -20,19 +20,6 @@ import { stateData, getCounties, getTracts, vdData, changeYearDataAll } from "..
 // Styles 
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, choroplethStyle, pollStyle } from "../utils/Theme";
 
-// function mouseOut(event: any) {
-//     var layer = event.target;
-//     layer.setStyle(layersStyle.default);
-//     Tooltip.pointerOut();
-//     d3.select(".Status .ComponentGroupInner span").attr("class", "");
-// }
-
-// function mouseOutTract(event: any) {
-//     var layer = event.target;
-//     layer.setStyle(layersStyle.defaultTract);
-//     Tooltip.pointerOut();
-// }
-
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
     const mapBounds = mapRef.current.getBounds();
@@ -104,12 +91,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(getCounties(changeYear, equityIndicator));
     const [tractData, setTractData] = useState<GeoJSON.FeatureCollection>(getTracts(changeYear, equityIndicator));
 
-    // console.log(countyData);
-    // console.log(geoJsonData);
-
     const [changeYearData, setChangeYearData] = useState<ChangeYearData | null>(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>(changeYearData?.pollingLocsData || []);
-
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -127,7 +110,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOverVD(event: any) {
         var layer = event.target;
-        // layer.setStyle(layersStyle.Tract.highlight);
+        layer.setStyle(layersStyle.VD.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         pointerOver(coords.x, coords.y, mouseOverTextVD(layer.feature.properties));
     }
@@ -144,7 +127,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         layer.setStyle(layersStyle.County.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         pointerOver(coords.x, coords.y, mouseOverTextCounty(layer.feature.properties));
-        d3.select(".Status .ComponentGroupInner span").attr("class", "focus");
+        d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
     }
 
     function mouseOverState(event: any) {
@@ -152,7 +135,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         layer.setStyle(layersStyle.State.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature.properties));
-        d3.select(".Status .ComponentGroupInner span").attr("class", "focus");
+        d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
     }
 
     function mouseOutPollingLoc() {

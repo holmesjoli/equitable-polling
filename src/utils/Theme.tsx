@@ -21,6 +21,9 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                             },
                             Tract: {
                               highlight: { weight: 3 },
+                            },
+                            VD: {
+                              highlight: { weight: 3 }
                             }
                           }
 
@@ -49,7 +52,11 @@ export function highlightSelectedCounty(feature: any) {
 
 export function choroplethStyle(feature: any) {
 
+  console.log(feature.properties.type);
+
   if (feature.properties.type === "State") {
+
+
     return {
       color: theme.grey.primary,
       fillColor: theme.backgroundFill,
@@ -66,8 +73,7 @@ export function choroplethStyle(feature: any) {
       opacity: 1,
       fillOpacity: .6
     };
-
-  } else if(feature.properties.type === "Tract") {
+  } else if (feature.properties.type === "Tract") {
     if (feature.properties.equityIndicator.variable === 'none') {
       return tractStyle(feature);
     } else {
@@ -79,11 +85,12 @@ export function choroplethStyle(feature: any) {
         fillOpacity: getFillOpacity(feature.properties!.selected)
       };
     }
+  } else {
+    return vdStyle(feature);
   }
 }
 
 export function tractStyle(feature: any) {
-
   return {
     color: theme.grey.primary,
     fillColor: theme.backgroundFill,
