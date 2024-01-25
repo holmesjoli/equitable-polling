@@ -56,3 +56,7 @@
     background-color: $appBackground;
     border-color: $appColor;
 }
+
+.leaflet-container a {
+    color: $appColor;
+}

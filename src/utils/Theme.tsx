@@ -4,8 +4,8 @@ export const theme = {
     fontSize: 13,
     grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
-    focusColor: '#464646',
-    focusColorDark: '#232323',
+    focusColor: '#1D618E',
+    focusColorDark: '#113A55',
     darkGradientColor: "#113A55",
     fontFamily: 'Inter'
 }
@@ -114,11 +114,11 @@ export function pollStyle(point: any) {
   };
 }
 
-// Created using https://gka.github.io/palettes/#/6|s|2a8ca7,eaeaea|ffffe0,ff005e,93003a|1|1
+// https://coolors.co/f5ece0-320e3b-1d618e-e45729-610063
 export const thresholdScale = d3.scaleThreshold([-1, 15, 30, 45], ['#C6C6C6', '#a2c2d8', '#6999b8', '#437da3', '#1d6183']);
 
 export const pollStrokeScale = d3.scaleOrdinal()
-  .domain(["increase", "nochange", "decrease"] )
+  .domain(["added", "nochange", "removed"] )
   .range(["#610063", theme.grey.primary, "#E45729"] );
 
 export const pollFillScale = d3.scaleOrdinal()
