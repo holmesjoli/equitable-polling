@@ -37,14 +37,10 @@ function findEquityMeasureByChangeYear(geoData: any, d: any) {
             console.log(em.pctBlack);
 
             changeYearData.push({changeYear: e.changeYear, 
-                                 none: {variable: 'none',
-                                        descr: 'None',
-                                        equityMeasure: 0,
+                                 none: {equityMeasure: 0,
                                         strokeColor: theme.grey.primary,
                                         fillColor: theme.backgroundFill},
-                                 pctBlack: {variable: 'pctBlack', 
-                                            descr: '% Black', 
-                                            equityMeasure: em!.pctBlack, 
+                                 pctBlack: {equityMeasure: em!.pctBlack, 
                                             strokeColor: theme.darkGradientColor, 
                                             fillColor: thresholdScale(em.pctBlack) as string}} );
         });

@@ -6,7 +6,7 @@ export type Bounds = {northEast: LatLng, southWest: LatLng};
 
 export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, zoom: number};
 
-export type EquityIndicatorData = {variable: string, descr: string, equityMeasure: number, fillColor:string, strokeColor: string};
+export type EquityIndicatorData = {equityMeasure: number, fillColor:string, strokeColor: string};
 
 export type ChangeYearEquityIndicator = {changeYear: string, none:EquityIndicatorData, pctBlack: EquityIndicatorData};
 
