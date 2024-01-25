@@ -52,8 +52,6 @@ export function highlightSelectedCounty(feature: any) {
 
 export function choroplethStyle(feature: any) {
 
-  console.log(feature.properties.type);
-
   if (feature.properties.type === "State") {
 
 

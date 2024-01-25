@@ -4,7 +4,7 @@ pth <- "../data/processed"
 
 # State fips codes, adjust this list and rerun to add additional states
 state_fips <- c("13", "45", "28", "55")
-years <- c(2016, 2018, 2020, 2022)
+years <- c(2012, 2014, 2016, 2018, 2020, 2022)
 
 # Write out all the geo data
 getStates(state_fips, pth)

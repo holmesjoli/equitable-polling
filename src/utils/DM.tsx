@@ -11,32 +11,39 @@ import pollsChangeStatus from "../data/processed/pollsChangeStatus.json";
 import { theme, thresholdScale } from "./Theme";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, Longitudinal, ChangeYear, EquityIndicator } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, Longitudinal, ChangeYearEquityIndicator } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
 import { selectVariable } from "./Global";
 
 // Processed Data
-export const countyLongitudinal = getLongitudinal(countyLong);
-export const tractLongitudinal = getLongitudinal(tractLong);
 export const stateData = getStates();
 export const vdData = getVd();
 export const changeYearDataAll = getChangeYearData();
+export const countiesDataAll = getCounties();
+export const tractsDataAll = getTracts();
 
 // Returns the equity measure for the selected equity indicator
-function findEquityMeasure(equityIndicator: EquityIndicator, long : Longitudinal[], d: any) {
+function findEquityMeasureByChangeYear(geoData: any, d: any) {
 
-    const equityMeasure = equityIndicator.variable === 'none' ? -1 : long.find((e: Longitudinal) => e.geoid === d.geoid)?.pctBlack as number | undefined;
+    const changeYearData: ChangeYearEquityIndicator[] = [];
 
-    return {
-        variable: equityIndicator.variable,
-        descr: equityIndicator.descr,
-        equityMeasure: equityMeasure,
-        strokeColor: equityIndicator.variable === 'none' ? theme.grey.primary: theme.darkGradientColor,
-        fillColor: equityIndicator.variable === 'none' ? theme.backgroundFill : thresholdScale(equityMeasure ?? -1) as string,
-        baseYear: long[0].baseYear
-    }
+        selectVariable.changeYear.forEach((e) => {
+
+            // console.log(e.baseYear, d.geoid);
+
+            const em = geoData.find((f: any) => (f.baseYear === e.baseYear) && (f.geoid === d.geoid));
+
+            changeYearData.push({changeYear: e.changeYear, 
+                                 pctBlack: {variable: 'pctBlack', 
+                                            descr: '% Black', 
+                                            equityMeasure: em!.pctBlack, 
+                                            strokeColor: theme.darkGradientColor, 
+                                            fillColor: thresholdScale(em.pctBlack) as string}} );
+        });
+
+    return changeYearData;
 }
 
 // Structures the bounds for each geometry
@@ -97,15 +104,15 @@ function getStates() {
 }
 
 // Returns a feature collection of all the counties for the selected project states
-export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndicator) {
-
-    const long = countyLongitudinal.filter(d => d.baseYear === changeYear.baseYear);
+export function getCounties() {
 
     const features: Feature[] = [];
 
     (countyGeo as any[]).forEach((d: any) => {
 
-        features.push({type: 'Feature', 
+        const changeYearData = findEquityMeasureByChangeYear(countyLong, d);
+
+        features.push({type: 'Feature',
             properties: {type: 'County',
                          descr: 'County',
                          name: d.name,
@@ -115,7 +122,7 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
                          latlng: getLatLng(d),
                          zoom: 10,
                          selected: false,
-                         equityIndicator: findEquityMeasure(equityIndicator, long, d),
+                         changeYearEquityIndicator: changeYearData,
                          bounds: getBounds(d)
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
@@ -125,14 +132,14 @@ export function getCounties(changeYear: ChangeYear, equityIndicator: EquityIndic
 }
 
 // Returns a feature collection of all the tracts for the selected project states
-export function getTracts(changeYear: ChangeYear, equityIndicator: EquityIndicator) {
-
-    const long = tractLongitudinal.filter(d => d.baseYear === changeYear.baseYear);
+export function getTracts() {
 
     const features: Feature[] = [];
 
     (tractGeo as any[])
         .forEach((d: any) => {
+
+            // const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
 
             features.push({type: 'Feature', 
                 properties: {type: 'Tract',
@@ -145,7 +152,7 @@ export function getTracts(changeYear: ChangeYear, equityIndicator: EquityIndicat
                              latlng: getLatLng(d),
                              zoom: 12,
                              selected: false,
-                             equityIndicator: findEquityMeasure(equityIndicator, long, d),
+                            //  changeYearEquityIndicator: changeYearData,
                              bounds: getBounds(d)
                             } as Tract, 
                 geometry: d.geometry as GeoJSON.Geometry})
@@ -176,21 +183,6 @@ export function getVd() {
     });
 
     return returnFeatureCollection(features);
-}
-
-function getLongitudinal(dataJson: any[]) {
-
-    const data: Longitudinal[] = [];
-
-    (dataJson as any[]).forEach((d: any) => {
-        data.push({geoid: d.geoid,
-                   stfp: d.stfp,
-                   cntyfp: d.cntyfp,
-                   baseYear: d.baseYear,
-                   pctBlack: d.pctBlack} as Longitudinal)
-    });
-
-    return data;
 }
 
 // Get Polling Locations

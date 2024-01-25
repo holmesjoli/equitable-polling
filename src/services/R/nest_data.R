@@ -199,6 +199,6 @@ getPollsChangeStatus <- function(df) {
 
   exportJSON <- toJSON(df)
   write(exportJSON, "../data/processed/pollsChangeStatus.json")
-  
+
   return(df)
 }
