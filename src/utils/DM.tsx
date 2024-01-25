@@ -34,6 +34,7 @@ function findEquityMeasureByChangeYear(geoData: any, d: any) {
             // console.log(e.baseYear, d.geoid);
 
             const em = geoData.find((f: any) => (f.baseYear === e.baseYear) && (f.geoid === d.geoid));
+            console.log(em.pctBlack);
 
             changeYearData.push({changeYear: e.changeYear, 
                                  none: {variable: 'none',

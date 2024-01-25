@@ -136,8 +136,8 @@ getLongitudinal <- function(df, state_fips, years) {
     select(fips_code, percentage_race_black_african_american, year, stfp, cntyfp) %>% 
     rename(geoid = fips_code,
            pctBlack = percentage_race_black_african_american,
-           baseYear = year) %>% 
-    mutate(pctBlack = round(pctBlack*100))
+           baseYear = year) %>%
+    mutate(pctBlack = round(pctBlack*100, 1))
 
   return(df)
 }
@@ -149,6 +149,8 @@ getCountiesLongitudinal <- function(df, state_fips, years, pth) {
   df <- getLongitudinal(df, state_fips, years)
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countyLongitudinal.json"))
+  
+  return(df)
 }
 
 #' Get Tracts longitudinal

@@ -64,8 +64,6 @@ export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, 
     };
 
   } else if (feature.properties.type === "County") {
-
-    console.log(feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear))
     return {
       color: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].strokeColor,
       fillColor: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor,
