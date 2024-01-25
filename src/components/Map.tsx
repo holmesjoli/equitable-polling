@@ -1,31 +1,51 @@
 // Libraries
 import { useEffect, useMemo, useState, useRef } from "react";
-import { MapContainer, TileLayer, GeoJSON, ZoomControl, Rectangle, FeatureGroup } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, Rectangle, FeatureGroup, Circle, Pane } from "react-leaflet";
 import { point, bounds, PathOptions } from 'leaflet';
+
 import * as d3 from 'd3';
 
 // Components
 import {mouseOut, mouseOverTextVD, mouseOverTextState, mouseOverTextCounty, mouseOverTextTract, pointerOver, pointerOut} from "./Tooltip";
 
 // Types
-import { State, County, GeoID, ChangeYear, EquityIndicator } from "../utils/Types";
+import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator, ChangeYearData } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { stateData, getCounties, getTracts, vdData } from "../utils/DM";
+import { stateData, getCounties, getTracts, vdData, changeYearDataAll } from "../utils/DM";
 
 // Styles 
-import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, choroplethStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, choroplethStyle, pollStyle } from "../utils/Theme";
 
-// Returns a list of geographies which are current in view
-function filterByBounds(mapRef: any, data: any) {
+// function mouseOut(event: any) {
+//     var layer = event.target;
+//     layer.setStyle(layersStyle.default);
+//     Tooltip.pointerOut();
+//     d3.select(".Status .ComponentGroupInner span").attr("class", "");
+// }
 
+// function mouseOutTract(event: any) {
+//     var layer = event.target;
+//     layer.setStyle(layersStyle.defaultTract);
+//     Tooltip.pointerOut();
+// }
+
+// Returns the bounds of the current map view
+function getMapBounds(mapRef: any) {
     const mapBounds = mapRef.current.getBounds();
     const mapNE = mapBounds?.getNorthEast();
     const mapSW = mapBounds?.getSouthWest();
-    const mapBounds2 = bounds(point(mapSW!.lat, mapSW!.lng), point(mapNE!.lat, mapNE!.lng));                                   
+
+    return bounds(point(mapSW!.lat, mapSW!.lng), point(mapNE!.lat, mapNE!.lng));
+}
+
+// Returns a list of geographies which are current in view
+function filterGeoByBounds(mapRef: any, data: any) {
+
+    const mapBounds = getMapBounds(mapRef);                                
 
     const features: any[] = [];
 
@@ -35,7 +55,7 @@ function filterByBounds(mapRef: any, data: any) {
             p2 = point(d.properties.bounds.northEast.lat, d.properties.bounds.northEast.lng),
             tractBounds = bounds(p1, p2);
 
-        if (mapBounds2.intersects(tractBounds)) {
+        if (mapBounds.intersects(tractBounds)) {
             features.push(d);
         }
     });
@@ -43,8 +63,39 @@ function filterByBounds(mapRef: any, data: any) {
     return {type: 'FeatureCollection', features: features} as GeoJSON.FeatureCollection;
 }
 
-function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, changeYear, equityIndicator }: 
-                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator}) {
+function filterPointByBounds(mapRef: any, data: any) {
+
+    const mapBounds = getMapBounds(mapRef);
+
+    const points: PollingLoc[] = [];
+
+    data.forEach((d: any) => {
+        const p = point(d.latlng.lat, d.latlng.lng);
+        if (mapBounds.contains(p)) {
+            d.pixelCoord = mapRef.current.latLngToLayerPoint(d.latlng);
+            points.push(d);
+        }
+    });
+
+    return points;
+}
+
+// Updates feature data within the selected county to and make it distinct from surrounding voting districts
+function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) {
+
+    data.features.forEach((d: GeoJSON.Feature) => {
+        if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
+            d.properties!.selected = true;
+        } else {
+            d.properties!.selected = false;
+        }
+    });
+
+    return data;
+}
+
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover, changeYear, equityIndicator }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, setPollHover: any, changeYear: ChangeYear, equityIndicator: EquityIndicator}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -56,15 +107,27 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     // console.log(countyData);
     // console.log(geoJsonData);
 
+    const [changeYearData, setChangeYearData] = useState<ChangeYearData | null>(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
+    const [pollingLocsData, setPollingData] = useState<PollingLoc[]>(changeYearData?.pollingLocsData || []);
+
+
+    const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
+    const pollRef = useRef<L.FeatureGroup>(null);
 
     // Functions ---------------------------------------------------
 
+    function mouseOverPollingLoc(d: any) {
+        var coords = mapRef.current.latLngToContainerPoint(d.latlng);
+        pointerOver(coords.x, coords.y, `<span class="SemiBold">${d.name}</span><br><span class=${d.status}>Status: ${d.status}</span>`);
+        setPollHover(d);
+    }
+
     function mouseOverVD(event: any) {
         var layer = event.target;
-        // layer.setStyle(layersStyle.VD.highlight);
+        // layer.setStyle(layersStyle.Tract.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         pointerOver(coords.x, coords.y, mouseOverTextVD(layer.feature.properties));
     }
@@ -91,6 +154,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature.properties));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus");
     }
+
+    function mouseOutPollingLoc() {
+        pointerOut();
+        setPollHover({});
+    }    
 
     function onEachFeature(_: any, layer: any) {
 
@@ -137,6 +205,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     useEffect(() => {
         setCountyData(getCounties(changeYear, equityIndicator));
         setTractData(getTracts(changeYear, equityIndicator));
+        setChangeYearData(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
     }, [equityIndicator, changeYear]);
 
     useEffect(() => {
@@ -145,6 +214,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedState(defaultState);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData({} as GeoJSON.FeatureCollection);
+            setShowVD(false);
+            setShowPolls(false);
 
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
                 .on('zoomend', () => {
@@ -161,20 +232,22 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData(stateData);
+            setShowVD(false);
+            setShowPolls(false);
 
             mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
             .on('zoomend', () => {
-                setGeoJsonData(filterByBounds(mapRef, countyData));
+                setGeoJsonData(filterGeoByBounds(mapRef, countyData));
             })
             .on('moveend', () => {
-                setGeoJsonData(filterByBounds(mapRef, countyData));
+                setGeoJsonData(filterGeoByBounds(mapRef, countyData));
             });
 
         // Selected County
         } else {
             let county = {} as County;
 
-            // Updates selected county which is need to style the county and make it distinct from surrounding counties
+            // Updates counties within the selected county to and make it distinct from surrounding counties
             countyData.features.forEach((d: GeoJSON.Feature) => {
                 if (d.properties!.geoid === geoJsonId.geoid) {
                     d.properties!.selected = true;
@@ -184,37 +257,28 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 }
             });
 
-            // Updates selected county which is need to style the county and make it distinct from surrounding counties
-            tractData.features.forEach((d: GeoJSON.Feature) => {
-                if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
-                    d.properties!.selected = true;
-                } else {
-                    d.properties!.selected = false;
-                }
-            });
+            // Updates tract within the selected county to and make it distinct from surrounding tracts
+            updateSelectedFeature(tractData, county);
 
-            // Updates selected county which is need to style the county and make it distinct from surrounding counties
-            vdData.features.forEach((d: GeoJSON.Feature) => {
-                if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
-                    d.properties!.selected = true;
-                } else {
-                    d.properties!.selected = false;
-                }
-            });
+            // Updates voting districts within the selected county to and make it distinct from surrounding voting districts
+            updateSelectedFeature(vdData, county);
 
             setSelectedCounty(county);
+            setShowPolls(true);
 
             mapRef.current
                 .flyTo(county.latlng, county.zoom) // zooms to county level
                 .on('zoomend', () => {
-                    setGeoJsonBoundaryData(filterByBounds(mapRef, countyData));
-                    setGeoJsonData(filterByBounds(mapRef, tractData));
-                    setGeoJsonVdData(filterByBounds(mapRef, vdData));
+                    setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countyData));
+                    setGeoJsonData(filterGeoByBounds(mapRef, tractData));
+                    setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
+                    setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
                 })
                 .on('moveend', () => {
-                    setGeoJsonBoundaryData(filterByBounds(mapRef, countyData));
-                    setGeoJsonData(filterByBounds(mapRef, tractData));
-                    setGeoJsonVdData(filterByBounds(mapRef, vdData));
+                    setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countyData));
+                    setGeoJsonData(filterGeoByBounds(mapRef, tractData));
+                    setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
+                    setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
                 });
         }
 
@@ -256,18 +320,38 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     return(
         <>
-            <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect}/>
-            <FeatureGroup>
+            <Pane name="background-pane" style={{ zIndex: -100 }}>
+                <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect} ref={rectRef}/>
+            </Pane>
+            <Pane name="geo-pane" style={{ zIndex: 100 }}>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
                 {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
-            </FeatureGroup>
+            </Pane>
+            <Pane name="poll-pane" style={{ zIndex: 200 }}>
+            {showPolls ?
+                <FeatureGroup ref={pollRef} key="pollingLocFeatureGroup">
+                    {pollingLocsData.map((d: PollingLoc, i: number) => (
+                        <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} eventHandlers={{
+                            click: () => {
+                            //   console.log('marker clicked')
+                            },
+                            mouseover: () => {
+                                mouseOverPollingLoc(d);
+                            },
+                            mouseout: () => {    
+                                mouseOutPollingLoc();
+                            }
+                          }}/>
+                    ))}
+                </FeatureGroup> : null}
+            </Pane>
         </>
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, changeYear, equityIndicator }: 
-                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -282,15 +366,17 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
             zoomControl={false}
             ref={mapRef}
             >
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
-            />
+            <Pane name="custom" style={{ zIndex: -1000 }}>
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors"
+                />
+            </Pane>
             <LayersComponent mapRef={mapRef} geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
                              setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
-                             showVD={showVD} setShowVD={setShowVD}
+                             showVD={showVD} setShowVD={setShowVD} setPollHover={setPollHover}
                              changeYear={changeYear} equityIndicator={equityIndicator}
                              />
             <ZoomControl position="bottomright" />

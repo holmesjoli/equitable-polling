@@ -11,3 +11,7 @@ ggplot(data = cnty_equity) +
 quantile(cnty_equity$percentage_race_black_african_american, probs = seq(0, 1, 0.25))
 
 quantile(tract_equity$percentage_race_black_african_american, probs = seq(0, 1, 0.25))
+
+round(cnty_equity$registered_voters_total/cnty_equity$polling_locations_total)
+
+hist(round(cnty_equity$registered_voters_total/cnty_equity$polling_locations_total))
