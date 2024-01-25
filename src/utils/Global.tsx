@@ -8,8 +8,8 @@ export const selectVariable = {
                  {id: '1', descr: '2020 – 2022', baseYear: 2022, changeYear: '2020 - 2022'},
                  {id: '2', descr: '2018 – 2020', baseYear: 2020, changeYear: '2018 - 2020'},
                  {id: '3', descr: '2016 – 2018', baseYear: 2018, changeYear: '2016 - 2018'},
-                 {id: '4', descr: '2014 – 2016', baseYear: 2016, changeYear: '2014 - 2016'},
-                 {id: '5', descr: '2012 – 2014', baseYear: 2014, changeYear: '2012 - 2014'}
+                //  {id: '4', descr: '2014 – 2016', baseYear: 2016, changeYear: '2014 - 2016'},
+                //  {id: '5', descr: '2012 – 2014', baseYear: 2014, changeYear: '2012 - 2014'}
                 ],
     equityIndicator: [{variable: 'none', descr: 'None'},
                     //   {id: '', descr: 'Total # registered voters'},

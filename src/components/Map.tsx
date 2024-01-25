@@ -103,8 +103,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [changeYearData, setChangeYearData] = useState<ChangeYearData | null>(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>(changeYearData?.pollingLocsData || []);
 
-    console.log(changeYearData)
-    console.log(changeYear.changeYear);
+    console.log(pollingLocsData);
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -183,6 +182,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     );
 
     useEffect(() => {
+        console.log(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear));
         setChangeYearData(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
     }, [changeYear]);
 
@@ -250,12 +250,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 .on('zoomend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingData(filterPointByBounds(mapRef, pollingLocsData));
+                    setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
                 })
                 .on('moveend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingData(filterPointByBounds(mapRef, pollingLocsData));
+                    setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
                 });
         }
 
