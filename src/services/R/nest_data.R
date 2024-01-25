@@ -3,6 +3,9 @@ library(jsonlite)
 library(dplyr)
 library(magrittr)
 
+stfp <- c("13", "45", "28", "55") #state fips codes
+year <- c(2012, 2014, 2016, 2018, 2020, 2022)
+
 #' Get bbox
 #' Computes the bbox of the geometry that exists in the dataframe
 #' Returns dataframe
@@ -135,6 +138,8 @@ getLongitudinal <- function(df, state_fips, years) {
   return(df)
 }
 
+#' Get Counties longitudinal
+#' Writes out a json file at the year-cntyfp level
 getCountiesLongitudinal <- function(df, state_fips, years, pth) {
 
   df <- getLongitudinal(df, state_fips, years)
@@ -142,9 +147,54 @@ getCountiesLongitudinal <- function(df, state_fips, years, pth) {
   write(exportJSON, file.path(pth, "countyLongitudinal.json"))
 }
 
+#' Get Tracts longitudinal
+#' Writes out a json file at the year-tractfp level
 getTractsLongitudinal <- function(df, state_fips, years, pth) {
 
   df <- getLongitudinal(df, state_fips, years)
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "tractsLongitudinal.json"))
+}
+
+#' Get Polling Locations
+#' Writes out a json file at the voting poll level
+getPollingLocations <- function(df) {
+  df <- df %>% 
+    distinct(pollid, location_name_clean, r3latitude, r3longitude, stfp) %>% 
+    rename(name = location_name_clean, 
+           pollId = pollid,
+           Y = r3latitude,
+           X = r3longitude)
+
+  exportJSON <- toJSON(df)
+  write(exportJSON, "../data/processed/pollsLocation.json")
+  
+  return(df)
+}
+
+#' Get poll changes status
+#' Writes out a json file at the change year level
+getPollsChangeStatus <- function(df) {
+
+  df <- df %>%
+    distinct(pollid, base_year, change_year, change_type, stfp, r3latitude, r3longitude,location_name_clean) %>% 
+    rename(pollId = pollid,
+           baseYear = base_year,
+           changeYear = change_year,
+           status = change_type,
+           X = r3longitude,
+           Y = r3latitude,
+           name = location_name_clean) %>%
+    mutate(overall = ifelse(status == "no_change", "nochange", status),
+           id = case_when(overall == "added" ~ "3",
+                          overall == "nochange" ~ "0",
+                          overall == "removed" ~ "-3"),
+           status = case_when(overall == "added" ~ "Added",
+                              overall == "nochange" ~ "No change",
+                              overall == "removed" ~ "Removed"))
+
+  exportJSON <- toJSON(df)
+  write(exportJSON, "../data/processed/pollsChangeStatus.json")
+  
+  return(df)
 }

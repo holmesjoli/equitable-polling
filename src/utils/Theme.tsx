@@ -20,7 +20,7 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
 
 // Scales
 export const pollStrokeScale = d3.scaleOrdinal()
-  .domain(["increase", "nochange", "decrease"] )
+  .domain(["added", "nochange", "removed"] )
   .range(["#610063", theme.grey.primary, "#E45729"] );
 
 export const pollFillScale = d3.scaleOrdinal()
@@ -52,6 +52,7 @@ function getFillOpacity(d: any) {
   return d ? .3 : .1;
 }
 
+// Selected county styles
 export function highlightSelectedCounty(feature: any) {
     return {
       color: theme.grey.primary,
@@ -62,6 +63,7 @@ export function highlightSelectedCounty(feature: any) {
     };
 }
 
+// Census tract styles
 export function tractStyle(feature: any) {
 
   return {
@@ -73,11 +75,23 @@ export function tractStyle(feature: any) {
   };
 }
 
+// Voting district styles
 export function vdStyle(feature: any) {
   return {
     color: theme.focusColorDark,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: 0
+  };
+}
+
+// Poll styles
+export function pollStyle(point: any) {
+  return {
+    fillColor: pollFillScale(point.id) as string,
+    color: pollStrokeScale(point.overall) as string,
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 1
   };
 }

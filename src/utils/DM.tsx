@@ -3,17 +3,21 @@ import stateGeo from "../data/processed/stateGeoJSON.json";
 import countyGeo from "../data/processed/countyGeoJSON.json";  
 import tractGeo from "../data/processed/tractGeoJSON.json";
 import vdGeo from "../data/processed/votingDistrictGeoJSON.json";
+import pollsChangeStatus from "../data/processed/pollsChangeStatus.json";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
+
+import { selectVariable } from "./Global";
 
 // Processed Data
 export const stateData = getStates();
 export const countyData = getCounties();
 export const tractData = getTracts();
 export const vdData = getVd();
+export const changeYearDataAll = getChangeYearData();
 
 function getStates() {
 
@@ -122,4 +126,35 @@ export function getVd() {
 
     return {type: 'FeatureCollection', 
             features: features} as GeoJSON.FeatureCollection;
+}
+
+// Get Polling Locations
+export function getChangeYearData() {
+
+    const changeStatus: ChangeYearData[] = [];
+
+    selectVariable.changeYear.forEach((e) => {
+
+        const pollingLoc: PollingLoc[] = [];
+
+         (pollsChangeStatus as any[])
+            .filter((d: any) => d.changeYear === e.changeYear)
+            .forEach((d: any) => {
+
+                pollingLoc.push({
+                        type: 'Poll',
+                        descr: 'Polling location',
+                        name: d.name,
+                        latlng: { lat: d.Y, lng: d.X } as LatLng,
+                        pollId: d.pollId,
+                        status: d.status,
+                        overall: d.overall,
+                        id: d.id
+                    } as PollingLoc );
+            });
+
+        changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as ChangeYearData);
+    });
+
+    return changeStatus;
 }

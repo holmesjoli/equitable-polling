@@ -18,13 +18,16 @@ export default function Home({}): JSX.Element {
 
     const [selectedState, setSelectedState] = useState(defaultState);
     const [selectedCounty, setSelectedCounty] = useState(defaultCounty);
-    const [changeYear, setChangeYear] = useState(selectVariable.changeYear[0]);
+    const [changeYear, setChangeYear] = useState(selectVariable.changeYear[1]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
     const [showPolls, setShowPolls] = useState(true);
     const [showVD, setShowVD] = useState(false);
     const [isFullScreen, setFullScreen] = useState(true);
     const [geoJsonId, setGeoJsonId] = useState<GeoID>(defaultMap);
+
+    const [pollHover, setPollHover] = useState({});
+    const [geoHover, setGeoHover] = useState({});
 
     useEffect(() => {
         Tooltip.init();
@@ -39,6 +42,8 @@ export default function Home({}): JSX.Element {
                         <StateStatus
                             equityIndicator={equityIndicator}
                             setEquityIndicator={setEquityIndicator}
+                            pollHover={pollHover}
+                            geoHover={geoHover}
                         />
                 ) : (
                         <CountyStatus
@@ -48,6 +53,8 @@ export default function Home({}): JSX.Element {
                             setShowPolls={setShowPolls}
                             showVD={showVD}
                             setShowVD={setShowVD}
+                            pollHover={pollHover}
+                            geoHover={geoHover}
                         />
                 )}
                 </>
@@ -60,8 +67,8 @@ export default function Home({}): JSX.Element {
             <Map geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                 selectedState={selectedState} setSelectedState={setSelectedState} 
                 setSelectedCounty={setSelectedCounty} 
-                showPolls={showPolls} setShowPolls={setShowPolls}
-                showVD={showVD} setShowVD={setShowVD}/>
+                showPolls={showPolls} setShowPolls={setShowPolls} showVD={showVD} setShowVD={setShowVD}
+                setPollHover={setPollHover} changeYear={changeYear}/>
         </Main>
     )
 }
