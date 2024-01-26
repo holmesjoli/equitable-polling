@@ -11,7 +11,7 @@ import pollsChangeStatus from "../data/processed/pollsChangeStatus.json";
 import { theme, thresholdScale } from "./Theme";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, Longitudinal, ChangeYearEquityIndicator } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, ChangeYearEquityIndicator } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -21,6 +21,7 @@ import { selectVariable } from "./Global";
 export const stateData = getStates();
 export const vdData = getVd();
 export const changeYearDataAll = getChangeYearData();
+export const tractsDataAll = getTracts();
 export const countiesData = getCounties();
 
 // Returns the equity measure for the selected equity indicator
@@ -139,6 +140,47 @@ export function getCounties() {
     return returnFeatureCollection(features);
 }
 
+// Returns a feature collection of all the tracts for the selected project states
+export function getTracts() {
+
+    const censusYear: any[] = [];
+
+    [2010, 2020].forEach((year: number) => {
+
+        const features: Feature[] = [];
+
+        (tractGeo as any[])
+            .filter((d: any) => d.year === year)
+            .forEach((d: any) => {
+
+                const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
+
+                features.push({type: 'Feature', 
+                    properties: {
+                        type: 'Tract',
+                        descr: 'Census tract',
+                        name: d.name,
+                        stfp: d.stfp,
+                        cntyfp: d.cntyfp,
+                        tractfp: d.tractfp,
+                        geoid: d.geoid,
+                        latlng: getLatLng(d),
+                        zoom: 12,
+                        selected: false,
+                        changeYearEquityIndicator: changeYearData,
+                        bounds: getBounds(d),
+                    } as unknown as Tract,
+                    geometry: d.geometry as GeoJSON.Geometry})
+            });
+
+        let tractsData = {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
+
+        censusYear.push({decennialCensusYear: year, tractsData: tractsData});
+    });
+
+    return censusYear;
+}
+
 export function getVd() {
 
     const features: Feature[] = [];
@@ -189,31 +231,31 @@ export function getChangeYearData() {
                     } as PollingLoc );
             });
 
-        (tractGeo as any[])
-            .filter((d: any) => e.baseYear < 2020? d.year === 2010: d.year === 2020)
-            .forEach((d: any) => {
+        // (tractGeo as any[])
+        //     .filter((d: any) => e.baseYear < 2020? d.year === 2010: d.year === 2020)
+        //     .forEach((d: any) => {
 
-            const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
+        //     const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
 
-            tractsData.push({type: 'Feature', 
-                properties: {
-                    type: 'Tract',
-                    descr: 'Census tract',
-                    name: d.name,
-                    stfp: d.stfp,
-                    cntyfp: d.cntyfp,
-                    tractfp: d.tractfp,
-                    geoid: d.geoid,
-                    latlng: getLatLng(d),
-                    zoom: 12,
-                    selected: false,
-                    changeYearEquityIndicator: changeYearData,
-                    bounds: getBounds(d)
-                } as unknown as Tract, 
-                geometry: d.geometry as GeoJSON.Geometry})
-            });
+        //     tractsData.push({type: 'Feature', 
+        //         properties: {
+        //             type: 'Tract',
+        //             descr: 'Census tract',
+        //             name: d.name,
+        //             stfp: d.stfp,
+        //             cntyfp: d.cntyfp,
+        //             tractfp: d.tractfp,
+        //             geoid: d.geoid,
+        //             latlng: getLatLng(d),
+        //             zoom: 12,
+        //             selected: false,
+        //             changeYearEquityIndicator: changeYearData,
+        //             bounds: getBounds(d)
+        //         } as unknown as Tract, 
+        //         geometry: d.geometry as GeoJSON.Geometry})
+        //     });
 
-        changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc, tractsData: returnFeatureCollection(tractsData)} as ChangeYearData);
+        changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as ChangeYearData);
     });
 
     return changeStatus;

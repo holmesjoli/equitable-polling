@@ -15,11 +15,10 @@ import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator, ChangeYe
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { stateData, countiesData, vdData, changeYearDataAll } from "../utils/DM";
+import { stateData, countiesData, vdData, changeYearDataAll, tractsDataAll } from "../utils/DM";
 
 // Styles
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, choroplethStyle, pollStyle } from "../utils/Theme";
-import { useFetcher } from "react-router-dom";
 
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
@@ -93,17 +92,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>(changeYearData?.pollingLocsData || []);
 
     // console.log(geoJsonData);
-    // const [decennialCensusYear, setDecennialCensusYear] = useState<number>(2020);
-    const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection | never[]>(changeYearData?.tractsData || []);
-    console.log(tractsData);
+    const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
+    const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection | never[]>(tractsDataAll.find((d: any) => d.decennialCensusYear === decennialCensusYear).tractsData);
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
     const pollRef = useRef<L.FeatureGroup>(null);
-
-    // console.log(changeYearData);
 
     // Functions ---------------------------------------------------
 
@@ -199,9 +195,17 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     useEffect(() => {
         setChangeYearData(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
-        const tractsData = changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear)?.tractsData || null;
-        setTractsData(tractsData || []);
+
+        if (changeYear.baseYear < 2020) {
+            setDecennialCensusYear(2010);
+        } else {
+            setDecennialCensusYear(2020);
+        }
     }, [changeYear]);
+
+    useEffect(() => {
+        setTractsData(tractsDataAll.find((d: any) => d.decennialCensusYear === decennialCensusYear).tractsData);
+    }, [decennialCensusYear]);
 
     useEffect(() => {
         // United State
@@ -270,7 +274,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
                 })
                 .on('moveend', () => {
-                    // console.log(changeYearData?.tractsData);
                     setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesData));
                     setGeoJsonData(filterGeoByBounds(mapRef, tractsData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
@@ -278,7 +281,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
         }
 
-    }, [geoJsonId]);
+    }, [geoJsonId, changeYear, tractsData]);
 
     // Updates main geography and main boundary
     useEffect(() => {
@@ -302,7 +305,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             }   
         }
 
-    }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear, tractsData]);
+    }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
 
     // Updates the voting districts
     useEffect(() => {
