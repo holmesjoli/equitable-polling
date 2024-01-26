@@ -36,4 +36,4 @@ export type Longitudinal = {geoid: string, stfp: string, cntyfp: string, pctBlac
 export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, 
                           pixelCoords?: PixelCoords, pollId: string, status: string | undefined, overall: string | undefined, id: string | undefined};
 
-export type ChangeYearData = {changeYear: string, pollingLocsData: PollingLoc[], tractsData: GeoJSON.FeatureCollection[]};
+export type ChangeYearData = {changeYear: string, pollingLocsData: PollingLoc[], tractsData: GeoJSON.FeatureCollection};

@@ -218,7 +218,7 @@ export function getChangeYearData() {
 
             const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
 
-            tractData.push({type: 'Feature', 
+            tractsData.push({type: 'Feature', 
                 properties: {
                     type: 'Tract',
                     descr: 'Census tract',
