@@ -106,7 +106,7 @@ function initSizeLegend(pollHover: any) {
 // Initiate poll legend
 function updatePollLegend(geo: string, pollHover: any) {
 
-  const id = pollHover.pollHover.id;
+  const id = pollHover.id;
   
   const data = [{ overall: 'added', label: 'Increase of more than 10', id: '3', geo: 'state' },
                 { overall: 'added', label: "Increase of 4 to 10", id: '2', geo: 'state' },
@@ -201,7 +201,7 @@ function ColorTypeCounty () {
   );
 }
 
-export function StateLegend (pollHover: any) {
+export function StateLegend ({pollHover} : {pollHover: any}) {
 
   // Initiate legends
   useEffect(() => {
@@ -222,7 +222,7 @@ export function StateLegend (pollHover: any) {
   );
 }
 
-export function CountyLegend (pollHover: any) {
+export function CountyLegend ({pollHover} : {pollHover: any}) {
   // Initiate legends
   useEffect(() => {
     initLegend(pollLegendId);
@@ -249,7 +249,7 @@ export function EquityLegend ({equityIndicator, geoHover, changeYear} : {equityI
   // Initiate legends
   useEffect(() => {
     updateEquityLegend(equityIndicator, geoHover, changeYear);
-  }, [equityIndicator, geoHover, changeYear]);
+  }, [equityIndicator, geoHover]);
 
   return (
     <div className="Legend">

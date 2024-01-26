@@ -111,8 +111,8 @@ export function USStatus() {
     );
 }
 
-export function StateStatus({equityIndicator, setEquityIndicator, geoHover, pollHover, changeYear} : 
-                            {equityIndicator: EquityIndicator, setEquityIndicator: any, geoHover: any, pollHover: any, changeYear: ChangeYear}) {
+export function StateStatus ({equityIndicator, setEquityIndicator, geoHover, pollHover, changeYear} : 
+                             {equityIndicator: EquityIndicator, setEquityIndicator: any, geoHover: any, pollHover: any, changeYear: ChangeYear}) {
   return (
     <Status>
       <ComponentGroup title="Legend">
@@ -126,7 +126,7 @@ export function StateStatus({equityIndicator, setEquityIndicator, geoHover, poll
   );
 }
 
-export function CountyStatus({equityIndicator, setEquityIndicator, showPolls, setShowPolls, showVD, setShowVD, geoHover, pollHover, changeYear} : 
+export function CountyStatus ({equityIndicator, setEquityIndicator, showPolls, setShowPolls, showVD, setShowVD, geoHover, pollHover, changeYear} : 
                              {equityIndicator: EquityIndicator, setEquityIndicator: any, changeYear: ChangeYear,
                               showPolls: boolean, setShowPolls: any, 
                               showVD: boolean, setShowVD: any, 
