@@ -56,7 +56,7 @@ export function highlightSelectedCounty(feature: any) {
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
 
   if (feature.properties.type === "State") {
-    return stateStyle(feature);
+    return stateStyle();
   } else if (feature.properties.type === "County") {
     return countyStyle(feature, equityIndicator, changeYear);
   } else if (feature.properties.type === "Tract") {
@@ -66,7 +66,7 @@ export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, 
   }
 }
 
-export function stateStyle(feature: any) {
+export function stateStyle() {
   return {
     color: theme.grey.primary,
     fillColor: theme.backgroundFill,
@@ -92,7 +92,7 @@ export function tractStyle(feature: any, equityIndicator: EquityIndicator, chang
     fillColor: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: 0
+    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? .6 : .3
   };
 }
 

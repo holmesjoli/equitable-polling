@@ -231,30 +231,6 @@ export function getChangeYearData() {
                     } as PollingLoc );
             });
 
-        // (tractGeo as any[])
-        //     .filter((d: any) => e.baseYear < 2020? d.year === 2010: d.year === 2020)
-        //     .forEach((d: any) => {
-
-        //     const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
-
-        //     tractsData.push({type: 'Feature', 
-        //         properties: {
-        //             type: 'Tract',
-        //             descr: 'Census tract',
-        //             name: d.name,
-        //             stfp: d.stfp,
-        //             cntyfp: d.cntyfp,
-        //             tractfp: d.tractfp,
-        //             geoid: d.geoid,
-        //             latlng: getLatLng(d),
-        //             zoom: 12,
-        //             selected: false,
-        //             changeYearEquityIndicator: changeYearData,
-        //             bounds: getBounds(d)
-        //         } as unknown as Tract, 
-        //         geometry: d.geometry as GeoJSON.Geometry})
-        //     });
-
         changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as ChangeYearData);
     });
 
