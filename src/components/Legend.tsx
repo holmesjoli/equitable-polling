@@ -27,10 +27,10 @@ function initLegend(selector: string) {
 }
 
 // Reusable function to add text to legend
-function legendText(svg: any, data: any[], id: string | undefined = undefined) {
+function legendText(svg: any, data: any[], id: string | undefined = undefined, geo: boolean = false) {
   svg
     .selectAll('text')
-    .data(data, (d: any) => d.id)
+    .data(data, (d: any) => geo? d.pctBlack: d.id)
     .join(
       (enter: any) => enter
         .append('text')
@@ -40,7 +40,7 @@ function legendText(svg: any, data: any[], id: string | undefined = undefined) {
         .attr('font-size', theme.fontSize)
         .attr('fill', theme.grey.primary),
       (update: any) => update
-        .attr('opacity', (d: any) => d.id === id || id === undefined? 1 : 0.3)
+        .attr('opacity', (d: any) => geo ? thresholdScale(d.pctBlack) as string === id as string || id === undefined ? theme.choroplethOpacity : 0.3 : d.id === id || id === undefined? 1 : 0.3)
     );
 }
 
@@ -51,7 +51,7 @@ function legendHeight(data: any[], margin: number = 0) {
 }
 
 // Initiate size legend
-function initSizeLegend(pollHover: any) {
+function initSizeLegend() {
 
   initLegend(sizeLegendId);
 
@@ -176,7 +176,7 @@ function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any, cha
         )
   );
 
-  legendText(svg, equityIndicatorData.filter(d => d.variable === equityIndicator.variable));
+  legendText(svg, equityIndicatorData.filter(d => d.variable === equityIndicator.variable), fillColor, true);
 }
 
 function SizeTypeState () {
@@ -211,7 +211,7 @@ export function StateLegend ({pollHover} : {pollHover: any}) {
   // Initiate legends
   useEffect(() => {
     updatePollLegend('state', pollHover);
-    initSizeLegend(pollHover);
+    initSizeLegend();
   }, []);
 
   return (
