@@ -3,6 +3,8 @@ source('./R/nest_data.R')
 pth <- "../data/processed"
 
 # State fips codes, adjust this list and rerun to add additional states
+
+# Georgia, South Carolina, Mississippi, Wisconsin
 state_fips <- c("13", "45", "28", "55")
 years <- c(2012, 2014, 2016, 2018, 2020, 2022)
 
@@ -12,6 +14,8 @@ getCounties(state_fips, pth)
 df <- getTracts(state_fips, years, pth)
 getVd(state_fips, pth)
 getCountiesLongitudinal(readr::read_csv("../data/raw/county_year_summary_RI_World_01032024_fips.csv"), state_fips, years, pth)
+
+# 13135
 df <- getTractsLongitudinal(readr::read_csv("../data/raw/census_tract_year_summary_RI_World_01032024_fips.csv"), state_fips, years, pth)
 locs <- getPollingLocations(readr::read_csv("../data/raw/wi_polling_location_name_change.csv") %>% 
                      mutate(stfp = '55') %>% 

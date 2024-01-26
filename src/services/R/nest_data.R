@@ -124,8 +124,8 @@ getTracts <- function(state_fips, years, pth) {
   
   exportJSON <- toJSON(statesdata)
   write(exportJSON, file.path(pth, "tractGeoJSON.json"))
-  
-  return(df)
+
+  return(statesdata)
 }
 
 #' Get Voting Districts

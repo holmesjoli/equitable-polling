@@ -15,12 +15,11 @@ import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator, ChangeYe
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { stateData, countiesDataAll, tractsDataAll, vdData, changeYearDataAll } from "../utils/DM";
+import { stateData, countiesData, vdData, changeYearDataAll } from "../utils/DM";
 
-// Styles 
+// Styles
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, choroplethStyle, pollStyle } from "../utils/Theme";
-
-console.log(countiesDataAll);
+import { useFetcher } from "react-router-dom";
 
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
@@ -93,11 +92,18 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [changeYearData, setChangeYearData] = useState<ChangeYearData | null>(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>(changeYearData?.pollingLocsData || []);
 
+    // console.log(geoJsonData);
+    // const [decennialCensusYear, setDecennialCensusYear] = useState<number>(2020);
+    const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection | never[]>(changeYearData?.tractsData || []);
+    console.log(tractsData);
+
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
     const pollRef = useRef<L.FeatureGroup>(null);
+
+    // console.log(changeYearData);
 
     // Functions ---------------------------------------------------
 
@@ -193,6 +199,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     useEffect(() => {
         setChangeYearData(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
+        const tractsData = changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear)?.tractsData || null;
+        setTractsData(tractsData || []);
     }, [changeYear]);
 
     useEffect(() => {
@@ -224,10 +232,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
             mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
             .on('zoomend', () => {
-                setGeoJsonData(filterGeoByBounds(mapRef, countiesDataAll));
+                setGeoJsonData(filterGeoByBounds(mapRef, countiesData));
             })
             .on('moveend', () => {
-                setGeoJsonData(filterGeoByBounds(mapRef, countiesDataAll));
+                setGeoJsonData(filterGeoByBounds(mapRef, countiesData));
             });
 
         // Selected County
@@ -235,7 +243,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             let county = {} as County;
 
             // Updates counties within the selected county to and make it distinct from surrounding counties
-            countiesDataAll.features.forEach((d: GeoJSON.Feature) => {
+            countiesData.features.forEach((d: GeoJSON.Feature) => {
                 if (d.properties!.geoid === geoJsonId.geoid) {
                     d.properties!.selected = true;
                     county = d.properties as County;
@@ -245,7 +253,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             });
 
             // Updates tract within the selected county to and make it distinct from surrounding tracts
-            updateSelectedFeature(tractsDataAll, county);
+            updateSelectedFeature(tractsData as GeoJSON.FeatureCollection || [], county);
 
             // Updates voting districts within the selected county to and make it distinct from surrounding voting districts
             updateSelectedFeature(vdData, county);
@@ -256,14 +264,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             mapRef.current
                 .flyTo(county.latlng, county.zoom) // zooms to county level
                 .on('zoomend', () => {
-                    setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesDataAll));
-                    setGeoJsonData(filterGeoByBounds(mapRef, tractsDataAll));
+                    setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesData));
+                    setGeoJsonData(filterGeoByBounds(mapRef, tractsData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
                     setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
                 })
                 .on('moveend', () => {
-                    setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesDataAll));
-                    setGeoJsonData(filterGeoByBounds(mapRef, tractsDataAll));
+                    // console.log(changeYearData?.tractsData);
+                    setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesData));
+                    setGeoJsonData(filterGeoByBounds(mapRef, tractsData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
                     setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
                 });
@@ -273,28 +282,27 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Updates main geography and main boundary
     useEffect(() => {
-
-            // Update boundary and interactive layer
-            if (geoJsonId.type === 'County') {
-                if (equityIndicator.variable === 'none') {
-                    geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
-                    geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
-                } else {
-                    geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-                    geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
-                }
+        // Update boundary and interactive layer
+        if (geoJsonId.type === 'County') {
+            if (equityIndicator.variable === 'none') {
+                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
+                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle(tractStyle); // Replaces geojson clickable elements with drilldown
             } else {
-
-                if (equityIndicator.variable === 'none') {
-                    geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-                    geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
-                } else {
-                    geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-                    geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
-                }   
+                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
+                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
             }
+        } else {
 
-    }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
+            if (equityIndicator.variable === 'none') {
+                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
+                geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
+            } else {
+                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
+                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
+            }   
+        }
+
+    }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear, tractsData]);
 
     // Updates the voting districts
     useEffect(() => {

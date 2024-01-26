@@ -52,6 +52,7 @@ export function highlightSelectedCounty(feature: any) {
     };
 }
 
+// todo update tract styles
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
 
   if (feature.properties.type === "State") {
@@ -72,17 +73,17 @@ export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, 
       fillOpacity: .6
     };
   } else if (feature.properties.type === "Tract") {
-    if (feature.properties.equityIndicator.variable === 'none') {
+    // if (feature.properties.equityIndicator.variable === 'none') {
       return tractStyle(feature);
-    } else {
-      return {
-        color: feature.properties!.equityIndicator.strokeColor,
-        fillColor: feature.properties!.equityIndicator.fillColor,
-        weight: 1,
-        opacity: getStrokeOpacity(feature.properties!.selected),
-        fillOpacity: getFillOpacity(feature.properties!.selected)
-      };
-    }
+    // } else {
+    //   return {
+    //     color: feature.properties!.equityIndicator.strokeColor,
+    //     fillColor: feature.properties!.equityIndicator.fillColor,
+    //     weight: 1,
+    //     opacity: getStrokeOpacity(feature.properties!.selected),
+    //     fillOpacity: getFillOpacity(feature.properties!.selected)
+    //   };
+    // }
   } else {
     return vdStyle(feature);
   }

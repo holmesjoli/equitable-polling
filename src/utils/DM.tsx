@@ -21,7 +21,6 @@ import { selectVariable } from "./Global";
 export const stateData = getStates();
 export const vdData = getVd();
 export const changeYearDataAll = getChangeYearData();
-export const tractsDataAll = getTracts();
 export const countiesData = getCounties();
 
 // Returns the equity measure for the selected equity indicator
@@ -31,17 +30,26 @@ function findEquityMeasureByChangeYear(geoData: any, d: any) {
 
         selectVariable.changeYear.forEach((e) => {
 
-            // console.log(e.baseYear, d.geoid);
-
             const em = geoData.find((f: any) => (f.baseYear === e.baseYear) && (f.geoid === d.geoid));
+
+            // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
+            let pctBlack;
+            if (em === undefined) {
+                pctBlack =  {equityMeasure: 0,
+                                   strokeColor: theme.grey.primary,
+                                   fillColor: theme.grey.tertiary}
+            } else {
+                pctBlack =  {equityMeasure: em!.pctBlack, 
+                    strokeColor: theme.darkGradientColor, 
+                    fillColor: thresholdScale(em.pctBlack) as string}
+            }
 
             changeYearData.push({changeYear: e.changeYear, 
                                  none: {equityMeasure: 0,
                                         strokeColor: theme.grey.primary,
                                         fillColor: theme.backgroundFill},
-                                 pctBlack: {equityMeasure: em!.pctBlack, 
-                                            strokeColor: theme.darkGradientColor, 
-                                            fillColor: thresholdScale(em.pctBlack) as string}} );
+                                 pctBlack: pctBlack
+                                 });
         });
 
     return changeYearData;
@@ -100,7 +108,6 @@ function getStates() {
             geometry: e.geometry as GeoJSON.Geometry})
     });
 
-
     return returnFeatureCollection(stateFeatures);
 }
 
@@ -132,37 +139,6 @@ export function getCounties() {
     return returnFeatureCollection(features);
 }
 
-// Returns a feature collection of all the tracts for the selected project states
-export function getTracts() {
-
-    const features: Feature[] = [];
-
-    (tractGeo as any[])
-        .forEach((d: any) => {
-
-            // const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
-
-            features.push({type: 'Feature', 
-                properties: {
-                    type: 'Tract',
-                    descr: 'Census tract',
-                    name: d.name,
-                    stfp: d.stfp,
-                    cntyfp: d.cntyfp,
-                    tractfp: d.tractfp,
-                    geoid: d.geoid,
-                    latlng: getLatLng(d),
-                    zoom: 12,
-                    selected: false,
-                    //  changeYearEquityIndicator: changeYearData,
-                    bounds: getBounds(d)
-                } as unknown as Tract, 
-                geometry: d.geometry as GeoJSON.Geometry})
-    });
-
-    return returnFeatureCollection(features);
-}
-
 export function getVd() {
 
     const features: Feature[] = [];
@@ -186,8 +162,6 @@ export function getVd() {
 
     return returnFeatureCollection(features);
 }
-
-// console.log(tractGeo);
 
 // Get Polling Locations
 export function getChangeYearData() {
@@ -215,13 +189,11 @@ export function getChangeYearData() {
                     } as PollingLoc );
             });
 
-        // console.log(e);
-
         (tractGeo as any[])
             .filter((d: any) => e.baseYear < 2020? d.year === 2010: d.year === 2020)
             .forEach((d: any) => {
 
-            // const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
+            const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
 
             tractsData.push({type: 'Feature', 
                 properties: {
@@ -235,7 +207,7 @@ export function getChangeYearData() {
                     latlng: getLatLng(d),
                     zoom: 12,
                     selected: false,
-                    //  changeYearEquityIndicator: changeYearData,
+                    changeYearEquityIndicator: changeYearData,
                     bounds: getBounds(d)
                 } as unknown as Tract, 
                 geometry: d.geometry as GeoJSON.Geometry})
