@@ -8,7 +8,7 @@ import { theme, pollFillScale, pollStrokeScale, rScale, thresholdScale,
          sizeData, equityIndicatorData } from "../utils/Theme";
 
 // Types
-import { EquityIndicator } from '../utils/Types';
+import { EquityIndicator, ChangeYear } from '../utils/Types';
 
 const equityLegendId = 'Equity-Legend';
 const sizeLegendId = 'Size-Legend';
@@ -143,14 +143,22 @@ function updatePollLegend(geo: string, pollHover: any) {
 }
 
 // Initiate equity legend
-function initEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
+function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any, changeYear: ChangeYear) {
+
+  let fillColor: string | undefined = undefined;
+
+  if (geoHover.changeYearEquityIndicator !== undefined ) {
+    fillColor = geoHover.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor;
+  } else {
+    fillColor = undefined;
+  }
 
   const svg = d3.select(`#${equityLegendId} svg`)
     .attr('height', legendHeight(equityIndicatorData.filter(d => d.variable === equityIndicator.variable)));
 
   svg
     .selectAll('rect')
-    .data(equityIndicatorData.filter(d => d.variable === equityIndicator.variable), (d: any) => d.id)
+    .data(equityIndicatorData.filter(d => d.variable === equityIndicator.variable), (d: any) => d.pctBlack)
     .join(
       enter => enter
         .append('rect')
@@ -159,13 +167,13 @@ function initEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
         .attr('transform', function (d, i) {
           return 'translate(' + (circleStart - 6) + ', ' + (i * 23 + 10) + ')';
         })
+        .attr('opacity', theme.choroplethOpacity)
         .attr('fill', (d: any) => thresholdScale(d.pctBlack) as string)
         .attr("stroke", theme.darkGradientColor)
-        .attr('stroke-width', 1)
-      //   ,
-      // update => update
-      //   .attr('opacity', d => d.geoHoverId === geoHover ? 1 : 0.3),
-      // exit => exit.remove()
+        .attr('stroke-width', 1),
+      update => update
+        .attr('opacity', (d: any) => thresholdScale(d.pctBlack) as string === fillColor as string || fillColor === undefined ? theme.choroplethOpacity : 0.3
+        )
   );
 
   legendText(svg, equityIndicatorData.filter(d => d.variable === equityIndicator.variable));
@@ -232,7 +240,7 @@ export function CountyLegend (pollHover: any) {
   );
 }
 
-export function EquityLegend ({equityIndicator, geoHover} : {equityIndicator: EquityIndicator, geoHover: any}) {
+export function EquityLegend ({equityIndicator, geoHover, changeYear} : {equityIndicator: EquityIndicator, geoHover: any, changeYear: ChangeYear}) {
 
   useEffect(() => {
     initLegend(equityLegendId);
@@ -240,8 +248,8 @@ export function EquityLegend ({equityIndicator, geoHover} : {equityIndicator: Eq
 
   // Initiate legends
   useEffect(() => {
-    initEquityLegend(equityIndicator, geoHover);
-  }, [equityIndicator]);
+    updateEquityLegend(equityIndicator, geoHover, changeYear);
+  }, [equityIndicator, geoHover, changeYear]);
 
   return (
     <div className="Legend">

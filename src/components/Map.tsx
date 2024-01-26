@@ -81,8 +81,8 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
     return data;
 }
 
-function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover, changeYear, equityIndicator }: 
-                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, setPollHover: any, changeYear: ChangeYear, equityIndicator: EquityIndicator}) {
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover, changeYear, equityIndicator, setGeoHover }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, setPollHover: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, setGeoHover: any}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -121,6 +121,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         layer.setStyle(layersStyle.Tract.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         pointerOver(coords.x, coords.y, mouseOverTextTract(layer.feature.properties));
+        setGeoHover(layer.feature.properties);
     }
 
     function mouseOverCounty(event: any) {
@@ -129,6 +130,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         pointerOver(coords.x, coords.y, mouseOverTextCounty(layer.feature.properties));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
+        setGeoHover(layer.feature.properties);
     }
 
     function mouseOverState(event: any) {
@@ -149,6 +151,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         layer.setStyle(choroplethStyle(layer.feature, equityIndicator, changeYear) as PathOptions);
         pointerOut();
         d3.select(".Status .ComponentGroupInner span").attr("class", "");
+        setGeoHover({});
     }
 
     function onEachFeature(_: any, layer: any) {
@@ -348,8 +351,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator }: 
-                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, setGeoHover: any }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -375,7 +378,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                              setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
                              showVD={showVD} setShowVD={setShowVD} setPollHover={setPollHover}
-                             changeYear={changeYear} equityIndicator={equityIndicator}
+                             changeYear={changeYear} equityIndicator={equityIndicator} setGeoHover={setGeoHover}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>

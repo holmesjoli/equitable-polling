@@ -9,7 +9,8 @@ export const theme = {
     focusColor: '#1D618E',
     focusColorDark: '#113A55',
     darkGradientColor: "#113A55",
-    fontFamily: 'Inter'
+    fontFamily: 'Inter',
+    choroplethOpacity: .8
 }
 
 export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
@@ -92,7 +93,7 @@ export function tractStyle(feature: any, equityIndicator: EquityIndicator, chang
     fillColor: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? .6 : .3
+    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3
   };
 }
 
