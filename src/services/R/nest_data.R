@@ -82,22 +82,50 @@ getCounties <- function(state_fips, pth) {
 
 #' Get Census tracts
 #' Writes out a json file at the census tract level
-getTracts <- function(state_fips, pth) {
+getTracts <- function(state_fips, years, pth) {
+  
+  statesdata <- lapply(state_fips, function(state) {
 
-  df <- tigris::tracts(cb = T) %>% 
-    filter(STATEFP %in% state_fips) %>% 
-    select(COUNTYFP, STATEFP, TRACTCE, NAME, GEOID, geometry) %>% 
-    rename(cntyfp = COUNTYFP,
-           stfp = STATEFP,
-           name = NAME,
-           tractfp = TRACTCE,
-           geoid = GEOID)
+    yearsdata <- lapply(c(2010, 2020), function(year) {
+      
+      df <- tigris::tracts(state = state, year = year, cb = TRUE) %>% 
+        mutate(year = year)
+      
+      if (year == 2010) {
 
-  df <- cbind(df, getBbox(df))
-  df <- getCentroid(df)
+        df <- df %>%
+          select(COUNTY, STATE, TRACT, NAME, geometry, year) %>% 
+          rename(cntyfp = COUNTY,
+                 stfp = STATE,
+                 name = NAME,
+                 tractfp = TRACT) %>% 
+          mutate(geoid = paste0(stfp, cntyfp, tractfp))
 
-  exportJSON <- toJSON(df)
+      } else {
+        df <- df %>% 
+          select(COUNTYFP, STATEFP, TRACTCE, NAME, GEOID, geometry, year) %>% 
+          rename(cntyfp = COUNTYFP,
+                 stfp = STATEFP,
+                 name = NAME,
+                 tractfp = TRACTCE,
+                 geoid = GEOID)
+      }
+
+      df <- cbind(df, getBbox(df))
+      df <- getCentroid(df)
+      
+      return(df)
+
+    }) %>% bind_rows()
+    
+    return(yearsdata)
+    
+  }) %>% bind_rows()
+  
+  exportJSON <- toJSON(statesdata)
   write(exportJSON, file.path(pth, "tractGeoJSON.json"))
+  
+  return(df)
 }
 
 #' Get Voting Districts
@@ -160,6 +188,8 @@ getTractsLongitudinal <- function(df, state_fips, years, pth) {
   df <- getLongitudinal(df, state_fips, years)
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "tractLongitudinal.json"))
+  
+  return(df)
 }
 
 #' Get Polling Locations

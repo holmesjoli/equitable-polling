@@ -21,8 +21,8 @@ import { selectVariable } from "./Global";
 export const stateData = getStates();
 export const vdData = getVd();
 export const changeYearDataAll = getChangeYearData();
-export const countiesDataAll = getCounties();
 export const tractsDataAll = getTracts();
+export const countiesDataAll = getCounties();
 
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoData: any, d: any) {
@@ -34,7 +34,6 @@ function findEquityMeasureByChangeYear(geoData: any, d: any) {
             // console.log(e.baseYear, d.geoid);
 
             const em = geoData.find((f: any) => (f.baseYear === e.baseYear) && (f.geoid === d.geoid));
-            console.log(em.pctBlack);
 
             changeYearData.push({changeYear: e.changeYear, 
                                  none: {equityMeasure: 0,
@@ -141,22 +140,23 @@ export function getTracts() {
     (tractGeo as any[])
         .forEach((d: any) => {
 
-            // const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
+            const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
 
             features.push({type: 'Feature', 
-                properties: {type: 'Tract',
-                             descr: 'Census tract',
-                             name: d.name,
-                             stfp: d.stfp, 
-                             cntyfp: d.cntyfp,
-                             tractfp: d.tractfp,
-                             geoid: d.geoid,
-                             latlng: getLatLng(d),
-                             zoom: 12,
-                             selected: false,
-                            //  changeYearEquityIndicator: changeYearData,
-                             bounds: getBounds(d)
-                            } as Tract, 
+                properties: {
+                    type: 'Tract',
+                    descr: 'Census tract',
+                    name: d.name,
+                    stfp: d.stfp,
+                    cntyfp: d.cntyfp,
+                    tractfp: d.tractfp,
+                    geoid: d.geoid,
+                    latlng: getLatLng(d),
+                    zoom: 12,
+                    selected: false,
+                    //  changeYearEquityIndicator: changeYearData,
+                    bounds: getBounds(d)
+                } as unknown as Tract, 
                 geometry: d.geometry as GeoJSON.Geometry})
     });
 
@@ -195,8 +195,9 @@ export function getChangeYearData() {
     selectVariable.changeYear.forEach((e) => {
 
         const pollingLoc: PollingLoc[] = [];
+        const tractsData: Tract[] = [];
 
-         (pollsChangeStatus as any[])
+        (pollsChangeStatus as any[])
             .filter((d: any) => d.changeYear === e.changeYear)
             .forEach((d: any) => {
 
@@ -212,7 +213,31 @@ export function getChangeYearData() {
                     } as PollingLoc );
             });
 
-        changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as ChangeYearData);
+        (tractGeo as any[])
+            .filter((d: any) => e.baseYear < 2020? d.year === 2010: d.year === 2020)
+            .forEach((d: any) => {
+
+                // const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
+
+                tractsData.push({type: 'Feature', 
+                    properties: {
+                        type: 'Tract',
+                        descr: 'Census tract',
+                        name: d.name,
+                        stfp: d.stfp,
+                        cntyfp: d.cntyfp,
+                        tractfp: d.tractfp,
+                        geoid: d.geoid,
+                        latlng: getLatLng(d),
+                        zoom: 12,
+                        selected: false,
+                        //  changeYearEquityIndicator: changeYearData,
+                        bounds: getBounds(d)
+                    } as Tract, 
+                    geometry: d.geometry as GeoJSON.Geometry})
+        });
+
+        changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc, tractsData: tractsData} as ChangeYearData);
     });
 
     return changeStatus;

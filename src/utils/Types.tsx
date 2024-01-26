@@ -11,8 +11,8 @@ export type EquityIndicatorData = {equityMeasure: number, fillColor:string, stro
 export type ChangeYearEquityIndicator = {changeYear: string, none:EquityIndicatorData, pctBlack: EquityIndicatorData};
 
 export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, 
-                    geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean,
-                    // changeYearEquityIndicator: ChangeYearEquityIndicator[]
+                     geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean,
+                    //  changeYearEquityIndicator: ChangeYearEquityIndicator[]
                   };
 
 export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst: string, name: string, geoid: string, bounds: Bounds,
@@ -36,4 +36,4 @@ export type Longitudinal = {geoid: string, stfp: string, cntyfp: string, pctBlac
 export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, 
                           pixelCoords?: PixelCoords, pollId: string, status: string | undefined, overall: string | undefined, id: string | undefined};
 
-export type ChangeYearData = {changeYear: string, pollingLocsData: PollingLoc[]};
+export type ChangeYearData = {changeYear: string, pollingLocsData: PollingLoc[], tractsData: Tract[]};
