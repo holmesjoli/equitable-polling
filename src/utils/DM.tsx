@@ -22,7 +22,7 @@ export const stateData = getStates();
 export const vdData = getVd();
 export const changeYearDataAll = getChangeYearData();
 export const tractsDataAll = getTracts();
-export const countiesDataAll = getCounties();
+export const countiesData = getCounties();
 
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoData: any, d: any) {
@@ -140,7 +140,7 @@ export function getTracts() {
     (tractGeo as any[])
         .forEach((d: any) => {
 
-            const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
+            // const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
 
             features.push({type: 'Feature', 
                 properties: {
@@ -187,6 +187,8 @@ export function getVd() {
     return returnFeatureCollection(features);
 }
 
+// console.log(tractGeo);
+
 // Get Polling Locations
 export function getChangeYearData() {
 
@@ -213,10 +215,13 @@ export function getChangeYearData() {
                     } as PollingLoc );
             });
 
+        // console.log(e);
+
         (tractGeo as any[])
+            .filter((d: any) => e.baseYear < 2020? d.year === 2010: d.year === 2020)
             .forEach((d: any) => {
 
-            const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
+            // const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
 
             tractsData.push({type: 'Feature', 
                 properties: {
