@@ -56,43 +56,40 @@ export function highlightSelectedCounty(feature: any) {
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
 
   if (feature.properties.type === "State") {
-    return {
-      color: theme.grey.primary,
-      fillColor: theme.backgroundFill,
-      weight: 1,
-      opacity: 1,
-      fillOpacity: .6
-    };
-
+    return stateStyle(feature);
   } else if (feature.properties.type === "County") {
-    return {
-      color: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].strokeColor,
-      fillColor: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor,
-      weight: 1,
-      opacity: 1,
-      fillOpacity: .6
-    };
+    return countyStyle(feature, equityIndicator, changeYear);
   } else if (feature.properties.type === "Tract") {
-    // if (feature.properties.equityIndicator.variable === 'none') {
-      return tractStyle(feature);
-    // } else {
-    //   return {
-    //     color: feature.properties!.equityIndicator.strokeColor,
-    //     fillColor: feature.properties!.equityIndicator.fillColor,
-    //     weight: 1,
-    //     opacity: getStrokeOpacity(feature.properties!.selected),
-    //     fillOpacity: getFillOpacity(feature.properties!.selected)
-    //   };
-    // }
+    return tractStyle(feature, equityIndicator, changeYear);
   } else {
     return vdStyle(feature);
   }
 }
 
-export function tractStyle(feature: any) {
+export function stateStyle(feature: any) {
   return {
     color: theme.grey.primary,
     fillColor: theme.backgroundFill,
+    weight: 1,
+    opacity: 1,
+    fillOpacity: .6
+  };
+}
+
+export function countyStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+  return {
+    color: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].strokeColor,
+    fillColor: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor,
+    weight: 1,
+    opacity: 1,
+    fillOpacity: .6
+  };
+}
+
+export function tractStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+  return {
+    color: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].strokeColor,
+    fillColor: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: 0
