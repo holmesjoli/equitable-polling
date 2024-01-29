@@ -64,14 +64,14 @@ getStates <- function(state_fips, pth) {
 #' Writes out a json file at the county
 getCounties <- function(state_fips, pth) {
 
-  df <- tigris::counties(cb = T) %>% 
-    filter(STATEFP %in% state_fips) %>% 
-    select(STATEFP, NAME, COUNTYFP, GEOID, geometry) %>% 
+  df <- tigris::counties(cb = T) %>%
+    filter(STATEFP %in% state_fips) %>%
+    select(STATEFP, NAME, COUNTYFP, GEOID, geometry) %>%
     rename(stfp = STATEFP,
            cntyfp = COUNTYFP,
            name = NAME,
            geoid = GEOID)
-  
+
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)
   
@@ -236,7 +236,7 @@ getPollsChangeStatus <- function(df) {
   return(df)
 }
 
-getIndicatorsChangeStatus<- function(df) {
+getIndicatorsChangeStatus<- function(df, state_fips) {
   
   df <- df %>% 
     select(changeyear, cntyfp, stfp, baseyear, nopollsadded, nopollsremoved, changenopolls) %>% 
@@ -245,7 +245,7 @@ getIndicatorsChangeStatus<- function(df) {
            changeNoPolls = changenopolls,
            noPollsAdded = nopollsadded,
            noPollsRemoved = nopollsremoved) %>% 
-    mutate(cntyfp = stringr::str_pad(cntyfp, width = '3', pad = '0', side= 'left'),
+    mutate(cntyfp = paste0(stfp, stringr::str_pad(cntyfp, width = '3', pad = '0', side= 'left')),
            totalChangeNoPollsBin = case_when(changeNoPolls == 0 ~ "0",
                                         changeNoPolls > 0 & changeNoPolls <= 5 ~ "Between 1 and 5",
                                         changeNoPolls > 5 & changeNoPolls <= 15 ~ "Between 6 and 15",
@@ -259,6 +259,17 @@ getIndicatorsChangeStatus<- function(df) {
                                         noPollsRemoved > 3 & noPollsRemoved <= 10 ~ "Removed 4 – 10 polls",
                                         noPollsRemoved > 10 ~ "Removed more than 10 polls"
                                         ))
+
+  cnty <- tigris::counties(cb = T) %>% 
+    filter(STATEFP %in% state_fips) %>% 
+    mutate(cntyfp = paste0(STATEFP, COUNTYFP)) %>% 
+    select(cntyfp, geometry)
+  
+  cnty <- getCentroid(cnty) %>% 
+    sf::st_drop_geometry()
+  
+  df <- df %>% 
+    left_join(cnty)
 
   exportJSON <- toJSON(df)
   write(exportJSON, "../data/processed/indicatorsChangeStatus.json")

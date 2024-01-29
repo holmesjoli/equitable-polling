@@ -6,12 +6,13 @@ import vdsGeo from "../data/processed/votingDistrictsGeoJSON.json";
 import countiesLong from "../data/processed/countiesLongitudinal.json"; 
 import tractsLong from "../data/processed/tractsLongitudinal.json"; 
 import pollsChangeStatus from "../data/processed/pollsChangeStatus.json";
+import indicatorsChangeStatus from "../data/processed/indicatorsChangeStatus.json";
 
 // Scales
 import { theme, thresholdScale } from "./Theme";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, ChangeYearEquityIndicator } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearEquityIndicator, IndicatorStatus } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -23,6 +24,9 @@ export const vdData = getVd();
 export const pollLocsDataAll = getPollLocsDataAll();
 export const tractsDataAll = getTracts();
 export const countiesData = getCounties();
+export const indicatorStatusAll = getIndicatorStatus();
+
+console.log(indicatorStatusAll);
 
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoData: any, d: any) {
@@ -209,7 +213,7 @@ export function getVd() {
 // Get Polling Locations
 export function getPollLocsDataAll() {
 
-    const changeStatus: ChangeYearData[] = [];
+    const changeStatus: any[] = [];
 
     selectVariable.changeYear.forEach((e) => {
 
@@ -223,7 +227,7 @@ export function getPollLocsDataAll() {
                         type: 'Poll',
                         descr: 'Polling location',
                         name: d.name,
-                        latlng: { lat: d.Y, lng: d.X } as LatLng,
+                        latlng: getLatLng(d),
                         pollId: d.pollId,
                         status: d.status,
                         overall: d.overall,
@@ -232,7 +236,35 @@ export function getPollLocsDataAll() {
                     } as PollingLoc);
             });
 
-        changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as ChangeYearData);
+        changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as any);
+    });
+
+    return changeStatus;
+}
+
+export function getIndicatorStatus() {
+
+    const changeStatus: any[] = [];
+
+    selectVariable.changeYear.forEach((e) => {
+
+        const indicator: IndicatorStatus[] = [];
+
+        (indicatorsChangeStatus as any[])
+            .filter((d: any) => d.changeYear === e.changeYear)
+            .forEach((d: any) => {
+
+                indicator.push({
+                        cntyfp: d.cntyfp,
+                        stfp: d.stfp,
+                        totalChangeNoPollsBin: d.totalChangeNoPollsBin,
+                        netChangeNoPolls: d.netChangeNoPolls,
+                        baseYear: d.baseYear,
+                        latlng: getLatLng(d)
+                    } as IndicatorStatus);
+            });
+
+        changeStatus.push({changeYear: e.changeYear, indicatorStatus: indicator} as any);
     });
 
     return changeStatus;
