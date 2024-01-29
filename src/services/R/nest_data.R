@@ -235,3 +235,33 @@ getPollsChangeStatus <- function(df) {
 
   return(df)
 }
+
+getIndicatorsChangeStatus<- function(df) {
+  
+  df <- df %>% 
+    select(changeyear, cntyfp, stfp, baseyear, nopollsadded, nopollsremoved, changenopolls) %>% 
+    rename(changeYear = changeyear,
+           baseYear = baseyear,
+           changeNoPolls = changenopolls,
+           noPollsAdded = nopollsadded,
+           noPollsRemoved = nopollsremoved) %>% 
+    mutate(cntyfp = stringr::str_pad(cntyfp, width = '3', pad = '0', side= 'left'),
+           totalChangeNoPollsBin = case_when(changeNoPolls == 0 ~ "0",
+                                        changeNoPolls > 0 & changeNoPolls <= 5 ~ "Between 1 and 5",
+                                        changeNoPolls > 5 & changeNoPolls <= 15 ~ "Between 6 and 15",
+                                        changeNoPolls > 15 & changeNoPolls <=30 ~ "Between 16 and 30",
+                                        changeNoPolls > 30 ~ "Greater than 30"),
+           netChangeNoPolls = case_when(noPollsAdded > 10 ~ "Added more than 10 polls",
+                                        noPollsAdded > 3 & noPollsAdded <= 10 ~ "Added 4 – 10 polls",
+                                        noPollsAdded > 0 & noPollsAdded <= 3~ "Added 1 – 3 polls",
+                                        changeNoPolls == 0 ~ "No change",
+                                        noPollsRemoved > 0 & noPollsRemoved <= 3 ~ "Removed 1 – 3 polls",
+                                        noPollsRemoved > 3 & noPollsRemoved <= 10 ~ "Removed 4 – 10 polls",
+                                        noPollsRemoved > 10 ~ "Removed more than 10 polls"
+                                        ))
+
+  exportJSON <- toJSON(df)
+  write(exportJSON, "../data/processed/indicatorsChangeStatus.json")
+
+  return(df)
+}

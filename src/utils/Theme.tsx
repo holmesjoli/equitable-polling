@@ -137,10 +137,11 @@ export const rScale = d3.scaleSqrt()
   .domain([1, 30])
   .range([3, 15]);
 
-export const sizeData =[{id: 0, rSize: 2, label: '0' },
-                        {id: 1, rSize: 5, label: "Between 1 and 5" },
-                        {id: 2, rSize: 15, label: "Between 15 and 30" },
-                        {id: 3, rSize: 30, label: "Greater than 30" }];
+export const sizeData =[{id: 0, rSize: 1, label: '0' },
+                        {id: 1, rSize: 2, label: "Between 1 and 5" },
+                        {id: 3, rSize: 5, label: "Between 6 and 15" },
+                        {id: 4, rSize: 15, label: "Between 16 and 30" },
+                        {id: 5, rSize: 30, label: "Greater than 30" }];
 
 export const equityIndicatorData = [{variable: 'pctBlack', label: 'Less than 15%', pctBlack: 10},
                                     {variable: 'pctBlack', label: 'Between 15% and 30%', pctBlack: 25},
