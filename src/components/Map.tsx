@@ -294,7 +294,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
         }
 
-    }, [geoJsonId, changeYear, tractsData]);
+    }, [geoJsonId, changeYear, tractsData]); //tractsData needs to be there to update tractsData geographies
 
     // Updates main geography and main boundary
     useEffect(() => {
