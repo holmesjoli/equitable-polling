@@ -143,14 +143,14 @@ function SelectGeography({ selectedState, setSelectedState, selectedCounty, setS
 
 function SelectChangeYear({changeYear, setChangeYear, selectedState} : {changeYear: ChangeYear, setChangeYear: any, selectedState: State}) : JSX.Element {
 
-    const [changeYearOpts, setChangeYearOpts] = useState<ChangeYear[]>([]);
+    const [changeYearOpts, setChangeYearOpts] = useState<ChangeYear[]>(selectVariable.changeYear);
 
     useEffect(() => {
         setChangeYearOpts(selectVariable.changeYear.filter((d: any) => d[selectedState.abbr] === true));
     }, [selectedState]);
 
     const handleChange = (event: SelectChangeEvent) => {
-        setChangeYear(selectVariable.changeYear.find(d => d.id === event.target.value) as ChangeYear);
+        setChangeYear(changeYearOpts.find(d => d.id === event.target.value) as ChangeYear);
     };
 
     return(
