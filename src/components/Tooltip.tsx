@@ -55,7 +55,6 @@ function mouseOverGeo(feature: any) {
     return `${feature.properties.name} ${feature.properties.descr}`;
 }
 
-// TODO add this back in
 function mouseOverEquityMeasure(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
     if(equityIndicator.variable !== 'none') {
         const ei = returnSpecificEquityIndicator(feature, equityIndicator, changeYear);

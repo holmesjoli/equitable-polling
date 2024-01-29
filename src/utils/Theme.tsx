@@ -53,7 +53,6 @@ export function highlightSelectedCounty(feature: any) {
     };
 }
 
-// todo update tract styles
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
 
   if (feature.properties.type === "State") {
