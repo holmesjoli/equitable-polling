@@ -52,7 +52,7 @@ export function pointerOut() {
 }
 
 function mouseOverGeo(feature: any) {
-    return `${feature.properties.name} ${feature.properties.descr} <br>`;
+    return `${feature.properties.name} ${feature.properties.descr}`;
 }
 
 // TODO add this back in
