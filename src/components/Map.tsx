@@ -94,8 +94,8 @@ function filterTractsByDecennialCensusYear(decennialCensusYear: number) {
     return tractsDataAll.find((d: any) => d.decennialCensusYear === decennialCensusYear).tractsData;
 }
 
-function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover, changeYear, equityIndicator, setGeoHover }: 
-                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, setPollHover: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, setGeoHover: any}) {
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover, changeYear, equityIndicator, setGeoHover }: 
+                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, setPollHover: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, setGeoHover: any}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -336,6 +336,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
     }, [geoJsonVdData]);
 
+    console.log(selectedCounty.cntyfp);
+
     return(
         <>
             <Pane name="background-pane" style={{ zIndex: -100 }}>
@@ -347,13 +349,23 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
             </Pane>
             <Pane name="poll-pane" style={{ zIndex: 200 }}>
+
+            {selectedState.stfp !== '' && selectedCounty.cntyfp === '' ? 
+                <FeatureGroup key="pollChangeSummaryFeatureGroup">
+                    {
+                        indicatorStatusData.map((d: IndicatorStatus, i: number) => (
+                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={{fillColor: 'blue'}} radius={200} eventHandlers={{
+                            }}/>
+                        ))
+                    }
+                </FeatureGroup> : null}
             {showPolls ?
                 <FeatureGroup key="pollingLocFeatureGroup">
                     {pollingLocsData.map((d: PollingLoc, i: number) => (
                         <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} eventHandlers={{
-                            click: () => {
-                            //   console.log('marker clicked')
-                            },
+                            // click: () => {
+                            // //   console.log('marker clicked')
+                            // },
                             mouseover: () => {
                                 mouseOverPollingLoc(d);
                             },
@@ -368,8 +380,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover }: 
-                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, setGeoHover: any }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, setGeoHover: any }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -392,7 +404,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
             </Pane>
             <LayersComponent mapRef={mapRef} geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                              selectedState={selectedState} setSelectedState={setSelectedState} 
-                             setSelectedCounty={setSelectedCounty}
+                             selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
                              showVD={showVD} setShowVD={setShowVD} setPollHover={setPollHover}
                              changeYear={changeYear} equityIndicator={equityIndicator} setGeoHover={setGeoHover}
