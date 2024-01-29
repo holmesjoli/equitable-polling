@@ -13,6 +13,7 @@ import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator, ChangeYe
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
+import { useStableCallback } from "../utils/Helper";
 
 // Data
 import { stateData, countiesData, vdData, changeYearDataAll, tractsDataAll } from "../utils/DM";
@@ -103,6 +104,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Functions ---------------------------------------------------
 
+    console.log(equityIndicator);
+
+    const stableMousoutCallback = useStableCallback(mouseOut);
+
     function mouseOverPollingLoc(d: any) {
         var coords = mapRef.current.latLngToContainerPoint(d.latlng);
         pointerOver(coords.x, coords.y, `<span class="SemiBold">${d.name}</span><br><span class=${d.status}>Status: ${d.status}</span>`);
@@ -125,6 +130,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     }
 
     function mouseOverCounty(event: any) {
+        console.log(equityIndicator);
         var layer = event.target;
         layer.setStyle(layersStyle.County.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
@@ -160,7 +166,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
         layer.on({
           mouseover: properties.type === "State" ? mouseOverState : properties.type === "County" ? mouseOverCounty: mouseOverTract,
-          mouseout: mouseOut,
+          mouseout: stableMousoutCallback,
           click: onClickFeature
         });
         pointerOut();
@@ -170,7 +176,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
         layer.on({
           mouseover: mouseOverVD,
-          mouseout: mouseOut
+          mouseout: stableMousoutCallback
         });
         pointerOut();
     }
