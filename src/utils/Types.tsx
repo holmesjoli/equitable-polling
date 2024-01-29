@@ -26,7 +26,7 @@ export type County = {type: string, stfp: string, name: string, cntyfp: string, 
 export type State = {type: string, stfp: string, geoid: string, name: string, counties: GeoJSON.FeatureCollection, 
                      latlng: LatLng, zoom: number};
 
-export type ChangeYear = {id: string, descr: string, baseYear: number, changeYear: string, decennialCensusYear: number};
+export type ChangeYear = {id: string, descr: string, baseYear: number, changeYear: string, decennialCensusYear: number, ms: boolean, sc: boolean, ga: boolean, ws: boolean};
 
 export type EquityIndicator = {variable: string, descr: string};
 
