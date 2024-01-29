@@ -9,14 +9,14 @@ import * as d3 from 'd3';
 import {mouseOverTextVD, mouseOverTextState, mouseOverTextCounty, mouseOverTextTract, pointerOver, pointerOut} from "./Tooltip";
 
 // Types
-import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator } from "../utils/Types";
+import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator, IndicatorStatus } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 import { useStableCallback } from "../utils/Helper";
 
 // Data
-import { stateData, countiesData, vdData, pollLocsDataAll, tractsDataAll } from "../utils/DM";
+import { stateData, countiesData, vdData, pollLocsDataAll, tractsDataAll, indicatorStatusAll } from "../utils/DM";
 
 // Styles
 import { layersStyle, highlightSelectedCounty, vdStyle, choroplethStyle, pollStyle } from "../utils/Theme";
@@ -82,6 +82,10 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
     return data;
 }
 
+function filterIndicatorStatusByChangeYear(changeYear: ChangeYear) {
+    return indicatorStatusAll.find((d: any) => d.changeYear === changeYear.changeYear)?.indicatorStatus || [];
+}
+
 function filterPollingLocationsByChangeYear(changeYear: ChangeYear) {
     return pollLocsDataAll.find((d: any) => d.changeYear === changeYear.changeYear)?.pollingLocsData || [];
 }
@@ -99,6 +103,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
     const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection | never[]>(filterTractsByDecennialCensusYear(decennialCensusYear));
     const [pollingLocsData, setPollingLocsData] = useState<PollingLoc[] | never[]>(filterPollingLocationsByChangeYear(changeYear));
+    const [indicatorStatusData, setIndicatorStatusData] = useState<IndicatorStatus[] | never[]>(filterIndicatorStatusByChangeYear(changeYear));
+
+    console.log(indicatorStatusData);
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -207,6 +214,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     useEffect(() => {
         setPollingLocsData(filterPollingLocationsByChangeYear(changeYear));
+        setIndicatorStatusData(filterIndicatorStatusByChangeYear(changeYear));
 
         // Sets the decennial census year
         if (changeYear.baseYear < 2020) {

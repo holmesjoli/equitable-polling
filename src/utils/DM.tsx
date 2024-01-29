@@ -26,8 +26,6 @@ export const tractsDataAll = getTracts();
 export const countiesData = getCounties();
 export const indicatorStatusAll = getIndicatorStatus();
 
-console.log(indicatorStatusAll);
-
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoData: any, d: any) {
 
