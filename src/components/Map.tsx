@@ -16,10 +16,10 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { useStableCallback } from "../utils/Helper";
 
 // Data
-import { stateData, countiesData, vdData, changeYearDataAll, tractsDataAll } from "../utils/DM";
+import { stateData, countiesData, vdData, pollLocsDataAll, tractsDataAll } from "../utils/DM";
 
 // Styles
-import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, choroplethStyle, pollStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedCounty, vdStyle, choroplethStyle, pollStyle } from "../utils/Theme";
 
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
@@ -82,19 +82,19 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
     return data;
 }
 
+function filterPollingLocationsByChangYear(changeYear: ChangeYear) {
+    return pollLocsDataAll.find((d: any) => d.changeYear === changeYear.changeYear)?.pollingLocsData || [];
+}
+
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover, changeYear, equityIndicator, setGeoHover }: 
                          { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, setPollHover: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, setGeoHover: any}) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-
-    const [changeYearData, setChangeYearData] = useState<ChangeYearData | null>(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
-    const [pollingLocsData, setPollingData] = useState<PollingLoc[]>(changeYearData?.pollingLocsData || []);
-
-    // console.log(geoJsonData);
     const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
     const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection | never[]>(tractsDataAll.find((d: any) => d.decennialCensusYear === decennialCensusYear).tractsData);
+    const [pollingLocsData, setPollingLocsData] = useState<PollingLoc[] | never[]>(filterPollingLocationsByChangYear(changeYear));
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -202,8 +202,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     );
 
     useEffect(() => {
-        setChangeYearData(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
+        setPollingLocsData(filterPollingLocationsByChangYear(changeYear));
 
+        // Sets the decennial census year
         if (changeYear.baseYear < 2020) {
             setDecennialCensusYear(2010);
         } else {
@@ -279,13 +280,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesData));
                     setGeoJsonData(filterGeoByBounds(mapRef, tractsData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
+                    setPollingLocsData(filterPointByBounds(mapRef, filterPollingLocationsByChangYear(changeYear)));
                 })
                 .on('moveend', () => {
                     setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesData));
                     setGeoJsonData(filterGeoByBounds(mapRef, tractsData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
+                    setPollingLocsData(filterPointByBounds(mapRef, filterPollingLocationsByChangYear(changeYear)));
                 });
         }
 

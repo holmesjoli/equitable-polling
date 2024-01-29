@@ -20,7 +20,7 @@ import { selectVariable } from "./Global";
 // Processed Data
 export const stateData = getStates();
 export const vdData = getVd();
-export const changeYearDataAll = getChangeYearData();
+export const pollLocsDataAll = getPollLocsDataAll();
 export const tractsDataAll = getTracts();
 export const countiesData = getCounties();
 
@@ -207,7 +207,7 @@ export function getVd() {
 }
 
 // Get Polling Locations
-export function getChangeYearData() {
+export function getPollLocsDataAll() {
 
     const changeStatus: ChangeYearData[] = [];
 
@@ -227,8 +227,9 @@ export function getChangeYearData() {
                         pollId: d.pollId,
                         status: d.status,
                         overall: d.overall,
-                        id: d.id
-                    } as PollingLoc );
+                        id: d.id,
+                        baseYear: d.baseYear
+                    } as PollingLoc);
             });
 
         changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as ChangeYearData);
