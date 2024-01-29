@@ -35,6 +35,14 @@ export default function Home({}): JSX.Element {
         Tooltip.init();
     }, []);
 
+    useEffect(() => {
+        if (selectedState.abbr !== '') {
+            const opts = selectVariable.changeYear.filter((d: any) => d[selectedState.abbr]);
+            setChangeYearOpts(opts);
+            setChangeYear(opts[0]);
+        }
+    }, [selectedState]);
+
     return(
         <Main>
             {geoJsonId.type === 'US'? 

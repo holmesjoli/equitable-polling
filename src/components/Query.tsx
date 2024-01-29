@@ -141,13 +141,7 @@ function SelectGeography({ selectedState, setSelectedState, selectedCounty, setS
     )
 }
 
-function SelectChangeYear({changeYear, setChangeYear, selectedState, changeYearOpts, setChangeYearOpts} : {changeYear: ChangeYear, setChangeYear: any, selectedState: State,  changeYearOpts: ChangeYear[], setChangeYearOpts: any}) : JSX.Element {
-
-    useEffect(() => {
-        setChangeYearOpts(selectVariable.changeYear.filter((d: any) => d[selectedState.abbr]));
-    }, [selectedState]);
-
-    console.log(selectVariable.changeYear.filter((d: any) => d[selectedState.abbr]));
+function SelectChangeYear({changeYear, setChangeYear, changeYearOpts} : {changeYear: ChangeYear, setChangeYear: any, changeYearOpts: ChangeYear[]}) : JSX.Element {
 
     const handleChange = (event: SelectChangeEvent) => {
         setChangeYear(changeYearOpts.find(d => d.id === event.target.value) as ChangeYear);
@@ -199,7 +193,7 @@ export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState,
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
                 </PageDescription>
                 <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
-                <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} changeYearOpts={changeYearOpts} setChangeYearOpts={setChangeYearOpts}/>
+                <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} changeYearOpts={changeYearOpts} />
             </div>
         </Menu>
     );
