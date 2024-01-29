@@ -246,19 +246,35 @@ getIndicatorsChangeStatus<- function(df, state_fips) {
            noPollsAdded = nopollsadded,
            noPollsRemoved = nopollsremoved) %>% 
     mutate(cntyfp = paste0(stfp, stringr::str_pad(cntyfp, width = '3', pad = '0', side= 'left')),
-           totalChangeNoPollsBin = case_when(changeNoPolls == 0 ~ "0",
-                                        changeNoPolls > 0 & changeNoPolls <= 5 ~ "Between 1 and 5",
-                                        changeNoPolls > 5 & changeNoPolls <= 15 ~ "Between 6 and 15",
-                                        changeNoPolls > 15 & changeNoPolls <=30 ~ "Between 16 and 30",
-                                        changeNoPolls > 30 ~ "Greater than 30"),
-           netChangeNoPolls = case_when(noPollsAdded > 10 ~ "Added more than 10 polls",
-                                        noPollsAdded > 3 & noPollsAdded <= 10 ~ "Added 4 – 10 polls",
-                                        noPollsAdded > 0 & noPollsAdded <= 3~ "Added 1 – 3 polls",
-                                        changeNoPolls == 0 ~ "No change",
-                                        noPollsRemoved > 0 & noPollsRemoved <= 3 ~ "Removed 1 – 3 polls",
-                                        noPollsRemoved > 3 & noPollsRemoved <= 10 ~ "Removed 4 – 10 polls",
-                                        noPollsRemoved > 10 ~ "Removed more than 10 polls"
-                                        ))
+           overallChange = noPollsAdded - noPollsRemoved,
+           # totalChangeNoPollsBin = case_when(changeNoPolls == 0 ~ "0",
+           #                              changeNoPolls > 0 & changeNoPolls <= 5 ~ "Between 1 and 5",
+           #                              changeNoPolls > 5 & changeNoPolls <= 15 ~ "Between 6 and 15",
+           #                              changeNoPolls > 15 & changeNoPolls <= 30 ~ "Between 16 and 30",
+           #                              changeNoPolls > 30 ~ "Greater than 30"),
+           rSize = case_when(changeNoPolls == 0 ~ 1,
+                             changeNoPolls > 0 & changeNoPolls <= 5 ~ 2,
+                             changeNoPolls > 5 & changeNoPolls <= 15 ~ 5,
+                             changeNoPolls > 15 & changeNoPolls <= 30 ~ 15,
+                             changeNoPolls > 30 ~ 30),
+           # netChangeNoPolls = case_when(noPollsAdded > 10 ~ "Added more than 10 polls",
+           #                              noPollsAdded > 3 & noPollsAdded <= 10 ~ "Added 4 – 10 polls",
+           #                              noPollsAdded > 0 & noPollsAdded <= 3~ "Added 1 – 3 polls",
+           #                              changeNoPolls == 0 ~ "No change",
+           #                              noPollsRemoved > 0 & noPollsRemoved <= 3 ~ "Removed 1 – 3 polls",
+           #                              noPollsRemoved > 3 & noPollsRemoved <= 10 ~ "Removed 4 – 10 polls",
+           #                              noPollsRemoved > 10 ~ "Removed more than 10 polls"
+           #                              ),
+           overall = case_when(overallChange > 0 ~ "added",
+                               overallChange == 0 ~ "nochange",
+                               overallChange < 0 ~ "removed"),
+           id = case_when(overallChange > 10 ~ "3",
+                          overallChange > 3 & overallChange <= 10 ~ "2",
+                          overallChange > 0 & overallChange <= 3~ "1",
+                          overallChange == 0 ~ "0",
+                          overallChange < 0 & overallChange >= -3 ~ "-1",
+                          overallChange < -3 & overallChange >= -10 ~ "-2",
+                          overallChange < -10 ~ "-3"))
 
   cnty <- tigris::counties(cb = T) %>% 
     filter(STATEFP %in% state_fips) %>% 

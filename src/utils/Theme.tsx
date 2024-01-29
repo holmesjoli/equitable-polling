@@ -122,6 +122,11 @@ export function pollStyle(point: any) {
   };
 }
 
+export function pollSummarySize(point: any) {
+  const r = rScale(point.rSize);
+  return r*500;
+}
+
 // https://coolors.co/f5ece0-320e3b-1d618e-e45729-610063
 export const thresholdScale = d3.scaleThreshold([-1, 15, 30, 45], ['#C6C6C6', '#a2c2d8', '#6999b8', '#437da3', '#1d6183']);
 

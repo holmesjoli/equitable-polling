@@ -19,7 +19,7 @@ import { useStableCallback } from "../utils/Helper";
 import { stateData, countiesData, vdData, pollLocsDataAll, tractsDataAll, indicatorStatusAll } from "../utils/DM";
 
 // Styles
-import { layersStyle, highlightSelectedCounty, vdStyle, choroplethStyle, pollStyle } from "../utils/Theme";
+import { layersStyle, highlightSelectedCounty, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
 
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
@@ -354,7 +354,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 <FeatureGroup key="pollChangeSummaryFeatureGroup">
                     {
                         indicatorStatusData.map((d: IndicatorStatus, i: number) => (
-                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={{fillColor: 'blue'}} radius={200} eventHandlers={{
+                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={pollSummarySize(d)} eventHandlers={{
                             }}/>
                         ))
                     }

@@ -255,10 +255,13 @@ export function getIndicatorStatus() {
                 indicator.push({
                         cntyfp: d.cntyfp,
                         stfp: d.stfp,
-                        totalChangeNoPollsBin: d.totalChangeNoPollsBin,
-                        netChangeNoPolls: d.netChangeNoPolls,
+                        // totalChangeNoPollsBin: d.totalChangeNoPollsBin,
+                        // netChangeNoPolls: d.netChangeNoPolls,
                         baseYear: d.baseYear,
-                        latlng: getLatLng(d)
+                        latlng: getLatLng(d),
+                        overall: d.overall,
+                        id: d.id,
+                        rSize: d.rSize
                     } as IndicatorStatus);
             });
 
