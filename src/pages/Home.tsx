@@ -20,7 +20,8 @@ export default function Home({}): JSX.Element {
 
     const [selectedState, setSelectedState] = useState(defaultState);
     const [selectedCounty, setSelectedCounty] = useState(defaultCounty);
-    const [changeYear, setChangeYear] = useState(selectVariable.changeYear[0]);
+    const [changeYearOpts, setChangeYearOpts] = useState<ChangeYear[]>(selectVariable.changeYear);
+    const [changeYear, setChangeYear] = useState(changeYearOpts[0]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
     const [showPolls, setShowPolls] = useState(true);
@@ -64,6 +65,7 @@ export default function Home({}): JSX.Element {
             }
 
             <QueryMenu geoJsonId={geoJsonId} changeYear={changeYear} setChangeYear={setChangeYear} 
+                       changeYearOpts={changeYearOpts} setChangeYearOpts={setChangeYearOpts}
                        selectedState={selectedState} setSelectedState={setSelectedState} 
                        selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
                        setGeoJsonId={setGeoJsonId}/>

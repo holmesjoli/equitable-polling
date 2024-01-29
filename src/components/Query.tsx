@@ -141,13 +141,13 @@ function SelectGeography({ selectedState, setSelectedState, selectedCounty, setS
     )
 }
 
-function SelectChangeYear({changeYear, setChangeYear, selectedState} : {changeYear: ChangeYear, setChangeYear: any, selectedState: State}) : JSX.Element {
-
-    const [changeYearOpts, setChangeYearOpts] = useState<ChangeYear[]>(selectVariable.changeYear);
+function SelectChangeYear({changeYear, setChangeYear, selectedState, changeYearOpts, setChangeYearOpts} : {changeYear: ChangeYear, setChangeYear: any, selectedState: State,  changeYearOpts: ChangeYear[], setChangeYearOpts: any}) : JSX.Element {
 
     useEffect(() => {
-        setChangeYearOpts(selectVariable.changeYear.filter((d: any) => d[selectedState.abbr] === true));
+        setChangeYearOpts(selectVariable.changeYear.filter((d: any) => d[selectedState.abbr]));
     }, [selectedState]);
+
+    console.log(selectVariable.changeYear.filter((d: any) => d[selectedState.abbr]));
 
     const handleChange = (event: SelectChangeEvent) => {
         setChangeYear(changeYearOpts.find(d => d.id === event.target.value) as ChangeYear);
@@ -189,8 +189,8 @@ export const Menu = styled.div<{ $geojsonid: GeoID; }>`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId} : 
-                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any}) {
+export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts, setChangeYearOpts} : 
+                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[], setChangeYearOpts: any}) {
 
     return(
         <Menu $geojsonid={geoJsonId}>
@@ -199,7 +199,7 @@ export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState,
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
                 </PageDescription>
                 <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
-                <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState}/>
+                <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState} changeYearOpts={changeYearOpts} setChangeYearOpts={setChangeYearOpts}/>
             </div>
         </Menu>
     );
