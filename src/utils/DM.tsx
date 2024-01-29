@@ -1,10 +1,10 @@
 // Raw Data
-import stateGeo from "../data/processed/stateGeoJSON.json";
-import countyGeo from "../data/processed/countyGeoJSON.json";  
-import tractGeo from "../data/processed/tractGeoJSON.json";
-import vdGeo from "../data/processed/votingDistrictGeoJSON.json";
-import countyLong from "../data/processed/countyLongitudinal.json"; 
-import tractLong from "../data/processed/tractLongitudinal.json"; 
+import statesGeo from "../data/processed/statesGeoJSON.json";
+import countiesGeo from "../data/processed/countiesGeoJSON.json";  
+import tractsGeo from "../data/processed/tractsGeoJSON.json";
+import vdsGeo from "../data/processed/votingDistrictsGeoJSON.json";
+import countiesLong from "../data/processed/countiesLongitudinal.json"; 
+import tractsLong from "../data/processed/tractsLongitudinal.json"; 
 import pollsChangeStatus from "../data/processed/pollsChangeStatus.json";
 
 // Scales
@@ -76,11 +76,11 @@ function getStates() {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
-    (stateGeo as any[]).forEach((e: any) => {
+    (statesGeo as any[]).forEach((e: any) => {
 
         const countyFeatures = [] as GeoJSON.Feature[];
 
-        (countyGeo as any[]).filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
+        (countiesGeo as any[]).filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
 
             countyFeatures.push({type: 'Feature', 
                 properties: {type: 'County',
@@ -118,9 +118,9 @@ export function getCounties() {
 
     const features: Feature[] = [];
 
-    (countyGeo as any[]).forEach((d: any) => {
+    (countiesGeo as any[]).forEach((d: any) => {
 
-        const changeYearData = findEquityMeasureByChangeYear(countyLong, d);
+        const changeYearData = findEquityMeasureByChangeYear(countiesLong, d);
 
         features.push({type: 'Feature',
             properties: {type: 'County',
@@ -150,11 +150,11 @@ export function getTracts() {
 
         const features: Feature[] = [];
 
-        (tractGeo as any[])
+        (tractsGeo as any[])
             .filter((d: any) => d.year === year)
             .forEach((d: any) => {
 
-                const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
+                const changeYearData = findEquityMeasureByChangeYear(tractsLong, d);
 
                 features.push({type: 'Feature', 
                     properties: {
@@ -186,7 +186,7 @@ export function getVd() {
 
     const features: Feature[] = [];
 
-    (vdGeo as any[]).forEach((d: any) => {
+    (vdsGeo as any[]).forEach((d: any) => {
 
         features.push({type: 'Feature', 
             properties: {type: 'Voting district',
@@ -214,8 +214,7 @@ export function getChangeYearData() {
     selectVariable.changeYear.forEach((e) => {
 
         const pollingLoc: PollingLoc[] = [];
-        const tractsData: Feature[] = [];
-
+    
         (pollsChangeStatus as any[])
             .filter((d: any) => d.changeYear === e.changeYear)
             .forEach((d: any) => {
