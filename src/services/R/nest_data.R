@@ -57,7 +57,7 @@ getStates <- function(state_fips, pth) {
   df <- getCentroid(df)
   
   exportJSON <- toJSON(df)
-  write(exportJSON, file.path(pth, "stateGeoJSON.json"))
+  write(exportJSON, file.path(pth, "statesGeoJSON.json"))
 }
 
 #' Get Counties
@@ -79,7 +79,7 @@ getCounties <- function(state_fips, pth) {
     arrange(stfp, name)
 
   exportJSON <- toJSON(df)
-  write(exportJSON, file.path(pth, "countyGeoJSON.json"))
+  write(exportJSON, file.path(pth, "countiesGeoJSON.json"))
 }
 
 #' Get Census tracts
@@ -125,7 +125,7 @@ getTracts <- function(state_fips, years, pth) {
   }) %>% bind_rows()
   
   exportJSON <- toJSON(statesdata)
-  write(exportJSON, file.path(pth, "tractGeoJSON.json"))
+  write(exportJSON, file.path(pth, "tractsGeoJSON.json"))
 
   return(statesdata)
 }
@@ -152,7 +152,7 @@ getVd <- function(state_fips, pth, year = 2020) {
   }) %>% dplyr::bind_rows()
   
   exportJSON <- toJSON(vd_geo)
-  write(exportJSON, file.path(pth, "votingDistrictGeoJSON.json"))
+  write(exportJSON, file.path(pth, "votingDistrictsGeoJSON.json"))
 }
 
 #' Process longitudinal data
@@ -178,7 +178,7 @@ getCountiesLongitudinal <- function(df, state_fips, years, pth) {
 
   df <- getLongitudinal(df, state_fips, years)
   exportJSON <- toJSON(df)
-  write(exportJSON, file.path(pth, "countyLongitudinal.json"))
+  write(exportJSON, file.path(pth, "countiesLongitudinal.json"))
   
   return(df)
 }
@@ -189,7 +189,7 @@ getTractsLongitudinal <- function(df, state_fips, years, pth) {
 
   df <- getLongitudinal(df, state_fips, years)
   exportJSON <- toJSON(df)
-  write(exportJSON, file.path(pth, "tractLongitudinal.json"))
+  write(exportJSON, file.path(pth, "tractsLongitudinal.json"))
   
   return(df)
 }
@@ -215,14 +215,13 @@ getPollingLocations <- function(df) {
 getPollsChangeStatus <- function(df) {
 
   df <- df %>%
-    distinct(pollid, base_year, change_year, change_type, stfp, r3latitude, r3longitude,location_name_clean) %>% 
     rename(pollId = pollid,
-           baseYear = base_year,
-           changeYear = change_year,
-           status = change_type,
-           X = r3longitude,
-           Y = r3latitude,
-           name = location_name_clean) %>%
+           baseYear = baseyear,
+           changeYear = changeyear,
+           status = changestatus,
+           X = x,
+           Y = y,
+           name = pollname) %>%
     mutate(overall = ifelse(status == "no_change", "nochange", status),
            id = case_when(overall == "added" ~ "3",
                           overall == "nochange" ~ "0",
