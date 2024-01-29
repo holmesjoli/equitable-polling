@@ -18,7 +18,7 @@ import { CountyLegend, StateLegend, EquityLegend } from "./Legend";
 import { selectVariable } from "../utils/Global";
 
 // Types
-import { EquityIndicator, Indicator } from '../utils/Types';
+import { EquityIndicator, Indicator, ChangeYear } from '../utils/Types';
 
 function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIndicator: EquityIndicator, setEquityIndicator: any}) : JSX.Element {
 
@@ -111,14 +111,14 @@ export function USStatus() {
     );
 }
 
-export function StateStatus({equityIndicator, setEquityIndicator, geoHover, pollHover} : 
-                            {equityIndicator: EquityIndicator, setEquityIndicator: any, geoHover: any, pollHover: any}) {
+export function StateStatus ({equityIndicator, setEquityIndicator, geoHover, pollHover, changeYear} : 
+                             {equityIndicator: EquityIndicator, setEquityIndicator: any, geoHover: any, pollHover: any, changeYear: ChangeYear}) {
   return (
     <Status>
       <ComponentGroup title="Legend">
         <ComponentGroupInner title="Equity indicator">
           <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
-          <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover}/>
+          {equityIndicator.variable !== "none"?  <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover} changeYear={changeYear}/>: null}
         </ComponentGroupInner>
         <StateLegend pollHover={pollHover}/>
       </ComponentGroup>
@@ -126,8 +126,8 @@ export function StateStatus({equityIndicator, setEquityIndicator, geoHover, poll
   );
 }
 
-export function CountyStatus({equityIndicator, setEquityIndicator, showPolls, setShowPolls, showVD, setShowVD, geoHover, pollHover} : 
-                             {equityIndicator: EquityIndicator, setEquityIndicator: any, 
+export function CountyStatus ({equityIndicator, setEquityIndicator, showPolls, setShowPolls, showVD, setShowVD, geoHover, pollHover, changeYear} : 
+                             {equityIndicator: EquityIndicator, setEquityIndicator: any, changeYear: ChangeYear,
                               showPolls: boolean, setShowPolls: any, 
                               showVD: boolean, setShowVD: any, 
                               geoHover: any, pollHover: any}) {
@@ -136,7 +136,7 @@ export function CountyStatus({equityIndicator, setEquityIndicator, showPolls, se
         <ComponentGroup title="Legend">
           <ComponentGroupInner title="Equity indicator">
               <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
-              <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover}/>
+              {equityIndicator.variable !== "none"?  <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover} changeYear={changeYear}/>: null}
           </ComponentGroupInner>
           <ComponentGroupInner title="Voting districts">
             <VDSwitch showVD={showVD} setShowVD={setShowVD}/>

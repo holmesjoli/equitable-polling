@@ -4,10 +4,11 @@ import * as d3 from 'd3';
 
 // Components
 import { ComponentGroupInner } from "./Query";
-import { pollFillScale, pollStrokeScale, geoFillScale, rScale, theme } from "../utils/Theme";
+import { theme, pollFillScale, pollStrokeScale, rScale, thresholdScale,
+         sizeData, equityIndicatorData } from "../utils/Theme";
 
 // Types
-import { EquityIndicator } from '../utils/Types';
+import { EquityIndicator, ChangeYear } from '../utils/Types';
 
 const equityLegendId = 'Equity-Legend';
 const sizeLegendId = 'Size-Legend';
@@ -26,10 +27,10 @@ function initLegend(selector: string) {
 }
 
 // Reusable function to add text to legend
-function legendText(svg: any, data: any[], id: string | undefined = undefined) {
+function legendText(svg: any, data: any[], id: string | undefined = undefined, geo: boolean = false) {
   svg
     .selectAll('text')
-    .data(data, (d: any) => d.id)
+    .data(data, (d: any) => geo? d.pctBlack: d.id)
     .join(
       (enter: any) => enter
         .append('text')
@@ -39,7 +40,7 @@ function legendText(svg: any, data: any[], id: string | undefined = undefined) {
         .attr('font-size', theme.fontSize)
         .attr('fill', theme.grey.primary),
       (update: any) => update
-        .attr('opacity', (d: any) => d.id === id || id === undefined? 1 : 0.3)
+        .attr('opacity', (d: any) => geo ? thresholdScale(d.pctBlack) as string === id as string || id === undefined ? theme.choroplethOpacity : 0.3 : d.id === id || id === undefined? 1 : 0.3)
     );
 }
 
@@ -50,28 +51,23 @@ function legendHeight(data: any[], margin: number = 0) {
 }
 
 // Initiate size legend
-function initSizeLegend(pollHover: any) {
-
-  const data = [{id: 0, rSize: 2, label: '0' },
-                {id: 1, rSize: 5, label: "Between 1 and 5" },
-                {id: 2, rSize: 15, label: "Between 15 and 30" },
-                {id: 3, rSize: 30, label: "Greater than 30" }];
+function initSizeLegend() {
 
   initLegend(sizeLegendId);
 
   const svg = d3.select(`#${sizeLegendId} svg`)
-    .attr('height', legendHeight(data, 15));
+    .attr('height', legendHeight(sizeData, 15));
 
   svg
   .selectAll('circle')
-  .data(data, (d: any) => d.rSize)
+  .data(sizeData, (d: any) => d.rSize)
   .join(
     enter => enter
       .append('circle')
       .attr('r', d => rScale(d.rSize))
       .attr('transform', function (d, i) {
 
-        let x = data.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
+        let x = sizeData.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
 
         return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.rSize) + 8) + ')';
       })
@@ -86,14 +82,14 @@ function initSizeLegend(pollHover: any) {
 
   svg
     .selectAll('text')
-    .data(data, (d: any) => d.rSize)
+    .data(sizeData, (d: any) => d.rSize)
     .join(
       enter => enter
         .append('text')
         .attr('x', textStart)
         .attr('y', function(d, i) { 
 
-          let x = data.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
+          let x = sizeData.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
           
           return i * 16 + x + rScale(d.rSize) + 8})
         .text(d => d.label)
@@ -110,7 +106,7 @@ function initSizeLegend(pollHover: any) {
 // Initiate poll legend
 function updatePollLegend(geo: string, pollHover: any) {
 
-  const id = pollHover.pollHover.id;
+  const id = pollHover.id;
   
   const data = [{ overall: 'added', label: 'Increase of more than 10', id: '3', geo: 'state' },
                 { overall: 'added', label: "Increase of 4 to 10", id: '2', geo: 'state' },
@@ -147,19 +143,22 @@ function updatePollLegend(geo: string, pollHover: any) {
 }
 
 // Initiate equity legend
-function initEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
+function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any, changeYear: ChangeYear) {
 
-  const data = [{variable: 'percentage_race_black_african_american', label: 'Less than 15%', id: '0'},
-                {variable: 'percentage_race_black_african_american', label: 'Between 15% and 30%', id: '1'},
-                {variable: 'percentage_race_black_african_american', label: 'Between 30% and 45%', id: '2'},
-                {variable: 'percentage_race_black_african_american', label: 'Greater than 45%', id: '3'}];
+  let fillColor: string | undefined = undefined;
+
+  if (geoHover.changeYearEquityIndicator !== undefined ) {
+    fillColor = geoHover.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor;
+  } else {
+    fillColor = undefined;
+  }
 
   const svg = d3.select(`#${equityLegendId} svg`)
-    .attr('height', legendHeight(data.filter(d => d.variable === equityIndicator.variable)));
+    .attr('height', legendHeight(equityIndicatorData.filter(d => d.variable === equityIndicator.variable)));
 
   svg
     .selectAll('rect')
-    .data(data.filter(d => d.variable === equityIndicator.variable), (d: any) => d.id)
+    .data(equityIndicatorData.filter(d => d.variable === equityIndicator.variable), (d: any) => d.pctBlack)
     .join(
       enter => enter
         .append('rect')
@@ -168,16 +167,16 @@ function initEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
         .attr('transform', function (d, i) {
           return 'translate(' + (circleStart - 6) + ', ' + (i * 23 + 10) + ')';
         })
-        .attr('fill', (d: any) => geoFillScale(d.id) as string)
-        .attr("stroke", theme.focusColor)
-        .attr('stroke-width', 1)
-      //   ,
-      // update => update
-      //   .attr('opacity', d => d.geoHoverId === geoHover ? 1 : 0.3),
-      // exit => exit.remove()
+        .attr('opacity', theme.choroplethOpacity)
+        .attr('fill', (d: any) => thresholdScale(d.pctBlack) as string)
+        .attr("stroke", theme.darkGradientColor)
+        .attr('stroke-width', 1),
+      update => update
+        .attr('opacity', (d: any) => thresholdScale(d.pctBlack) as string === fillColor as string || fillColor === undefined ? theme.choroplethOpacity : 0.3
+        )
   );
 
-  legendText(svg, data.filter(d => d.variable === equityIndicator.variable));
+  legendText(svg, equityIndicatorData.filter(d => d.variable === equityIndicator.variable), fillColor, true);
 }
 
 function SizeTypeState () {
@@ -202,7 +201,7 @@ function ColorTypeCounty () {
   );
 }
 
-export function StateLegend (pollHover: any) {
+export function StateLegend ({pollHover} : {pollHover: any}) {
 
   // Initiate legends
   useEffect(() => {
@@ -212,7 +211,7 @@ export function StateLegend (pollHover: any) {
   // Initiate legends
   useEffect(() => {
     updatePollLegend('state', pollHover);
-    initSizeLegend(pollHover);
+    initSizeLegend();
   }, []);
 
   return (
@@ -223,7 +222,7 @@ export function StateLegend (pollHover: any) {
   );
 }
 
-export function CountyLegend (pollHover: any) {
+export function CountyLegend ({pollHover} : {pollHover: any}) {
   // Initiate legends
   useEffect(() => {
     initLegend(pollLegendId);
@@ -241,7 +240,7 @@ export function CountyLegend (pollHover: any) {
   );
 }
 
-export function EquityLegend ({equityIndicator, geoHover} : {equityIndicator: EquityIndicator, geoHover: any}) {
+export function EquityLegend ({equityIndicator, geoHover, changeYear} : {equityIndicator: EquityIndicator, geoHover: any, changeYear: ChangeYear}) {
 
   useEffect(() => {
     initLegend(equityLegendId);
@@ -249,8 +248,8 @@ export function EquityLegend ({equityIndicator, geoHover} : {equityIndicator: Eq
 
   // Initiate legends
   useEffect(() => {
-    initEquityLegend(equityIndicator, geoHover);
-  }, [equityIndicator]);
+    updateEquityLegend(equityIndicator, geoHover, changeYear);
+  }, [equityIndicator, geoHover]);
 
   return (
     <div className="Legend">

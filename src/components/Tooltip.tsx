@@ -2,7 +2,10 @@
 import * as d3 from 'd3';
 
 // Styles
-import { theme } from '../utils/Theme';
+import { theme, returnSpecificEquityIndicator } from '../utils/Theme';
+
+//Types
+import {EquityIndicator, ChangeYear} from '../utils/Types';
 
 const selector = "root";
 
@@ -46,4 +49,33 @@ export function pointerOver(x: number, y: number, str: string) {
 export function pointerOut() {
     d3.select(`#${selector} .tooltip`)
         .style('visibility', 'hidden');
+}
+
+function mouseOverGeo(feature: any) {
+    return `${feature.properties.name} ${feature.properties.descr}`;
+}
+
+function mouseOverEquityMeasure(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+    if(equityIndicator.variable !== 'none') {
+        const ei = returnSpecificEquityIndicator(feature, equityIndicator, changeYear);
+        return `${ei.equityMeasure}${equityIndicator.descr} in base year ${changeYear.baseYear}`
+    } else {
+        return '';
+    }
+}
+
+export function mouseOverTextVD(feature: any) {
+    return `<span class="SemiBold">${mouseOverGeo(feature)}</span>`
+}
+
+export function mouseOverTextTract(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+    return `<span class="SemiBold">${feature.properties.descr} ${feature.properties.name}</span> <br> <span>${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</span>`
+}
+
+export function mouseOverTextCounty(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+    return `<span class="SemiBold"> ${mouseOverGeo(feature)}</span> <br> <span>${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</span>`
+}
+
+export function mouseOverTextState(feature: any) {
+    return `<span class="SemiBold">${mouseOverGeo(feature)} </span>`
 }
