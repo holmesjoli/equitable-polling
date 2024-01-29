@@ -82,8 +82,12 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
     return data;
 }
 
-function filterPollingLocationsByChangYear(changeYear: ChangeYear) {
+function filterPollingLocationsByChangeYear(changeYear: ChangeYear) {
     return pollLocsDataAll.find((d: any) => d.changeYear === changeYear.changeYear)?.pollingLocsData || [];
+}
+
+function filterTractsByDecennialCensusYear(decennialCensusYear: number) {
+    return tractsDataAll.find((d: any) => d.decennialCensusYear === decennialCensusYear).tractsData;
 }
 
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover, changeYear, equityIndicator, setGeoHover }: 
@@ -93,8 +97,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
-    const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection | never[]>(tractsDataAll.find((d: any) => d.decennialCensusYear === decennialCensusYear).tractsData);
-    const [pollingLocsData, setPollingLocsData] = useState<PollingLoc[] | never[]>(filterPollingLocationsByChangYear(changeYear));
+    const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection | never[]>(filterTractsByDecennialCensusYear(decennialCensusYear));
+    const [pollingLocsData, setPollingLocsData] = useState<PollingLoc[] | never[]>(filterPollingLocationsByChangeYear(changeYear));
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -202,7 +206,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     );
 
     useEffect(() => {
-        setPollingLocsData(filterPollingLocationsByChangYear(changeYear));
+        setPollingLocsData(filterPollingLocationsByChangeYear(changeYear));
 
         // Sets the decennial census year
         if (changeYear.baseYear < 2020) {
@@ -213,7 +217,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     }, [changeYear]);
 
     useEffect(() => {
-        setTractsData(tractsDataAll.find((d: any) => d.decennialCensusYear === decennialCensusYear).tractsData);
+        setTractsData(filterTractsByDecennialCensusYear(decennialCensusYear));
     }, [decennialCensusYear]);
 
     useEffect(() => {
@@ -280,13 +284,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesData));
                     setGeoJsonData(filterGeoByBounds(mapRef, tractsData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingLocsData(filterPointByBounds(mapRef, filterPollingLocationsByChangYear(changeYear)));
+                    setPollingLocsData(filterPointByBounds(mapRef, filterPollingLocationsByChangeYear(changeYear)));
                 })
                 .on('moveend', () => {
                     setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesData));
                     setGeoJsonData(filterGeoByBounds(mapRef, tractsData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingLocsData(filterPointByBounds(mapRef, filterPollingLocationsByChangYear(changeYear)));
+                    setPollingLocsData(filterPointByBounds(mapRef, filterPollingLocationsByChangeYear(changeYear)));
                 });
         }
 
