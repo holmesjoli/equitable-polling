@@ -1,3 +1,6 @@
+// React
+import {useState, useEffect} from 'react';
+
 // MUI
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -138,7 +141,13 @@ function SelectGeography({ selectedState, setSelectedState, selectedCounty, setS
     )
 }
 
-function SelectChangeYear({changeYear, setChangeYear} : {changeYear: ChangeYear, setChangeYear: any}) : JSX.Element {
+function SelectChangeYear({changeYear, setChangeYear, selectedState} : {changeYear: ChangeYear, setChangeYear: any, selectedState: State}) : JSX.Element {
+
+    const [changeYearOpts, setChangeYearOpts] = useState<ChangeYear[]>([]);
+
+    useEffect(() => {
+        setChangeYearOpts(selectVariable.changeYear.filter((d: any) => d[selectedState.abbr] === true));
+    }, [selectedState]);
 
     const handleChange = (event: SelectChangeEvent) => {
         setChangeYear(selectVariable.changeYear.find(d => d.id === event.target.value) as ChangeYear);
@@ -156,7 +165,7 @@ function SelectChangeYear({changeYear, setChangeYear} : {changeYear: ChangeYear,
                     label="county"
                     onChange={handleChange}
                     >
-                    {selectVariable.changeYear.map((changeYear: ChangeYear) => (
+                    {changeYearOpts.map((changeYear: ChangeYear) => (
                         <MenuItem key={changeYear.id} value={changeYear.id}>{changeYear.descr}</MenuItem>
                     ))}
                     </Select>
@@ -190,7 +199,7 @@ export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState,
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
                 </PageDescription>
                 <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId}/>
-                <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} />
+                <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} selectedState={selectedState}/>
             </div>
         </Menu>
     );

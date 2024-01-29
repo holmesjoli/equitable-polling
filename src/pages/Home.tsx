@@ -8,6 +8,8 @@ import { QueryMenu } from "../components/Query";
 import Map from "../components/Map";
 import * as Tooltip from "../components/Tooltip";
 
+import { ChangeYear } from "../utils/Types";
+
 // Data 
 import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
 
@@ -25,7 +27,6 @@ export default function Home({}): JSX.Element {
     const [showVD, setShowVD] = useState(false);
     const [isFullScreen, setFullScreen] = useState(true);
     const [geoJsonId, setGeoJsonId] = useState<GeoID>(defaultMap);
-
     const [pollHover, setPollHover] = useState({});
     const [geoHover, setGeoHover] = useState({});
 

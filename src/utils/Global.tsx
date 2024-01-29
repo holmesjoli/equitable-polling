@@ -37,16 +37,17 @@ export const defaultMap =  {geoid: '0',
                             minZoom: 4,
                             maxZoom: 18} as GeoID;
 
-export const defaultCounty = {'type': 'County',
-                              'stfp': '',
-                              'name':'',
-                              'cntyfp':'',
-                              'geoid':'',
+export const defaultCounty = {type: 'County',
+                              stfp: '',
+                              name:'',
+                              cntyfp:'',
+                              geoid:'',
                               latlng: {lat: 0, lng: 0}} as County;
 
-export const defaultState = {'type': 'State',
-                             'name':'', 
-                             'stfp':'', 
-                             'counties': {} as GeoJSON.FeatureCollection, 
+export const defaultState = {type: 'State',
+                             name:'', 
+                             stfp:'', 
+                             counties: {} as GeoJSON.FeatureCollection, 
                              latlng: defaultMap.latlng, 
-                             zoom: 5} as State;
+                             zoom: 5,
+                             abbr: ''} as State;
