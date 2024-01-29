@@ -111,7 +111,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
-    const pollRef = useRef<L.FeatureGroup>(null);
 
     // Functions ---------------------------------------------------
 
@@ -349,7 +348,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             </Pane>
             <Pane name="poll-pane" style={{ zIndex: 200 }}>
             {showPolls ?
-                <FeatureGroup ref={pollRef} key="pollingLocFeatureGroup">
+                <FeatureGroup key="pollingLocFeatureGroup">
                     {pollingLocsData.map((d: PollingLoc, i: number) => (
                         <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} eventHandlers={{
                             click: () => {
