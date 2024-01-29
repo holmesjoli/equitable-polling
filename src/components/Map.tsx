@@ -104,9 +104,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Functions ---------------------------------------------------
 
-    console.log(equityIndicator);
-
-    const stableMousoutCallback = useStableCallback(mouseOut);
+    const stableMouseoutCallback = useStableCallback(mouseOut);
+    const stableMouseoverTractCallback = useStableCallback(mouseOverTract);
+    const stableMouseoverCountyCallback = useStableCallback(mouseOverCounty);
 
     function mouseOverPollingLoc(d: any) {
         var coords = mapRef.current.latLngToContainerPoint(d.latlng);
@@ -118,23 +118,22 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         var layer = event.target;
         layer.setStyle(layersStyle.VD.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextVD(layer.feature.properties));
+        pointerOver(coords.x, coords.y, mouseOverTextVD(layer.feature));
     }
 
     function mouseOverTract(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.Tract.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextTract(layer.feature.properties));
+        pointerOver(coords.x, coords.y, mouseOverTextTract(layer.feature, equityIndicator, changeYear));
         setGeoHover(layer.feature.properties);
     }
 
     function mouseOverCounty(event: any) {
-        console.log(equityIndicator);
         var layer = event.target;
         layer.setStyle(layersStyle.County.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextCounty(layer.feature.properties));
+        pointerOver(coords.x, coords.y, mouseOverTextCounty(layer.feature, equityIndicator, changeYear));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
         setGeoHover(layer.feature.properties);
     }
@@ -143,7 +142,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         var layer = event.target;
         layer.setStyle(layersStyle.State.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature.properties));
+        pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
     }
 
@@ -165,8 +164,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         const properties = layer.feature.properties;
 
         layer.on({
-          mouseover: properties.type === "State" ? mouseOverState : properties.type === "County" ? mouseOverCounty: mouseOverTract,
-          mouseout: stableMousoutCallback,
+          mouseover: properties.type === "State" ? mouseOverState : properties.type === "County" ? stableMouseoverCountyCallback: stableMouseoverTractCallback,
+          mouseout: stableMouseoutCallback,
           click: onClickFeature
         });
         pointerOut();
@@ -176,7 +175,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
         layer.on({
           mouseover: mouseOverVD,
-          mouseout: stableMousoutCallback
+          mouseout: stableMouseoutCallback
         });
         pointerOut();
     }

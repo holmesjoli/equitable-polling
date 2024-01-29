@@ -2,7 +2,10 @@
 import * as d3 from 'd3';
 
 // Styles
-import { theme } from '../utils/Theme';
+import { theme, returnSpecificEquityIndicator } from '../utils/Theme';
+
+//Types
+import {EquityIndicator, ChangeYear} from '../utils/Types';
 
 const selector = "root";
 
@@ -48,31 +51,32 @@ export function pointerOut() {
         .style('visibility', 'hidden');
 }
 
-function mouseOverGeo(properties: any) {
-    return `${properties.name} ${properties.descr} <br>`;
+function mouseOverGeo(feature: any) {
+    return `${feature.properties.name} ${feature.properties.descr} <br>`;
 }
 
 // TODO add this back in
-function mouseOverEquityMeasure(properties: any) {
-    // if(properties.equityIndicator.variable !== 'none') {
-        // return `${properties.equityIndicator.equityMeasure}${properties.equityIndicator.descr}`
-    // } else {
+function mouseOverEquityMeasure(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+    if(equityIndicator.variable !== 'none') {
+        const ei = returnSpecificEquityIndicator(feature, equityIndicator, changeYear);
+        return `${ei.equityMeasure}${equityIndicator.descr}`
+    } else {
         return '';
-    // }
+    }
 }
 
-export function mouseOverTextVD(properties: any) {
-    return `<span class="SemiBold">${mouseOverGeo(properties)}</span>`
+export function mouseOverTextVD(feature: any) {
+    return `<span class="SemiBold">${mouseOverGeo(feature)}</span>`
 }
 
-export function mouseOverTextTract(properties: any) {
-    return `<span class="SemiBold">${properties.descr} ${properties.name}</span> <br> <span>${mouseOverEquityMeasure(properties)}</span>`
+export function mouseOverTextTract(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+    return `<span class="SemiBold">${feature.properties.descr} ${feature.properties.name}</span> <br> <span>${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</span>`
 }
 
-export function mouseOverTextCounty(properties: any) {
-    return `<span class="SemiBold"> ${mouseOverGeo(properties)}</span> <br> <span>${mouseOverEquityMeasure(properties)}</span>`
+export function mouseOverTextCounty(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+    return `<span class="SemiBold"> ${mouseOverGeo(feature)}</span> <br> <span>${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</span>`
 }
 
-export function mouseOverTextState(properties: any) {
-    return `<span class="SemiBold">${mouseOverGeo(properties)} </span>`
+export function mouseOverTextState(feature: any) {
+    return `<span class="SemiBold">${mouseOverGeo(feature)} </span>`
 }

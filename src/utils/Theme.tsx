@@ -77,20 +77,25 @@ export function stateStyle() {
   };
 }
 
+export function returnSpecificEquityIndicator(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+  return feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable];
+}
+
 export function countyStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
   return {
-    color: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].strokeColor,
-    fillColor: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor,
+    color: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).strokeColor,
+    fillColor: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).fillColor,
     weight: 1,
     opacity: 1,
     fillOpacity: .6
   };
 }
 
+
 export function tractStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
   return {
-    color: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].strokeColor,
-    fillColor: feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor,
+    color: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).strokeColor,
+    fillColor: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3
