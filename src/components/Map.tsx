@@ -6,7 +6,7 @@ import { point, bounds, PathOptions } from 'leaflet';
 import * as d3 from 'd3';
 
 // Components
-import {mouseOverTextVD, mouseOverTextState, mouseOverTextCounty, mouseOverTextTract, pointerOver, pointerOut} from "./Tooltip";
+import {mouseOverTextVD, mouseOverTextState, mouseOverTextCounty, mouseOverTextTract, mouseOverTextPoll, mouseOverTextPollSummary, pointerOver, pointerOut} from "./Tooltip";
 
 // Types
 import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator, IndicatorStatus } from "../utils/Types";
@@ -105,7 +105,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [pollingLocsData, setPollingLocsData] = useState<PollingLoc[] | never[]>(filterPollingLocationsByChangeYear(changeYear));
     const [indicatorStatusData, setIndicatorStatusData] = useState<IndicatorStatus[] | never[]>(filterIndicatorStatusByChangeYear(changeYear));
 
-    console.log(indicatorStatusData);
+    // console.log(indicatorStatusData);
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -120,7 +120,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOverPollingLoc(d: any) {
         var coords = mapRef.current.latLngToContainerPoint(d.latlng);
-        pointerOver(coords.x, coords.y, `<span class="SemiBold">${d.name}</span><br><span class=${d.status}>Status: ${d.status}</span>`);
+        pointerOver(coords.x, coords.y, mouseOverTextPoll(d));
+        setPollHover(d);
+    }
+
+    function mouseOverPollSummary(d: any) {
+        var coords = mapRef.current.latLngToContainerPoint(d.latlng);
+        pointerOver(coords.x, coords.y, mouseOverTextPollSummary(d));
         setPollHover(d);
     }
 
@@ -159,6 +165,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     function mouseOutPollingLoc() {
         pointerOut();
         setPollHover({});
+    }
+
+    function mouseOutPollSummary() {
+        pointerOut();
+        // setPollHover({});
     }
 
     function mouseOut(event: any) {
@@ -336,7 +347,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
     }, [geoJsonVdData]);
 
-    console.log(selectedCounty.cntyfp);
+    // console.log(selectedCounty.cntyfp);
 
     return(
         <>
@@ -355,6 +366,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     {
                         indicatorStatusData.map((d: IndicatorStatus, i: number) => (
                             <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={pollSummarySize(d)} eventHandlers={{
+                                mouseover: () => {
+                                    mouseOverPollSummary(d);
+                                },
+                                mouseout: () => {    
+                                    mouseOutPollSummary();
+                                }
                             }}/>
                         ))
                     }
@@ -363,9 +380,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 <FeatureGroup key="pollingLocFeatureGroup">
                     {pollingLocsData.map((d: PollingLoc, i: number) => (
                         <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} eventHandlers={{
-                            // click: () => {
-                            // //   console.log('marker clicked')
-                            // },
                             mouseover: () => {
                                 mouseOverPollingLoc(d);
                             },

@@ -279,7 +279,8 @@ getIndicatorsChangeStatus<- function(df, state_fips) {
   cnty <- tigris::counties(cb = T) %>% 
     filter(STATEFP %in% state_fips) %>% 
     mutate(cntyfp = paste0(STATEFP, COUNTYFP)) %>% 
-    select(cntyfp, geometry)
+    select(cntyfp, geometry, NAME) %>% 
+    rename(name = NAME)
   
   cnty <- getCentroid(cnty) %>% 
     sf::st_drop_geometry()

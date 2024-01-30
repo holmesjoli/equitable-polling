@@ -40,4 +40,5 @@ export type IndicatorStatus = {cntyfp: string, stfp: string,
                               // totalChangeNoPollsBin: string, netChangeNoPolls: string, 
                                 baseYear: number, latlng: LatLng,
                                 overall: string, id: string,
-                                rSize: number};
+                                rSize: number, name: string, overallChange: number,
+                                changeYear: string};

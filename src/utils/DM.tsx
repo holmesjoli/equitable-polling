@@ -261,7 +261,10 @@ export function getIndicatorStatus() {
                         latlng: getLatLng(d),
                         overall: d.overall,
                         id: d.id,
-                        rSize: d.rSize
+                        rSize: d.rSize,
+                        name: d.name,
+                        overallChange: d.overallChange,
+                        changeYear: d.changeYear
                     } as IndicatorStatus);
             });
 
