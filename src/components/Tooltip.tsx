@@ -69,7 +69,7 @@ function mouseOverEquityMeasure(changeYearData: ChangeYearData[], equityIndicato
 
 export function mouseOverTextPollSummary(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
 
-    const countyName = `<div class="ComponentGroupInner>${mouseOverGeo(feature)}</div>`;
+    const countyName = `<div class="ComponentGroupInner">${mouseOverGeo(feature)}</div>`;
     const ei = `<div class="DetailInformation">${mouseOverEquityMeasure(feature.properties.changeYearData, equityIndicator, changeYear)}</div>`;
     const pollSummary = filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear);
     const noChanges = `<div class="DetailInformation"><span class="SemiBold">${pollSummary?.changeNoPolls}</span> poll locations changed</div>`;
