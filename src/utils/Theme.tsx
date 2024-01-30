@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { EquityIndicator, ChangeYear } from "./Types";
 
 export const theme = {
-    fontSize: 13,
+    fontSize: 11,
     grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#1D618E',

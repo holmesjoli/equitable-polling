@@ -41,4 +41,4 @@ export type IndicatorStatus = {cntyfp: string, stfp: string,
                                 baseYear: number, latlng: LatLng,
                                 overall: string, id: string,
                                 rSize: number, name: string, overallChange: number,
-                                changeYear: string};
+                                changeYear: string, changeNoPolls: number};

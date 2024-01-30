@@ -255,8 +255,7 @@ export function getIndicatorStatus() {
                 indicator.push({
                         cntyfp: d.cntyfp,
                         stfp: d.stfp,
-                        // totalChangeNoPollsBin: d.totalChangeNoPollsBin,
-                        // netChangeNoPolls: d.netChangeNoPolls,
+                        changeNoPolls: d.changeNoPolls,
                         baseYear: d.baseYear,
                         latlng: getLatLng(d),
                         overall: d.overall,

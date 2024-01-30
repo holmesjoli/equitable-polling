@@ -21,7 +21,7 @@ export function init() {
             .style('padding', '7px')
             .style('pointer-events', 'none')
             .style('border-radius', '5px')
-            .style('background-color', 'rgba(250, 246, 240, .8)')
+            .style('background-color', 'rgba(250, 246, 240, .85)')
             .style('font-weight', 'normal')
             .style('border', `1.5px solid ${theme.grey.primary}`)
             .style('font-family', theme.fontFamily)
@@ -65,14 +65,19 @@ function mouseOverEquityMeasure(feature: any, equityIndicator: EquityIndicator, 
 }
 
 export function mouseOverTextPollSummary(d: any) {
-
-    const status = d.overall === 'added' ? 'gain': 'loss';
+    
+    const noChanges = `<span class="SemiBold">${d.changeNoPolls}</span><span> poll locations changed</span>`;
+    const countyName = `<span class="SemiBold">${d.name} County</span><br>`
+    let netChanges;
 
     if (d.overall === 'nochange') {
-        return `<span class="SemiBold">${d.name} County</span><span><br>No change in the net number of polling locations between ${d.changeYear}</span>`;
+        netChanges = `<span>No change in the net number of poll locations between ${d.changeYear}</span><br>`;
     } else {
-        return `<span class="SemiBold">${d.name} County</span><span><br>Net <span class="SemiBold ${d.overall}">${status} of ${Math.abs(d.overallChange)} </span> polling locations between ${d.changeYear}</span>`;
+        const status = d.overall === 'added' ? 'gain': 'loss';
+        netChanges = `<span>Net <span class="SemiBold ${d.overall}">${status} of ${Math.abs(d.overallChange)} </span> poll locations between ${d.changeYear}</span><br>`;
     }
+
+    return `${countyName}${netChanges}${noChanges}`;
 }
 
 export function mouseOverTextPoll(d: any) {
