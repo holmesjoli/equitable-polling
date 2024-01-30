@@ -169,7 +169,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOutPollSummary() {
         pointerOut();
-        // setPollHover({});
+        setPollHover({});
     }
 
     function mouseOut(event: any) {

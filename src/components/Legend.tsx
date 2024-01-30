@@ -206,13 +206,13 @@ export function StateLegend ({pollHover} : {pollHover: any}) {
   // Initiate legends
   useEffect(() => {
     initLegend(pollLegendId);
+    initSizeLegend();
   }, []);
 
   // Initiate legends
   useEffect(() => {
     updatePollLegend('state', pollHover);
-    initSizeLegend();
-  }, []);
+  }, [pollHover]);
 
   return (
     <div className="Legend">
