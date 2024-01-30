@@ -38,9 +38,6 @@ export type PollingLoc = {type: string, name: string, descr: string, latlng: Lat
                           pixelCoords?: PixelCoords, pollId: string, status: string | undefined, overall: string | undefined, id: string | undefined,
                           baseYear: number};
 
-export type IndicatorStatus = {cntyfp: string, stfp: string, 
-                              // totalChangeNoPollsBin: string, netChangeNoPolls: string, 
-                                baseYear: number, latlng: LatLng,
-                                overall: string, id: string,
-                                rSize: number, name: string, overallChange: number,
-                                changeNoPolls: number, changeYearData: ChangeYearData[]};
+export type IndicatorStatus = {cntyfp: string, stfp: string, name: string, 
+                               baseYear: number, latlng: LatLng,
+                               changeYearData: ChangeYearData[]};

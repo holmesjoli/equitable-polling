@@ -67,23 +67,27 @@ function mouseOverEquityMeasure(changeYearData: ChangeYearData[], equityIndicato
 export function mouseOverTextPollSummary(d: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
 
     let countyName;
-    const noChanges = `<div class="DetailInformation"><span class="SemiBold">${d.changeNoPolls}</span> poll locations changed</div>`;
     let netChanges;
     let ei;
+    let changeYearData;
 
     if (d.properties !== undefined) {
-        ei = `<div class="DetailInformation">${mouseOverEquityMeasure(d.properties.changeYearData, equityIndicator, changeYear)}</div>`;
+        changeYearData = d.properties.changeYearData;
+        ei = `<div class="DetailInformation">${mouseOverEquityMeasure(changeYearData, equityIndicator, changeYear)}</div>`;
         countyName = `${mouseOverGeo(d)}`;
     } else {
-        ei = `<div class="DetailInformation">${mouseOverEquityMeasure(d.changeYearData, equityIndicator, changeYear)}</div>`;
+        changeYearData = d.changeYearData;
+        ei = `<div class="DetailInformation">${mouseOverEquityMeasure(changeYearData, equityIndicator, changeYear)}</div>`;
         countyName = `<div class="SemiBold ComponentGroupInner">${d.name} County</div>`;
     }
+
+    const noChanges = `<div class="DetailInformation"><span class="SemiBold">${changeYearData[0].pollSummary.changeNoPolls}</span> poll locations changed</div>`;
 
     if (d.overall === 'nochange') {
         netChanges = `<div>No change in the net # of polls between ${changeYear.changeYear}</div>`;
     } else {
-        const status = d.overall === 'added' ? 'gain': 'loss';
-        netChanges = `<div>Net <span class="SemiBold ${d.overall}">${status} of ${Math.abs(d.overallChange)} </span> poll locations between ${d.changeYear}</div>`;
+        const status = changeYearData[0].pollSummary.overall === 'added' ? 'gain': 'loss';
+        netChanges = `<div>Net <span class="SemiBold ${changeYearData[0].pollSummary.overall}">${status} of ${Math.abs(changeYearData[0].pollSummary.overallChange)} </span> poll locations between ${d.changeYear}</div>`;
     }
 
     return `${countyName}${ei}${noChanges}${netChanges}`;

@@ -368,7 +368,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 <FeatureGroup key="pollChangeSummaryFeatureGroup">
                     {
                         indicatorStatusData.map((d: IndicatorStatus, i: number) => (
-                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={pollSummarySize(d)} eventHandlers={{
+                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d.changeYearData[0].pollSummary)} radius={pollSummarySize(d.changeYearData[0].pollSummary)} eventHandlers={{
                                 mouseover: () => {
                                     stableMouseoverPollSummaryCallback(d);
                                 },

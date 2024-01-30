@@ -254,20 +254,23 @@ export function getIndicatorStatus() {
             .filter((d: any) => d.changeYear === e.changeYear)
             .forEach((d: any) => {
 
-                const changeYearData = findEquityMeasureByChangeYear(countiesLong, d);
+                let changeYearData = findEquityMeasureByChangeYear(countiesLong, d).filter((f: any) => f.changeYear === e.changeYear);
+
+                if (changeYearData) {
+                    changeYearData[0].pollSummary = {changeNoPolls: d.changeNoPolls, 
+                                                     overall: d.overall, 
+                                                     overallChange: d.overallChange, 
+                                                     id: d.id, 
+                                                     rSize: d.rSize};
+                }
 
                 indicator.push({
                         cntyfp: d.cntyfp,
                         stfp: d.stfp,
-                        changeNoPolls: d.changeNoPolls,
                         baseYear: d.baseYear,
                         latlng: getLatLng(d),
-                        overall: d.overall,
-                        id: d.id,
-                        rSize: d.rSize,
                         name: d.name,
-                        overallChange: d.overallChange,
-                        changeYearData: changeYearData.filter((f: any) => f.changeYear === e.changeYear),
+                        changeYearData: changeYearData,
                     } as IndicatorStatus);
             });
 
