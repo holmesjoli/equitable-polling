@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-import { EquityIndicator, ChangeYear } from "./Types";
+import { EquityIndicator, ChangeYear, ChangeYearEquityIndicator } from "./Types";
 
 export const theme = {
     fontSize: 12,
@@ -77,14 +77,14 @@ export function stateStyle() {
   };
 }
 
-export function returnSpecificEquityIndicator(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-  return feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable];
+export function returnSpecificEquityIndicator(changeYearEquityIndicator: ChangeYearEquityIndicator[], equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+  return changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)?.[equityIndicator.variable];
 }
 
 export function countyStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
   return {
-    color: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).fillColor,
+    color: returnSpecificEquityIndicator(feature.properties!.changeYearEquityIndicator, equityIndicator, changeYear).strokeColor,
+    fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearEquityIndicator, equityIndicator, changeYear).fillColor,
     weight: 1,
     opacity: 1,
     fillOpacity: .6
@@ -93,8 +93,8 @@ export function countyStyle(feature: any, equityIndicator: EquityIndicator, chan
 
 export function tractStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
   return {
-    color: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).fillColor,
+    color: returnSpecificEquityIndicator(feature.properties!.changeYearEquityIndicator, equityIndicator, changeYear).strokeColor,
+    fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearEquityIndicator, equityIndicator, changeYear).fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3

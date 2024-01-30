@@ -252,6 +252,8 @@ export function getIndicatorStatus() {
             .filter((d: any) => d.changeYear === e.changeYear)
             .forEach((d: any) => {
 
+                const changeYearData = findEquityMeasureByChangeYear(countiesLong, d);
+
                 indicator.push({
                         cntyfp: d.cntyfp,
                         stfp: d.stfp,
@@ -263,7 +265,8 @@ export function getIndicatorStatus() {
                         rSize: d.rSize,
                         name: d.name,
                         overallChange: d.overallChange,
-                        changeYear: d.changeYear
+                        changeYear: d.changeYear,
+                        changeYearEquityIndicator: changeYearData,
                     } as IndicatorStatus);
             });
 

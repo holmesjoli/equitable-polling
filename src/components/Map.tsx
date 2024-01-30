@@ -117,6 +117,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const stableMouseoutCallback = useStableCallback(mouseOut);
     const stableMouseoverTractCallback = useStableCallback(mouseOverTract);
     const stableMouseoverCountyCallback = useStableCallback(mouseOverCounty);
+    const stableMouseoverPollSummaryCallback = useStableCallback(mouseOverPollSummary);
 
     function mouseOverPollingLoc(d: any) {
         var coords = mapRef.current.latLngToContainerPoint(d.latlng);
@@ -126,8 +127,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOverPollSummary(d: any) {
         var coords = mapRef.current.latLngToContainerPoint(d.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextPollSummary(d));
+        pointerOver(coords.x, coords.y, mouseOverTextPollSummary(d, equityIndicator, changeYear));
         setPollHover(d);
+        setGeoHover(d);
     }
 
     function mouseOverVD(event: any) {
@@ -152,6 +154,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         pointerOver(coords.x, coords.y, mouseOverTextCounty(layer.feature, equityIndicator, changeYear));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
         setGeoHover(layer.feature.properties);
+        // console.log(layer.feature.properties);
     }
 
     function mouseOverState(event: any) {
@@ -367,7 +370,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                         indicatorStatusData.map((d: IndicatorStatus, i: number) => (
                             <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={pollSummarySize(d)} eventHandlers={{
                                 mouseover: () => {
-                                    mouseOverPollSummary(d);
+                                    stableMouseoverPollSummaryCallback(d);
                                 },
                                 mouseout: () => {    
                                     mouseOutPollSummary();

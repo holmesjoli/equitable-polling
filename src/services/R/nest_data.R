@@ -246,6 +246,7 @@ getIndicatorsChangeStatus<- function(df, state_fips) {
            noPollsAdded = nopollsadded,
            noPollsRemoved = nopollsremoved) %>% 
     mutate(cntyfp = paste0(stfp, stringr::str_pad(cntyfp, width = '3', pad = '0', side= 'left')),
+           geoid = cntyfp,
            overallChange = noPollsAdded - noPollsRemoved,
            # totalChangeNoPollsBin = case_when(changeNoPolls == 0 ~ "0",
            #                              changeNoPolls > 0 & changeNoPolls <= 5 ~ "Between 1 and 5",
