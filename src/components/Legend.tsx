@@ -51,9 +51,7 @@ function legendHeight(data: any[], margin: number = 0) {
 }
 
 // Initiate size legend
-function initSizeLegend() {
-
-  initLegend(sizeLegendId);
+function updateSizeLegend(pollHover: any) {
 
   const svg = d3.select(`#${sizeLegendId} svg`)
     .attr('height', legendHeight(sizeData, 15));
@@ -62,44 +60,36 @@ function initSizeLegend() {
   .selectAll('circle')
   .data(sizeData, (d: any) => d.rSize)
   .join(
-    enter => enter
+    (enter: any) => enter
       .append('circle')
-      .attr('r', d => rScale(d.rSize))
-      .attr('transform', function (d, i) {
-
+      .attr('r', (d: any) => rScale(d.rSize))
+      .attr('transform', function (d: any, i: any) {
         let x = sizeData.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
-
         return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.rSize) + 8) + ')';
       })
       .attr('fill', theme.grey.secondary)
       .attr("stroke", theme.grey.primary)
-      .attr('stroke-width', 1)
-    //   ,
-    // update => update
-    //   .attr('opacity', d.color === pollHoverId ? 1 : 0.3),
-    // exit => exit.remove()
+      .attr('stroke-width', 1),
+    (update: any) => update
+      .attr('opacity', (d: any) => d.rSize === pollHover.rSize || pollHover.rSize === undefined? 1 : 0.3)
   );
 
   svg
     .selectAll('text')
     .data(sizeData, (d: any) => d.rSize)
     .join(
-      enter => enter
+      (enter: any) => enter
         .append('text')
         .attr('x', textStart)
-        .attr('y', function(d, i) { 
-
+        .attr('y', function(d: any, i: any) { 
           let x = sizeData.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
-          
           return i * 16 + x + rScale(d.rSize) + 8})
-        .text(d => d.label)
+        .text((d: any) => d.label)
         .attr('font-size', theme.fontSize)
         .attr('fill', theme.grey.primary)
-        .attr('dominant-baseline', 'middle')
-        // ,
-      // update => update
-      //   .attr('opacity', d.pollHoverId === pollHover ? 1 : 0.3),
-      // exit => exit.remove()
+        .attr('dominant-baseline', 'middle'),
+      (update: any) => update
+      .attr('opacity', (d: any) => d.rSize === pollHover.rSize || pollHover.rSize === undefined? 1 : 0.3)
     );
 }
 
@@ -206,12 +196,13 @@ export function StateLegend ({pollHover} : {pollHover: any}) {
   // Initiate legends
   useEffect(() => {
     initLegend(pollLegendId);
-    initSizeLegend();
+    initLegend(sizeLegendId);
   }, []);
 
   // Initiate legends
   useEffect(() => {
     updatePollLegend('state', pollHover);
+    updateSizeLegend(pollHover);
   }, [pollHover]);
 
   return (
