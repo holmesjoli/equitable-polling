@@ -24,9 +24,7 @@ export const vdData = getVd();
 export const pollLocsDataAll = getPollLocsDataAll();
 export const tractsDataAll = getTracts();
 export const countiesData = getCounties();
-export const indicatorStatusAll = getIndicatorStatus();
 
-console.log(countiesData);
 
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoData: any, d: any, indicatorsChangeStatus: any = null) {
@@ -49,18 +47,19 @@ function findEquityMeasureByChangeYear(geoData: any, d: any, indicatorsChangeSta
                             fillColor: thresholdScale(ei.pctBlack) as string}
             }
 
-            let pollSummary = {};
+            let pollSummary = undefined;
             if (indicatorsChangeStatus !== null) {
 
                 const indicatorYearData = indicatorsChangeStatus.find((f: any) => (f.changeYear === e.changeYear) && (f.geoid === d.geoid));
 
-                console.log(indicatorYearData);
+                if (indicatorYearData !== undefined) { // todo removed if once we have complete data
 
-                pollSummary = {changeNoPolls: indicatorYearData.changeNoPolls, 
-                               overall: indicatorYearData.overall, 
-                               overallChange: indicatorYearData.overallChange, 
-                               id: indicatorYearData.id, 
-                               rSize: indicatorYearData.rSize}
+                    pollSummary = {changeNoPolls: indicatorYearData.changeNoPolls, 
+                                overall: indicatorYearData.overall, 
+                                overallChange: indicatorYearData.overallChange, 
+                                id: indicatorYearData.id, 
+                                rSize: indicatorYearData.rSize}
+                }
             }
 
             changeYearData.push({changeYear: e.changeYear, 
@@ -252,44 +251,6 @@ export function getPollLocsDataAll() {
             });
 
         changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as any);
-    });
-
-    return changeStatus;
-}
-
-export function getIndicatorStatus() {
-
-    const changeStatus: any[] = [];
-
-    selectVariable.changeYear.forEach((e) => {
-
-        const indicator: IndicatorStatus[] = [];
-
-        (indicatorsChangeStatus as any[])
-            .filter((d: any) => d.changeYear === e.changeYear)
-            .forEach((d: any) => {
-
-                let changeYearData = findEquityMeasureByChangeYear(countiesLong, d, indicatorsChangeStatus).filter((f: any) => f.changeYear === e.changeYear);
-
-                if (changeYearData) {
-                    changeYearData[0].pollSummary = {changeNoPolls: d.changeNoPolls, 
-                                                     overall: d.overall, 
-                                                     overallChange: d.overallChange, 
-                                                     id: d.id, 
-                                                     rSize: d.rSize};
-                }
-
-                indicator.push({
-                        cntyfp: d.cntyfp,
-                        stfp: d.stfp,
-                        baseYear: d.baseYear,
-                        latlng: getLatLng(d),
-                        name: d.name,
-                        changeYearData: changeYearData,
-                    } as IndicatorStatus);
-            });
-
-        changeStatus.push({changeYear: e.changeYear, indicatorStatus: indicator} as any);
     });
 
     return changeStatus;

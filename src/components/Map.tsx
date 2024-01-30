@@ -9,17 +9,19 @@ import * as d3 from 'd3';
 import {mouseOverTextVD, mouseOverTextState, mouseOverTextCounty, mouseOverTextTract, mouseOverTextPoll, mouseOverTextPollSummary, pointerOver, pointerOut} from "./Tooltip";
 
 // Types
-import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator, IndicatorStatus } from "../utils/Types";
+import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 import { useStableCallback } from "../utils/Helper";
 
 // Data
-import { stateData, countiesData, vdData, pollLocsDataAll, tractsDataAll, indicatorStatusAll } from "../utils/DM";
+import { stateData, countiesData, vdData, pollLocsDataAll, tractsDataAll } from "../utils/DM";
 
 // Styles
 import { layersStyle, highlightSelectedCounty, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
+
+import { filterPollSummaryByChangeYear } from "../utils/Helper";
 
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
@@ -82,10 +84,6 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
     return data;
 }
 
-function filterIndicatorStatusByChangeYear(changeYear: ChangeYear) {
-    return indicatorStatusAll.find((d: any) => d.changeYear === changeYear.changeYear)?.indicatorStatus || [];
-}
-
 function filterPollingLocationsByChangeYear(changeYear: ChangeYear) {
     return pollLocsDataAll.find((d: any) => d.changeYear === changeYear.changeYear)?.pollingLocsData || [];
 }
@@ -103,9 +101,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
     const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection | never[]>(filterTractsByDecennialCensusYear(decennialCensusYear));
     const [pollingLocsData, setPollingLocsData] = useState<PollingLoc[] | never[]>(filterPollingLocationsByChangeYear(changeYear));
-    const [indicatorStatusData, setIndicatorStatusData] = useState<IndicatorStatus[] | never[]>(filterIndicatorStatusByChangeYear(changeYear));
-
-    // console.log(indicatorStatusData);
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -125,11 +120,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         setPollHover(d);
     }
 
-    function mouseOverPollSummary(d: any) {
-        var coords = mapRef.current.latLngToContainerPoint(d.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextPollSummary(d, equityIndicator, changeYear));
-        setPollHover(d);
-        setGeoHover(d);
+    function mouseOverPollSummary(feature: any) {
+        var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
+        pointerOver(coords.x, coords.y, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
+        setPollHover(feature);
+        setGeoHover(feature);
     }
 
     function mouseOverVD(event: any) {
@@ -154,7 +149,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         pointerOver(coords.x, coords.y, mouseOverTextCounty(layer.feature, equityIndicator, changeYear));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
         setGeoHover(layer.feature.properties);
-        // console.log(layer.feature.properties);
     }
 
     function mouseOverState(event: any) {
@@ -227,7 +221,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     useEffect(() => {
         setPollingLocsData(filterPollingLocationsByChangeYear(changeYear));
-        setIndicatorStatusData(filterIndicatorStatusByChangeYear(changeYear));
 
         // Sets the decennial census year
         if (changeYear.baseYear < 2020) {
@@ -350,8 +343,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
     }, [geoJsonVdData]);
 
-    // console.log(selectedCounty.cntyfp);
-
     return(
         <>
             <Pane name="background-pane" style={{ zIndex: -100 }}>
@@ -367,16 +358,22 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             {selectedState.stfp !== '' && selectedCounty.cntyfp === '' ? 
                 <FeatureGroup key="pollChangeSummaryFeatureGroup">
                     {
-                        indicatorStatusData.map((d: IndicatorStatus, i: number) => (
-                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d.changeYearData[0].pollSummary)} radius={pollSummarySize(d.changeYearData[0].pollSummary)} eventHandlers={{
-                                mouseover: () => {
-                                    stableMouseoverPollSummaryCallback(d);
-                                },
-                                mouseout: () => {    
-                                    mouseOutPollSummary();
-                                }
-                            }}/>
-                        ))
+                        countiesData.features.map((feature: any, i: number) => {
+                            if (filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear) !== undefined) {
+                                return (
+                                    <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear))} radius={pollSummarySize(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear))} eventHandlers={{
+                                        mouseover: () => {
+                                            stableMouseoverPollSummaryCallback(feature);
+                                        },
+                                        mouseout: () => {    
+                                            mouseOutPollSummary();
+                                        }
+                                    }}/>
+                                );
+                            } else {
+                                return null;
+                            }
+                        })
                     }
                 </FeatureGroup> : null}
             {showPolls ?
