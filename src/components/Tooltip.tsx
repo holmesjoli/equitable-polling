@@ -25,9 +25,9 @@ export function init() {
             .style('font-weight', 'normal')
             .style('border', `1.5px solid ${theme.grey.primary}`)
             .style('font-family', theme.fontFamily)
-            .style('font-size', theme.fontSize)
+            .style('font-size', `${theme.fontSize}px`)
             .style('color', theme.grey.primary)
-            // .style('line-height', Theme.tooltipStyles.lineHeight);
+            .style('line-height', theme.lineHeight);
 
     return tooltip;
 }
@@ -65,19 +65,19 @@ function mouseOverEquityMeasure(feature: any, equityIndicator: EquityIndicator, 
 }
 
 export function mouseOverTextPollSummary(d: any) {
-    
-    const noChanges = `<span class="SemiBold">${d.changeNoPolls}</span><span> poll locations changed</span>`;
-    const countyName = `<span class="SemiBold">${d.name} County</span><br>`
+
+    const countyName = `<div class="SemiBold ComponentGroupInner">${d.name} County</div>`;
+    const noChanges = `<div class="DetailInformation"><span class="SemiBold">${d.changeNoPolls}</span> poll locations changed</div>`;
     let netChanges;
 
     if (d.overall === 'nochange') {
-        netChanges = `<span>No change in the net number of poll locations between ${d.changeYear}</span><br>`;
+        netChanges = `<div>No change in the net # of polls between ${d.changeYear}</div>`;
     } else {
         const status = d.overall === 'added' ? 'gain': 'loss';
-        netChanges = `<span>Net <span class="SemiBold ${d.overall}">${status} of ${Math.abs(d.overallChange)} </span> poll locations between ${d.changeYear}</span><br>`;
+        netChanges = `<div>Net <span class="SemiBold ${d.overall}">${status} of ${Math.abs(d.overallChange)} </span> poll locations between ${d.changeYear}</div>`;
     }
 
-    return `${countyName}${netChanges}${noChanges}`;
+    return `${countyName}${noChanges}${netChanges}`;
 }
 
 export function mouseOverTextPoll(d: any) {

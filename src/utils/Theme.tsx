@@ -3,14 +3,15 @@ import * as d3 from 'd3';
 import { EquityIndicator, ChangeYear } from "./Types";
 
 export const theme = {
-    fontSize: 11,
+    fontSize: 12,
     grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#1D618E',
     focusColorDark: '#113A55',
     darkGradientColor: "#113A55",
     fontFamily: 'Inter',
-    choroplethOpacity: .8
+    choroplethOpacity: .8,
+    lineHeight: 1.2
 }
 
 export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
@@ -89,7 +90,6 @@ export function countyStyle(feature: any, equityIndicator: EquityIndicator, chan
     fillOpacity: .6
   };
 }
-
 
 export function tractStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
   return {
