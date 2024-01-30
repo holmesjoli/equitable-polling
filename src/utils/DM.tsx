@@ -12,7 +12,7 @@ import indicatorsChangeStatus from "../data/processed/indicatorsChangeStatus.jso
 import { theme, thresholdScale } from "./Theme";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearEquityIndicator, IndicatorStatus } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, IndicatorStatus } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -26,10 +26,12 @@ export const tractsDataAll = getTracts();
 export const countiesData = getCounties();
 export const indicatorStatusAll = getIndicatorStatus();
 
+console.log(indicatorStatusAll);
+
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoData: any, d: any) {
 
-    const changeYearData: ChangeYearEquityIndicator[] = [];
+    const changeYearData: ChangeYearData[] = [];
 
         selectVariable.changeYear.forEach((e) => {
 
@@ -134,7 +136,7 @@ export function getCounties() {
                          latlng: getLatLng(d),
                          zoom: 10,
                          selected: false,
-                         changeYearEquityIndicator: changeYearData,
+                         changeYearData: changeYearData,
                          bounds: getBounds(d)
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
@@ -170,7 +172,7 @@ export function getTracts() {
                         latlng: getLatLng(d),
                         zoom: 12,
                         selected: false,
-                        changeYearEquityIndicator: changeYearData,
+                        changeYearData: changeYearData,
                         bounds: getBounds(d),
                     } as unknown as Tract,
                     geometry: d.geometry as GeoJSON.Geometry})
@@ -265,8 +267,7 @@ export function getIndicatorStatus() {
                         rSize: d.rSize,
                         name: d.name,
                         overallChange: d.overallChange,
-                        changeYear: d.changeYear,
-                        changeYearEquityIndicator: changeYearData,
+                        changeYearData: changeYearData.filter((f: any) => f.changeYear === e.changeYear),
                     } as IndicatorStatus);
             });
 

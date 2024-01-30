@@ -137,8 +137,8 @@ function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any, cha
 
   let fillColor: string | undefined = undefined;
 
-  if (geoHover.changeYearEquityIndicator !== undefined ) {
-    fillColor = geoHover.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor;
+  if (geoHover.changeYearData !== undefined ) {
+    fillColor = geoHover.changeYearData.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor;
   } else {
     fillColor = undefined;
   }
