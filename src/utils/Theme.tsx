@@ -83,7 +83,7 @@ export function returnSpecificEquityIndicator(changeYearData: ChangeYearData[], 
 
 export function countyStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
   return {
-    color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor,
+    color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor ,
     fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).fillColor,
     weight: 1,
     opacity: 1,

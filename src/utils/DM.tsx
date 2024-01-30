@@ -26,34 +26,49 @@ export const tractsDataAll = getTracts();
 export const countiesData = getCounties();
 export const indicatorStatusAll = getIndicatorStatus();
 
-console.log(indicatorStatusAll);
+console.log(countiesData);
 
 // Returns the equity measure for the selected equity indicator
-function findEquityMeasureByChangeYear(geoData: any, d: any) {
+function findEquityMeasureByChangeYear(geoData: any, d: any, indicatorsChangeStatus: any = null) {
 
     const changeYearData: ChangeYearData[] = [];
 
         selectVariable.changeYear.forEach((e) => {
 
-            const em = geoData.find((f: any) => (f.baseYear === e.baseYear) && (f.geoid === d.geoid));
+            const ei = geoData.find((f: any) => (f.baseYear === e.baseYear) && (f.geoid === d.geoid));
 
             // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
             let pctBlack;
-            if (em === undefined) {
-                pctBlack =  {equityMeasure: 0,
-                             strokeColor: theme.grey.primary,
-                             fillColor: theme.grey.tertiary}
+            if (ei === undefined) {
+                pctBlack = {equityMeasure: 0,
+                            strokeColor: theme.grey.primary,
+                            fillColor: theme.grey.tertiary}
             } else {
-                pctBlack =  {equityMeasure: em!.pctBlack, 
-                             strokeColor: theme.darkGradientColor, 
-                             fillColor: thresholdScale(em.pctBlack) as string}
+                pctBlack = {equityMeasure: ei!.pctBlack, 
+                            strokeColor: theme.darkGradientColor, 
+                            fillColor: thresholdScale(ei.pctBlack) as string}
+            }
+
+            let pollSummary = {};
+            if (indicatorsChangeStatus !== null) {
+
+                const indicatorYearData = indicatorsChangeStatus.find((f: any) => (f.changeYear === e.changeYear) && (f.geoid === d.geoid));
+
+                console.log(indicatorYearData);
+
+                pollSummary = {changeNoPolls: indicatorYearData.changeNoPolls, 
+                               overall: indicatorYearData.overall, 
+                               overallChange: indicatorYearData.overallChange, 
+                               id: indicatorYearData.id, 
+                               rSize: indicatorYearData.rSize}
             }
 
             changeYearData.push({changeYear: e.changeYear, 
                                  none: {equityMeasure: 0,
                                         strokeColor: theme.grey.primary,
                                         fillColor: theme.backgroundFill},
-                                 pctBlack: pctBlack
+                                 pctBlack: pctBlack,
+                                 pollSummary: pollSummary
                                  });
         });
 
@@ -124,7 +139,7 @@ export function getCounties() {
 
     (countiesGeo as any[]).forEach((d: any) => {
 
-        const changeYearData = findEquityMeasureByChangeYear(countiesLong, d);
+        const changeYearData = findEquityMeasureByChangeYear(countiesLong, d, indicatorsChangeStatus);
 
         features.push({type: 'Feature',
             properties: {type: 'County',
@@ -254,7 +269,7 @@ export function getIndicatorStatus() {
             .filter((d: any) => d.changeYear === e.changeYear)
             .forEach((d: any) => {
 
-                let changeYearData = findEquityMeasureByChangeYear(countiesLong, d).filter((f: any) => f.changeYear === e.changeYear);
+                let changeYearData = findEquityMeasureByChangeYear(countiesLong, d, indicatorsChangeStatus).filter((f: any) => f.changeYear === e.changeYear);
 
                 if (changeYearData) {
                     changeYearData[0].pollSummary = {changeNoPolls: d.changeNoPolls, 
