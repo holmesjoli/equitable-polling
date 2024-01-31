@@ -124,7 +124,7 @@ function getStates() {
                          counties: countyData,
                          zoom: e.zoom,
                          abbr: e.abbr,
-                         selected: false} as State, 
+                         selected: true} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
     });
 
@@ -149,7 +149,7 @@ export function getCounties() {
                          geoid: d.geoid,
                          latlng: getLatLng(d),
                          zoom: 10,
-                         selected: false,
+                         selected: true,
                          changeYearData: changeYearData,
                          bounds: getBounds(d)
                         } as County, 
@@ -185,7 +185,7 @@ export function getTracts() {
                         geoid: d.geoid,
                         latlng: getLatLng(d),
                         zoom: 12,
-                        selected: false,
+                        selected: true,
                         changeYearData: changeYearData,
                         bounds: getBounds(d),
                     } as unknown as Tract,
@@ -214,7 +214,7 @@ export function getVd() {
                          cntyfp: d.cntyfp,
                          geoid: d.geoid,
                          vtdst: d.vtdst,
-                         selected: false,
+                         selected: true,
                          latlng: getLatLng(d),
                          bounds: getBounds(d)
                         } as VotingDistrict, 

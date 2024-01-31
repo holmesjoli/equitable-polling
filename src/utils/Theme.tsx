@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-import { EquityIndicator, ChangeYear, ChangeYearData } from "./Types";
+import { EquityIndicator, ChangeYear, ChangeYearData, EquityIndicatorData } from "./Types";
 
 export const theme = {
     fontSize: 12,
@@ -66,6 +66,14 @@ export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, 
     return vdStyle(feature);
   }
 }
+export function highlightSelectedGeographyChoropleth() {
+  return {
+    color: theme.focusColor,
+    weight: 2,
+    opacity: 1,
+    fillOpacity: 6
+  };
+}
 
 export function stateStyle() {
   return {
@@ -78,12 +86,12 @@ export function stateStyle() {
 }
 
 export function returnSpecificEquityIndicator(changeYearData: ChangeYearData[], equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-  return changeYearData.find((d: any) => d.changeYear == changeYear.changeYear)?.[equityIndicator.variable];
+  return changeYearData.find((d: any) => d.changeYear == changeYear.changeYear)?.[equityIndicator.variable] as EquityIndicatorData;
 }
 
 export function countyStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
   return {
-    color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor ,
+    color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor,
     fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),

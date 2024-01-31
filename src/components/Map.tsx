@@ -19,7 +19,7 @@ import { useStableCallback } from "../utils/Helper";
 import { stateData, countiesData, vdData, pollLocsDataAll, tractsDataAll } from "../utils/DM";
 
 // Styles
-import { layersStyle, highlightSelectedGeography, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
+import { layersStyle, highlightSelectedGeography, highlightSelectedGeographyChoropleth, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
 
 import { filterPollSummaryByChangeYear } from "../utils/Helper";
 
@@ -268,6 +268,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 }
             });
 
+            countiesData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.stfp === geoJsonId.geoid) {
+                    d.properties!.selected = true;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData(stateData);
@@ -328,7 +336,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         if (equityIndicator.variable === 'none') {
             geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedGeography);
         } else {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedGeographyChoropleth);
         }
 
         geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
