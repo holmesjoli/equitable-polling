@@ -115,10 +115,12 @@ function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
 
   if (pollHover.type === "County" ) {
 
-    if (pollHover.changeYearData.pollSummary === undefined) { // todo remove this ifelse once we have data for all counties
+    let changeYearData = pollHover.changeYearData.find((d: any) => d.changeYear == changeYear.changeYear);
+
+    if (changeYearData.pollSummary === undefined) { // todo remove this ifelse once we have data for all counties
       id = undefined;
     } else {
-      id = pollHover.changeYearData.find((d: any) => d.changeYear == changeYear.changeYear).pollSummary.id;
+      id = changeYearData.pollSummary.id;
     }
 
   } else if (pollHover.type === "Poll") {
