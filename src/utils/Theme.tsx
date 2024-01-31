@@ -43,15 +43,29 @@ function getFillOpacity(d: any) {
   return d ? .6 : .35;
 }
 
+function getWeight(d: any) {
+  return d ? 3 : 2;
+}
+
 // Selected county styles
 export function highlightSelectedGeography(feature: any) {
     return {
       color: theme.grey.primary,
       fillColor: getColor(feature.properties!.selected),
-      weight: 3,
+      weight: getWeight(feature.properties!.selected),
       opacity: getStrokeOpacity(feature.properties!.selected),
       fillOpacity: getFillOpacity(feature.properties!.selected)
     };
+}
+
+
+export function highlightSelectedGeographyChoropleth(feature: any) {
+  return {
+    color: theme.focusColor,
+    weight: getWeight(feature.properties!.selected),
+    opacity: 1,
+    fillOpacity: .6
+  };
 }
 
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
@@ -65,14 +79,6 @@ export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, 
   } else {
     return vdStyle(feature);
   }
-}
-export function highlightSelectedGeographyChoropleth() {
-  return {
-    color: theme.focusColor,
-    weight: 2,
-    opacity: 1,
-    fillOpacity: 6
-  };
 }
 
 export function stateStyle() {
