@@ -123,8 +123,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     function mouseOverPollSummary(feature: any) {
         var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
         pointerOver(coords.x, coords.y, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
-        setPollHover(feature);
-        setGeoHover(feature);
+        setPollHover(feature.properties);
+        setGeoHover(feature.properties);
     }
 
     function mouseOverVD(event: any) {
@@ -148,6 +148,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         pointerOver(coords.x, coords.y, mouseOverTextCounty(layer.feature, equityIndicator, changeYear));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
+        setPollHover(layer.feature.properties);
         setGeoHover(layer.feature.properties);
     }
 
@@ -175,6 +176,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         pointerOut();
         d3.select(".Status .ComponentGroupInner span").attr("class", "");
         setGeoHover({});
+        setPollHover({});
     }
 
     function onEachFeature(_: any, layer: any) {
@@ -322,7 +324,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
             }
         } else {
-
             if (equityIndicator.variable === 'none') {
                 geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
                 geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown

@@ -51,7 +51,15 @@ function legendHeight(data: any[], margin: number = 0) {
 }
 
 // Initiate size legend
-function updateSizeLegend(pollHover: any) {
+function updateSizeLegend(pollHover: any, changeYear: ChangeYear) {
+
+  let rSize: string | undefined = undefined;
+
+  if (pollHover.changeYearData !== undefined ) {
+    rSize = pollHover.changeYearData.find((d: any) => d.changeYear == changeYear.changeYear).pollSummary.rSize;
+  } else {
+    rSize = undefined;
+  }
 
   const svg = d3.select(`#${sizeLegendId} svg`)
     .attr('height', legendHeight(sizeData, 15));
@@ -71,7 +79,7 @@ function updateSizeLegend(pollHover: any) {
       .attr("stroke", theme.grey.primary)
       .attr('stroke-width', 1),
     (update: any) => update
-      .attr('opacity', (d: any) => d.rSize === pollHover.rSize || pollHover.rSize === undefined? 1 : 0.3)
+      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : 0.3)
   );
 
   svg
@@ -89,22 +97,28 @@ function updateSizeLegend(pollHover: any) {
         .attr('fill', theme.grey.primary)
         .attr('dominant-baseline', 'middle'),
       (update: any) => update
-      .attr('opacity', (d: any) => d.rSize === pollHover.rSize || pollHover.rSize === undefined? 1 : 0.3)
+      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : 0.3)
     );
 }
 
 // Initiate poll legend
-function updatePollLegend(geo: string, pollHover: any) {
+function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
 
-  const id = pollHover.id;
-  
-  const data = [{ overall: 'added', label: 'Increase of more than 10', id: '3', geo: 'state' },
-                { overall: 'added', label: "Increase of 4 to 10", id: '2', geo: 'state' },
-                { overall: 'added', label: "Increase of 1 to 3" , id: '1', geo: 'state' },
+  let id: string | undefined = undefined;
+
+  if (pollHover.changeYearData !== undefined ) {
+    id = pollHover.changeYearData.find((d: any) => d.changeYear == changeYear.changeYear).pollSummary.id;
+  } else {
+    id = undefined;
+  }
+
+  const data = [{ overall: 'added', label: 'Added 10 or more polls', id: '3', geo: 'state' },
+                { overall: 'added', label: "Added between 4 and 10 polls", id: '2', geo: 'state' },
+                { overall: 'added', label: "Added between 1 and 3 polls" , id: '1', geo: 'state' },
                 { overall: 'nochange', label: "No change", id: '0', geo: 'state' },
-                { overall: 'removed', label: "Decrease of 1 to 3", id: '-1', geo: 'state' },
-                { overall: 'removed', label: "Decrease of 4 to 10", id: '-2', geo: 'state' },
-                { overall: 'removed', label: "Decrease of more than 10", id: '-3', geo: 'state' },
+                { overall: 'removed', label: "Removed between 1 and 3", id: '-1', geo: 'state' },
+                { overall: 'removed', label: "Removed between 4 and 10", id: '-2', geo: 'state' },
+                { overall: 'removed', label: "Removed 10 or more polls", id: '-3', geo: 'state' },
                 { overall: 'added', label: 'Added', id: '3', geo: 'county' },
                 { overall: 'nochange', label: "No change", id: '0', geo: 'county' },
                 { overall: 'removed', label: "Removed", id: '-3', geo: 'county' }];
@@ -191,7 +205,7 @@ function ColorTypeCounty () {
   );
 }
 
-export function StateLegend ({pollHover} : {pollHover: any}) {
+export function StateLegend ({pollHover, changeYear} : {pollHover: any, changeYear: ChangeYear}) {
 
   // Initiate legends
   useEffect(() => {
@@ -201,8 +215,8 @@ export function StateLegend ({pollHover} : {pollHover: any}) {
 
   // Initiate legends
   useEffect(() => {
-    updatePollLegend('state', pollHover);
-    updateSizeLegend(pollHover);
+    updatePollLegend('state', pollHover, changeYear);
+    updateSizeLegend(pollHover, changeYear);
   }, [pollHover]);
 
   return (
@@ -213,7 +227,7 @@ export function StateLegend ({pollHover} : {pollHover: any}) {
   );
 }
 
-export function CountyLegend ({pollHover} : {pollHover: any}) {
+export function CountyLegend ({pollHover, changeYear} : {pollHover: any, changeYear: ChangeYear}) {
   // Initiate legends
   useEffect(() => {
     initLegend(pollLegendId);
@@ -221,7 +235,7 @@ export function CountyLegend ({pollHover} : {pollHover: any}) {
 
   // Initiate legends
   useEffect(() => {
-    updatePollLegend('county', pollHover);
+    updatePollLegend('county', pollHover, changeYear);
   }, [pollHover]);
 
   return (
