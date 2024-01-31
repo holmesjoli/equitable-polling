@@ -116,22 +116,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOverPollingLoc(d: any) {
         var coords = mapRef.current.latLngToContainerPoint(d.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextPoll(d));
+        pointerOver(coords.x + 20, coords.y - 10, mouseOverTextPoll(d));
         setPollHover(d);
-    }
-
-    function mouseOverPollSummary(feature: any) {
-        var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
-        setPollHover(feature.properties);
-        setGeoHover(feature.properties);
     }
 
     function mouseOverVD(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.VD.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextVD(layer.feature));
+        pointerOver(coords.x + 20, coords.y - 10, mouseOverTextVD(layer.feature));
     }
 
     function mouseOverTract(event: any) {
@@ -142,11 +135,18 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         setGeoHover(layer.feature.properties);
     }
 
+    function mouseOverPollSummary(feature: any) {
+        var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
+        pointerOver(coords.x + 30, coords.y - 10, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
+        setPollHover(feature.properties);
+        setGeoHover(feature.properties);
+    }
+
     function mouseOverCounty(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.County.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextCounty(layer.feature, equityIndicator, changeYear));
+        pointerOver(coords.x + 30, coords.y - 10, mouseOverTextCounty(layer.feature, equityIndicator, changeYear));
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
         setPollHover(layer.feature.properties);
         setGeoHover(layer.feature.properties);

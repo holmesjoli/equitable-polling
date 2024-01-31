@@ -55,7 +55,7 @@ export function pointerOut() {
 }
 
 function mouseOverGeo(feature: any) {
-    return `${feature.properties.name} ${feature.properties.descr}`;
+    return `<div class="ComponentGroupInner SemiBold">${feature.properties.name} ${feature.properties.descr}</div>`;
 }
 
 function mouseOverEquityMeasure(changeYearData: ChangeYearData[], equityIndicator: EquityIndicator, changeYear: ChangeYear) {
@@ -69,7 +69,7 @@ function mouseOverEquityMeasure(changeYearData: ChangeYearData[], equityIndicato
 
 export function mouseOverTextPollSummary(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
 
-    const countyName = `<div class="ComponentGroupInner">${mouseOverGeo(feature)}</div>`;
+    const countyName = mouseOverGeo(feature);
     const ei = `<div class="DetailInformation">${mouseOverEquityMeasure(feature.properties.changeYearData, equityIndicator, changeYear)}</div>`;
     const pollSummary = filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear);
     const noChanges = `<div class="DetailInformation"><span class="SemiBold">${pollSummary?.changeNoPolls}</span> poll locations changed</div>`;
@@ -86,21 +86,23 @@ export function mouseOverTextPollSummary(feature: any, equityIndicator: EquityIn
 }
 
 export function mouseOverTextPoll(d: any) {
-    return `<span class="SemiBold">${d.name}</span><br>Status:<span class=${d.overall}> ${d.status}</span>`;
+    return `<div class="ComponentGroupInner SemiBold">${d.name}</div><div>Status:<span class=${d.overall}> ${d.status}</span></div>`;
 }
 
+// todo update back to `${mouseOverGeo(feature)}` when we have more information on the state to add here
 export function mouseOverTextVD(feature: any) {
-    return `<span class="SemiBold">${mouseOverGeo(feature)}</span>`
+    return `<div class="SemiBold">${feature.properties.name} ${feature.properties.descr}</div>`
 }
 
 export function mouseOverTextTract(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-    return `<span class="SemiBold">${feature.properties.descr} ${feature.properties.name}</span> <br> <span>${mouseOverEquityMeasure(feature.properties.changeYearData, equityIndicator, changeYear)}</span>`
+    return `<div class="ComponentGroupInner SemiBold">${feature.properties.descr} ${feature.properties.name}</div><div>${mouseOverEquityMeasure(feature.properties.changeYearData, equityIndicator, changeYear)}</div>`
 }
 
 export function mouseOverTextCounty(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
     return mouseOverTextPollSummary(feature, equityIndicator, changeYear);
 }
 
+// todo update back to `${mouseOverGeo(feature)}` when we have more information on the state to add here
 export function mouseOverTextState(feature: any) {
-    return `<span class="SemiBold">${mouseOverGeo(feature)} </span>`
+    return `<div class="SemiBold">${feature.properties.name} ${feature.properties.descr}</div>`
 }
