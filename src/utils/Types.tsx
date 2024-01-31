@@ -8,19 +8,21 @@ export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, 
 
 export type EquityIndicatorData = {equityMeasure: number, fillColor:string, strokeColor: string};
 
-export type ChangeYearEquityIndicator = {changeYear: string, none:EquityIndicatorData, pctBlack: EquityIndicatorData};
+export type PollSummary = {changeNoPolls: number, overall: string, overallChange: number, id: string, rSize: number};
+
+export type ChangeYearData = {changeYear: string, none:EquityIndicatorData, pctBlack: EquityIndicatorData, pollSummary?: PollSummary};
 
 export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, 
                      geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean,
-                     changeYearEquityIndicator: ChangeYearEquityIndicator[], year: number
-                  };
+                     changeYearData: ChangeYearData[], year: number
+                    };
 
 export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst: string, name: string, geoid: string, bounds: Bounds,
                               selected: boolean, latlng: LatLng};
 
 export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string,
                       latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds, 
-                      changeYearEquityIndicator: ChangeYearEquityIndicator[]
+                      changeYearData: ChangeYearData[]
                     };
 
 export type State = {type: string, stfp: string, geoid: string, name: string, counties: GeoJSON.FeatureCollection, 
@@ -36,6 +38,6 @@ export type PollingLoc = {type: string, name: string, descr: string, latlng: Lat
                           pixelCoords?: PixelCoords, pollId: string, status: string | undefined, overall: string | undefined, id: string | undefined,
                           baseYear: number};
 
-export type ChangeYearData = {changeYear: string, pollingLocsData: PollingLoc[], 
-  // tractsData: GeoJSON.FeatureCollection
-};
+export type IndicatorStatus = {cntyfp: string, stfp: string, name: string, 
+                               baseYear: number, latlng: LatLng,
+                               changeYearData: ChangeYearData[]};

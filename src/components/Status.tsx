@@ -120,7 +120,7 @@ export function StateStatus ({equityIndicator, setEquityIndicator, geoHover, pol
           <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
           {equityIndicator.variable !== "none"?  <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover} changeYear={changeYear}/>: null}
         </ComponentGroupInner>
-        <StateLegend pollHover={pollHover}/>
+        <StateLegend pollHover={pollHover} changeYear={changeYear}/>
       </ComponentGroup>
     </Status>
   );
@@ -143,7 +143,7 @@ export function CountyStatus ({equityIndicator, setEquityIndicator, showPolls, s
           </ComponentGroupInner>
           <ComponentGroupInner title="Poll status">
             <PollsSwitch showPolls={showPolls} setShowPolls={setShowPolls}/>
-            {showPolls ? <CountyLegend pollHover={pollHover}/> : <></>}
+            {showPolls ? <CountyLegend pollHover={pollHover} changeYear={changeYear}/> : <></>}
           </ComponentGroupInner>
         </ComponentGroup>
       </Status>

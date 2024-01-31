@@ -64,14 +64,14 @@ getStates <- function(state_fips, pth) {
 #' Writes out a json file at the county
 getCounties <- function(state_fips, pth) {
 
-  df <- tigris::counties(cb = T) %>% 
-    filter(STATEFP %in% state_fips) %>% 
-    select(STATEFP, NAME, COUNTYFP, GEOID, geometry) %>% 
+  df <- tigris::counties(cb = T) %>%
+    filter(STATEFP %in% state_fips) %>%
+    select(STATEFP, NAME, COUNTYFP, GEOID, geometry) %>%
     rename(stfp = STATEFP,
            cntyfp = COUNTYFP,
            name = NAME,
            geoid = GEOID)
-  
+
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)
   
@@ -232,6 +232,40 @@ getPollsChangeStatus <- function(df) {
 
   exportJSON <- toJSON(df)
   write(exportJSON, "../data/processed/pollsChangeStatus.json")
+
+  return(df)
+}
+
+getIndicatorsChangeStatus<- function(df, state_fips) {
+  
+  df <- df %>% 
+    select(changeyear, cntyfp, stfp, baseyear, nopollsadded, nopollsremoved, changenopolls) %>% 
+    rename(changeYear = changeyear,
+           baseYear = baseyear,
+           changeNoPolls = changenopolls,
+           noPollsAdded = nopollsadded,
+           noPollsRemoved = nopollsremoved) %>% 
+    mutate(cntyfp = paste0(stfp, stringr::str_pad(cntyfp, width = '3', pad = '0', side= 'left')),
+           geoid = cntyfp,
+           overallChange = noPollsAdded - noPollsRemoved,
+           rSize = case_when(changeNoPolls == 0 ~ 1,
+                             changeNoPolls > 0 & changeNoPolls <= 5 ~ 2,
+                             changeNoPolls > 5 & changeNoPolls <= 15 ~ 5,
+                             changeNoPolls > 15 & changeNoPolls <= 30 ~ 15,
+                             changeNoPolls > 30 ~ 30),
+           overall = case_when(overallChange > 0 ~ "added",
+                               overallChange == 0 ~ "nochange",
+                               overallChange < 0 ~ "removed"),
+           id = case_when(overallChange > 10 ~ "3",
+                          overallChange > 3 & overallChange <= 10 ~ "2",
+                          overallChange > 0 & overallChange <= 3~ "1",
+                          overallChange == 0 ~ "0",
+                          overallChange < 0 & overallChange >= -3 ~ "-1",
+                          overallChange < -3 & overallChange >= -10 ~ "-2",
+                          overallChange < -10 ~ "-3"))
+
+  exportJSON <- toJSON(df)
+  write(exportJSON, "../data/processed/indicatorsChangeStatus.json")
 
   return(df)
 }

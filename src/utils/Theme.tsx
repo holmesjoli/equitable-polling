@@ -1,16 +1,17 @@
 import * as d3 from 'd3';
 
-import { EquityIndicator, ChangeYear } from "./Types";
+import { EquityIndicator, ChangeYear, ChangeYearData } from "./Types";
 
 export const theme = {
-    fontSize: 13,
+    fontSize: 12,
     grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#1D618E',
     focusColorDark: '#113A55',
     darkGradientColor: "#113A55",
     fontFamily: 'Inter',
-    choroplethOpacity: .8
+    choroplethOpacity: .8,
+    lineHeight: 1.2
 }
 
 export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
@@ -76,25 +77,24 @@ export function stateStyle() {
   };
 }
 
-export function returnSpecificEquityIndicator(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-  return feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable];
+export function returnSpecificEquityIndicator(changeYearData: ChangeYearData[], equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+  return changeYearData.find((d: any) => d.changeYear == changeYear.changeYear)?.[equityIndicator.variable];
 }
 
 export function countyStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
   return {
-    color: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).fillColor,
+    color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor ,
+    fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).fillColor,
     weight: 1,
     opacity: 1,
     fillOpacity: .6
   };
 }
 
-
 export function tractStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
   return {
-    color: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).fillColor,
+    color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor,
+    fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3
@@ -122,6 +122,11 @@ export function pollStyle(point: any) {
   };
 }
 
+export function pollSummarySize(point: any) {
+  const r = rScale(point.rSize);
+  return r*500;
+}
+
 // https://coolors.co/f5ece0-320e3b-1d618e-e45729-610063
 export const thresholdScale = d3.scaleThreshold([-1, 15, 30, 45], ['#C6C6C6', '#a2c2d8', '#6999b8', '#437da3', '#1d6183']);
 
@@ -137,10 +142,11 @@ export const rScale = d3.scaleSqrt()
   .domain([1, 30])
   .range([3, 15]);
 
-export const sizeData =[{id: 0, rSize: 2, label: '0' },
-                        {id: 1, rSize: 5, label: "Between 1 and 5" },
-                        {id: 2, rSize: 15, label: "Between 15 and 30" },
-                        {id: 3, rSize: 30, label: "Greater than 30" }];
+export const sizeData =[{id: 0, rSize: 1, label: '0' },
+                        {id: 1, rSize: 2, label: "Between 1 and 5" },
+                        {id: 3, rSize: 5, label: "Between 6 and 15" },
+                        {id: 4, rSize: 15, label: "Between 16 and 30" },
+                        {id: 5, rSize: 30, label: "Greater than 30" }];
 
 export const equityIndicatorData = [{variable: 'pctBlack', label: 'Less than 15%', pctBlack: 10},
                                     {variable: 'pctBlack', label: 'Between 15% and 30%', pctBlack: 25},

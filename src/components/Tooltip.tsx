@@ -5,7 +5,10 @@ import * as d3 from 'd3';
 import { theme, returnSpecificEquityIndicator } from '../utils/Theme';
 
 //Types
-import {EquityIndicator, ChangeYear} from '../utils/Types';
+import { EquityIndicator, ChangeYear, ChangeYearData } from '../utils/Types';
+
+// Helper functions
+import { filterPollSummaryByChangeYear } from "../utils/Helper";
 
 const selector = "root";
 
@@ -13,7 +16,7 @@ export function init() {
     const tooltip = d3.select(`#${selector}`)
             .append('div')
             .attr('class', 'tooltip')
-            .style('max-width', '175px')
+            .style('max-width', '200px')
             .style('position', 'absolute')
             .style('top', '0px')
             .style('left', '0px')
@@ -21,13 +24,13 @@ export function init() {
             .style('padding', '7px')
             .style('pointer-events', 'none')
             .style('border-radius', '5px')
-            .style('background-color', 'rgba(250, 246, 240, .9)')
+            .style('background-color', 'rgba(250, 246, 240, .85)')
             .style('font-weight', 'normal')
             .style('border', `1.5px solid ${theme.grey.primary}`)
             .style('font-family', theme.fontFamily)
-            .style('font-size', theme.fontSize)
+            .style('font-size', `${theme.fontSize}px`)
             .style('color', theme.grey.primary)
-            // .style('line-height', Theme.tooltipStyles.lineHeight);
+            .style('line-height', theme.lineHeight);
 
     return tooltip;
 }
@@ -52,30 +55,55 @@ export function pointerOut() {
 }
 
 function mouseOverGeo(feature: any) {
-    return `${feature.properties.name} ${feature.properties.descr}`;
+    return `<div class="ComponentGroupInner SemiBold">${feature.properties.name} ${feature.properties.descr}</div>`;
 }
 
-function mouseOverEquityMeasure(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+function mouseOverEquityMeasure(changeYearData: ChangeYearData[], equityIndicator: EquityIndicator, changeYear: ChangeYear) {
     if(equityIndicator.variable !== 'none') {
-        const ei = returnSpecificEquityIndicator(feature, equityIndicator, changeYear);
-        return `${ei.equityMeasure}${equityIndicator.descr} in base year ${changeYear.baseYear}`
+        const ei = returnSpecificEquityIndicator(changeYearData, equityIndicator, changeYear);
+        return `<span><span class="SemiBold focusColor">${ei.equityMeasure}${equityIndicator.descr}</span> in base year ${changeYear.baseYear}</span>`;
     } else {
         return '';
     }
 }
 
+export function mouseOverTextPoll(d: any) {
+    return `<div class="ComponentGroupInner SemiBold">${d.name}</div><div>Status:<span class=${d.overall}> ${d.status}</span></div>`;
+}
+
+// todo update back to `${mouseOverGeo(feature)}` when we have more information on the state to add here
 export function mouseOverTextVD(feature: any) {
-    return `<span class="SemiBold">${mouseOverGeo(feature)}</span>`
+    return `<div class="SemiBold">${feature.properties.name} ${feature.properties.descr}</div>`
 }
 
 export function mouseOverTextTract(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-    return `<span class="SemiBold">${feature.properties.descr} ${feature.properties.name}</span> <br> <span>${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</span>`
+    return `<div class="ComponentGroupInner SemiBold">${feature.properties.descr} ${feature.properties.name}</div><div>${mouseOverEquityMeasure(feature.properties.changeYearData, equityIndicator, changeYear)}</div>`
 }
 
 export function mouseOverTextCounty(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-    return `<span class="SemiBold"> ${mouseOverGeo(feature)}</span> <br> <span>${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</span>`
+
+    const countyName = mouseOverGeo(feature);
+    const ei = `<div class="DetailInformation">${mouseOverEquityMeasure(feature.properties.changeYearData, equityIndicator, changeYear)}</div>`;
+    const pollSummary = filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear);
+    const noChanges = `<div class="DetailInformation"><span class="SemiBold">${pollSummary?.changeNoPolls}</span> poll locations changed</div>`;
+
+    let netChanges;
+    if (pollSummary?.overall === 'nochange') {
+        netChanges = `<div class="DetailInformation"><span class="SemiBold">No change</span> in the net # of polls between ${changeYear.changeYear}</div>`;
+    } else {
+        const status = pollSummary?.overall === 'added' ? 'gain': 'loss';
+        netChanges = `<div class="DetailInformation">Net<span class="SemiBold ${pollSummary?.overall}"> ${status} of ${Math.abs(pollSummary?.overallChange ?? 0)} </span> poll locations between ${feature.properties.changeYear}</div>`;
+    }
+
+    return `${countyName}${ei}${noChanges}${netChanges}`;
 }
 
+// keeping two functions in case we need to distinguish between the two tooltips
+export function mouseOverTextPollSummary(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+    return mouseOverTextCounty(feature, equityIndicator, changeYear);
+}
+
+// todo update back to `${mouseOverGeo(feature)}` when we have more information on the state to add here
 export function mouseOverTextState(feature: any) {
-    return `<span class="SemiBold">${mouseOverGeo(feature)} </span>`
+    return `<div class="SemiBold">${feature.properties.name} ${feature.properties.descr}</div>`
 }

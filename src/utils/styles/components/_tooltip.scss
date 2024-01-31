@@ -1,7 +1,16 @@
-.Added {
+.added {
     color: $addedColor;
 }
 
-.Removed {
+.removed {
     color: $removedColor;
+}
+
+.tooltip .ComponentGroupInner {
+    padding-bottom: 0.15rem;
+    margin-bottom: 0.35rem;
+}
+
+.tooltip > .DetailInformation {
+    padding-bottom: 0.3rem;
 }
