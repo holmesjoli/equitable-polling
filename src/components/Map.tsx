@@ -326,22 +326,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     // Updates main geography and main boundary
     useEffect(() => {
         // Update boundary and interactive layer
-        if (geoJsonId.type === 'County') {
-            if (equityIndicator.variable === 'none') {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions); // Replaces geojson clickable elements with drilldown
-            } else {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
-            }
+        if (equityIndicator.variable === 'none') {
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
+            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions); // Replaces geojson clickable elements with drilldown
         } else {
-            if (equityIndicator.variable === 'none') {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-                geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
-            } else {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
-            }   
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
+            geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
         }
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
