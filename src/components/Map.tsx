@@ -140,7 +140,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         pointerOver(coords.x + 30, coords.y - 10, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
         setPollHover(feature.properties);
         setGeoHover(feature.properties);
-        // d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
     }
 
     function mouseOverCounty(event: any) {
@@ -364,6 +363,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                             if (filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear) !== undefined) {
                                 return (
                                     <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear))} radius={pollSummarySize(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear))} eventHandlers={{
+                                        click: () => {
+                                            setGeoJsonId({geoid: feature.properties.geoid, 
+                                                          name: feature.properties.name, 
+                                                          type: feature.properties.type, 
+                                                          latlng: feature.properties.latlng,
+                                                          zoom: feature.properties.zoom} as GeoID);
+                                        },
                                         mouseover: () => {
                                             stableMouseoverPollSummaryCallback(feature);
                                         },
