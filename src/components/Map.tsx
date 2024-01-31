@@ -256,7 +256,18 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         // Selected State
         } else if (geoJsonId.type === "State") {
 
-            const state = stateData?.features.find(d => d.properties?.geoid === geoJsonId.geoid)?.properties as State;
+            let state = {} as State;
+
+            // Updates counties within the selected county to and make it distinct from surrounding counties
+            stateData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.geoid === geoJsonId.geoid) {
+                    d.properties!.selected = true;
+                    state = d.properties as State;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData(stateData);
