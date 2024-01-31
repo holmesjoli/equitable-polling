@@ -82,8 +82,8 @@ function updateSizeLegend(pollHover: any, changeYear: ChangeYear) {
         let x = sizeData.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
         return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.rSize) + 8) + ')';
       })
-      .attr('fill', theme.grey.primary)
-      .attr("stroke", "#333333")
+      .attr('fill', theme.grey.secondary)
+      .attr("stroke", theme.grey.primary)
       .attr('stroke-width', 1),
     (update: any) => update
       .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : theme.nonHighlightOpacity)

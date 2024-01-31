@@ -4,7 +4,7 @@ import { EquityIndicator, ChangeYear, ChangeYearData, EquityIndicatorData } from
 
 export const theme = {
     fontSize: 12,
-    grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
+    grey: {primary: '#757575', secondary: '#9d9d9d', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#1D618E',
     focusColorDark: '#113A55',
@@ -136,11 +136,11 @@ export const thresholdScale = d3.scaleThreshold([-1, 15, 30, 45], ['#C6C6C6', '#
 
 export const pollStrokeScale = d3.scaleOrdinal()
   .domain(["added", "nochange", "removed"] )
-  .range(["#610063", "#333333", "#E45729"] );
+  .range(["#610063", theme.grey.primary, "#E45729"] );
 
 export const pollFillScale = d3.scaleOrdinal()
   .domain(['-3', '-2', '-1', '0', '1', '2', '3'] )
-  .range(["#E45729", "#F28559", "#FBB18A", theme.grey.primary, "#C498A6", "#935485", "#610063"] );
+  .range(["#E45729", "#F28559", "#FBB18A", theme.grey.secondary, "#C498A6", "#935485", "#610063"] );
 
 export const rScale = d3.scaleSqrt()
   .domain([1, 30])
