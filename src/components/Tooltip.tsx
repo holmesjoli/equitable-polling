@@ -76,7 +76,7 @@ export function mouseOverTextPollSummary(feature: any, equityIndicator: EquityIn
 
     let netChanges;
     if (pollSummary?.overall === 'nochange') {
-        netChanges = `<div class="DetailInformation">No change in the net # of polls between ${changeYear.changeYear}</div>`;
+        netChanges = `<div class="DetailInformation"><span class="SemiBold">No change</span> in the net # of polls between ${changeYear.changeYear}</div>`;
     } else {
         const status = pollSummary?.overall === 'added' ? 'gain': 'loss';
         netChanges = `<div class="DetailInformation">Net<span class="SemiBold ${pollSummary?.overall}"> ${status} of ${Math.abs(pollSummary?.overallChange ?? 0)} </span> poll locations between ${feature.properties.changeYear}</div>`;
