@@ -10,7 +10,8 @@ export const theme = {
     focusColorDark: '#113A55',
     darkGradientColor: "#113A55",
     fontFamily: 'Inter',
-    choroplethOpacity: .8,
+    highlightOpacity: .8,
+    nonHighlightOpacity: .3,
     lineHeight: 1.2
 }
 
@@ -31,16 +32,12 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                             }
                           }
 
-function getColor(d: any) {
-    return d ? theme.backgroundFill : theme.grey.primary;
-}
-
 function getStrokeOpacity(d: any) {
-  return d ? 1 : .35;
+  return d ? 1 : theme.nonHighlightOpacity;
 }
 
 function getFillOpacity(d: any) {
-  return d ? .6 : .35;
+  return d ? theme.highlightOpacity : theme.nonHighlightOpacity;
 }
 
 function getWeight(d: any) {
@@ -51,20 +48,19 @@ function getWeight(d: any) {
 export function highlightSelectedGeography(feature: any) {
     return {
       color: theme.grey.primary,
-      fillColor: getColor(feature.properties!.selected),
+      fillColor: theme.backgroundFill,
       weight: getWeight(feature.properties!.selected),
       opacity: getStrokeOpacity(feature.properties!.selected),
       fillOpacity: getFillOpacity(feature.properties!.selected)
     };
 }
 
-
 export function highlightSelectedGeographyChoropleth(feature: any) {
   return {
     color: theme.focusColor,
     weight: getWeight(feature.properties!.selected),
     opacity: 1,
-    fillOpacity: .6
+    fillOpacity: theme.highlightOpacity
   };
 }
 
@@ -87,7 +83,7 @@ export function stateStyle() {
     fillColor: theme.backgroundFill,
     weight: 1,
     opacity: 1,
-    fillOpacity: .6
+    fillOpacity: theme.highlightOpacity
   };
 }
 
@@ -101,7 +97,7 @@ export function countyStyle(feature: any, equityIndicator: EquityIndicator, chan
     fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3
+    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.highlightOpacity : theme.nonHighlightOpacity
   };
 }
 
@@ -120,12 +116,12 @@ export function vdStyle(feature: any) {
 }
 
 // Poll styles
-export function pollStyle(point: any) {
+export function pollStyle(point: any, selected: boolean = true) {
   return {
     fillColor: pollFillScale(point.id) as string,
     color: pollStrokeScale(point.overall) as string,
     weight: 1,
-    opacity: 1,
+    opacity: getFillOpacity(selected),
     fillOpacity: 1
   };
 }
@@ -140,11 +136,11 @@ export const thresholdScale = d3.scaleThreshold([-1, 15, 30, 45], ['#C6C6C6', '#
 
 export const pollStrokeScale = d3.scaleOrdinal()
   .domain(["added", "nochange", "removed"] )
-  .range(["#610063", theme.grey.primary, "#E45729"] );
+  .range(["#610063", "#333333", "#E45729"] );
 
 export const pollFillScale = d3.scaleOrdinal()
   .domain(['-3', '-2', '-1', '0', '1', '2', '3'] )
-  .range(["#E45729", "#F28559", "#FBB18A", theme.grey.secondary, "#C498A6", "#935485", "#610063"] );
+  .range(["#E45729", "#F28559", "#FBB18A", theme.grey.primary, "#C498A6", "#935485", "#610063"] );
 
 export const rScale = d3.scaleSqrt()
   .domain([1, 30])

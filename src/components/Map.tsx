@@ -23,6 +23,8 @@ import { layersStyle, highlightSelectedGeography, highlightSelectedGeographyChor
 
 import { filterPollSummaryByChangeYear } from "../utils/Helper";
 
+// console.log(countiesData);
+
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
     const mapBounds = mapRef.current.getBounds();
@@ -369,8 +371,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     {
                         countiesData.features.map((feature: any, i: number) => {
                             if (filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear) !== undefined) {
+                                console.log(feature.properties.selected);
+
                                 return (
-                                    <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear))} radius={pollSummarySize(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear))} eventHandlers={{
+                                    <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear), feature.properties.selected)} radius={pollSummarySize(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear))} eventHandlers={{
                                         click: () => {
                                             setGeoJsonId({geoid: feature.properties.geoid, 
                                                           name: feature.properties.name, 
@@ -395,7 +399,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             {showPolls ?
                 <FeatureGroup key="pollingLocFeatureGroup">
                     {pollingLocsData.map((d: PollingLoc, i: number) => (
-                        <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} eventHandlers={{
+                        <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={300} eventHandlers={{
                             mouseover: () => {
                                 mouseOverPollingLoc(d);
                             },

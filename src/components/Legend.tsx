@@ -40,7 +40,7 @@ function legendText(svg: any, data: any[], id: string | undefined = undefined, g
         .attr('font-size', theme.fontSize)
         .attr('fill', theme.grey.primary),
       (update: any) => update
-        .attr('opacity', (d: any) => geo ? thresholdScale(d.pctBlack) as string === id as string || id === undefined ? theme.choroplethOpacity : 0.3 : d.id === id || id === undefined? 1 : 0.3)
+        .attr('opacity', (d: any) => geo ? thresholdScale(d.pctBlack) as string === id as string || id === undefined ? theme.highlightOpacity : theme.nonHighlightOpacity : d.id === id || id === undefined? 1 : theme.nonHighlightOpacity)
     );
 }
 
@@ -82,11 +82,11 @@ function updateSizeLegend(pollHover: any, changeYear: ChangeYear) {
         let x = sizeData.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
         return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.rSize) + 8) + ')';
       })
-      .attr('fill', theme.grey.secondary)
-      .attr("stroke", theme.grey.primary)
+      .attr('fill', theme.grey.primary)
+      .attr("stroke", "#333333")
       .attr('stroke-width', 1),
     (update: any) => update
-      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : 0.3)
+      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : theme.nonHighlightOpacity)
   );
 
   svg
@@ -104,7 +104,7 @@ function updateSizeLegend(pollHover: any, changeYear: ChangeYear) {
         .attr('fill', theme.grey.primary)
         .attr('dominant-baseline', 'middle'),
       (update: any) => update
-      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : 0.3)
+      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : theme.nonHighlightOpacity)
     );
 }
 
@@ -155,7 +155,7 @@ function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
         .attr("stroke", (d: any) => pollStrokeScale(d.overall) as string) // Add type assertion
         .attr('stroke-width', 1),
       update => update
-        .attr('opacity', (d: any) => d.id === id || id === undefined? 1 : 0.3)
+        .attr('opacity', (d: any) => d.id === id || id === undefined? 1 : theme.nonHighlightOpacity)
   );
 
   legendText(svg, data.filter(d => d.geo === geo), id);
@@ -186,12 +186,12 @@ function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any, cha
         .attr('transform', function (d, i) {
           return 'translate(' + (circleStart - 6) + ', ' + (i * 23 + 10) + ')';
         })
-        .attr('opacity', theme.choroplethOpacity)
+        .attr('opacity', theme.highlightOpacity)
         .attr('fill', (d: any) => thresholdScale(d.pctBlack) as string)
         .attr("stroke", theme.darkGradientColor)
         .attr('stroke-width', 1),
       update => update
-        .attr('opacity', (d: any) => thresholdScale(d.pctBlack) as string === fillColor as string || fillColor === undefined ? theme.choroplethOpacity : 0.3
+        .attr('opacity', (d: any) => thresholdScale(d.pctBlack) as string === fillColor as string || fillColor === undefined ? theme.highlightOpacity : theme.nonHighlightOpacity
         )
   );
 
