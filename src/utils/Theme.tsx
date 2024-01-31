@@ -122,7 +122,7 @@ export function pollStyle(point: any, selected: boolean = true) {
     color: pollStrokeScale(point.overall) as string,
     weight: 1,
     opacity: getFillOpacity(selected),
-    fillOpacity: 1
+    fillOpacity: getFillOpacity(selected)
   };
 }
 

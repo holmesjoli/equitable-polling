@@ -73,9 +73,6 @@ function filterPointByBounds(mapRef: any, data: any) {
 // Updates feature data within the selected county to and make it distinct from surrounding voting districts
 function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) {
 
-    console.log(county);
-    console.log(data.features);
-
     data.features.forEach((d: GeoJSON.Feature) => {
         if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
             d.properties!.selected = true;
@@ -372,7 +369,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     {
                         countiesData.features.map((feature: any, i: number) => {
                             if (filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear) !== undefined) {
-                                console.log(feature.properties.selected);
 
                                 return (
                                     <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear), feature.properties.selected)} radius={pollSummarySize(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear))} eventHandlers={{
