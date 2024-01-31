@@ -86,19 +86,13 @@ export function countyStyle(feature: any, equityIndicator: EquityIndicator, chan
     color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor ,
     fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).fillColor,
     weight: 1,
-    opacity: 1,
-    fillOpacity: .6
+    opacity: getStrokeOpacity(feature.properties!.selected),
+    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3
   };
 }
 
 export function tractStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-  return {
-    color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).fillColor,
-    weight: 1,
-    opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3
-  };
+  return countyStyle(feature, equityIndicator, changeYear);
 }
 
 // Voting district styles
