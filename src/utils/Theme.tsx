@@ -59,7 +59,7 @@ export function highlightSelectedGeographyChoropleth(feature: any) {
   return {
     color: theme.focusColor,
     weight: getWeight(feature.properties!.selected),
-    opacity: 1,
+    opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: theme.highlightOpacity
   };
 }

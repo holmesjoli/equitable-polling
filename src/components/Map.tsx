@@ -23,8 +23,6 @@ import { layersStyle, highlightSelectedGeography, highlightSelectedGeographyChor
 
 import { filterPollSummaryByChangeYear } from "../utils/Helper";
 
-// console.log(countiesData);
-
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
     const mapBounds = mapRef.current.getBounds();
@@ -74,6 +72,9 @@ function filterPointByBounds(mapRef: any, data: any) {
 
 // Updates feature data within the selected county to and make it distinct from surrounding voting districts
 function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) {
+
+    console.log(county);
+    console.log(data.features);
 
     data.features.forEach((d: GeoJSON.Feature) => {
         if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
