@@ -135,21 +135,22 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         setGeoHover(layer.feature.properties);
     }
 
-    function mouseOverPollSummary(feature: any) {
+    function mouseOverCountyorPollSummary(feature: any) {
         var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
         pointerOver(coords.x + 30, coords.y - 10, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
         setPollHover(feature.properties);
         setGeoHover(feature.properties);
+        // d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
     }
 
     function mouseOverCounty(event: any) {
         var layer = event.target;
         layer.setStyle(layersStyle.County.highlight);
-        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        pointerOver(coords.x + 30, coords.y - 10, mouseOverTextCounty(layer.feature, equityIndicator, changeYear));
-        d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
-        setPollHover(layer.feature.properties);
-        setGeoHover(layer.feature.properties);
+        mouseOverCountyorPollSummary(layer.feature);
+    }
+
+    function mouseOverPollSummary(feature: any) {
+        mouseOverCountyorPollSummary(feature);
     }
 
     function mouseOverState(event: any) {
