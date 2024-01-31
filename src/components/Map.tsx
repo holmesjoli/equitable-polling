@@ -6,7 +6,7 @@ import { point, bounds, PathOptions } from 'leaflet';
 import * as d3 from 'd3';
 
 // Components
-import {mouseOverTextVD, mouseOverTextState, mouseOverTextCounty, mouseOverTextTract, mouseOverTextPoll, mouseOverTextPollSummary, pointerOver, pointerOut} from "./Tooltip";
+import {mouseOverTextVD, mouseOverTextState, mouseOverTextTract, mouseOverTextPoll, mouseOverTextPollSummary, pointerOver, pointerOut} from "./Tooltip";
 
 // Types
 import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator } from "../utils/Types";
@@ -19,7 +19,7 @@ import { useStableCallback } from "../utils/Helper";
 import { stateData, countiesData, vdData, pollLocsDataAll, tractsDataAll } from "../utils/DM";
 
 // Styles
-import { layersStyle, highlightSelectedCounty, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
+import { layersStyle, highlightSelectedGeography, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
 
 import { filterPollSummaryByChangeYear } from "../utils/Helper";
 
@@ -325,7 +325,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Updates main geography and main boundary
     useEffect(() => {
-        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
+        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedGeography);
         geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions); // Replaces geojson clickable elements with drilldown
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);

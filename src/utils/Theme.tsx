@@ -44,7 +44,7 @@ function getFillOpacity(d: any) {
 }
 
 // Selected county styles
-export function highlightSelectedCounty(feature: any) {
+export function highlightSelectedGeography(feature: any) {
     return {
       color: theme.grey.primary,
       fillColor: getColor(feature.properties!.selected),
