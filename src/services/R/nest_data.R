@@ -239,13 +239,13 @@ getPollsChangeStatus <- function(df) {
 getIndicatorsChangeStatus<- function(df, state_fips) {
   
   df <- df %>% 
-    select(changeyear, cntyfp, stfp, baseyear, nopollsadded, nopollsremoved, changenopolls) %>% 
+    select(changeyear, cntyfp, baseyear, nopollsadded, nopollsremoved, changenopolls) %>% 
     rename(changeYear = changeyear,
            baseYear = baseyear,
            changeNoPolls = changenopolls,
            noPollsAdded = nopollsadded,
            noPollsRemoved = nopollsremoved) %>% 
-    mutate(cntyfp = paste0(stfp, stringr::str_pad(cntyfp, width = '3', pad = '0', side= 'left')),
+    mutate(cntyfp = as.character(cntyfp),
            geoid = cntyfp,
            overallChange = noPollsAdded - noPollsRemoved,
            rSize = case_when(changeNoPolls == 0 ~ 1,

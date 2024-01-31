@@ -12,7 +12,7 @@ import indicatorsChangeStatus from "../data/processed/indicatorsChangeStatus.jso
 import { theme, thresholdScale } from "./Theme";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, IndicatorStatus } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -24,6 +24,8 @@ export const vdData = getVd();
 export const pollLocsDataAll = getPollLocsDataAll();
 export const tractsDataAll = getTracts();
 export const countiesData = getCounties();
+
+console.log(countiesData);
 
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoData: any, d: any, indicatorsChangeStatus: any = null) {
@@ -54,10 +56,10 @@ function findEquityMeasureByChangeYear(geoData: any, d: any, indicatorsChangeSta
                 if (indicatorYearData !== undefined) { // todo removed if once we have complete data
 
                     pollSummary = {changeNoPolls: indicatorYearData.changeNoPolls, 
-                                overall: indicatorYearData.overall, 
-                                overallChange: indicatorYearData.overallChange, 
-                                id: indicatorYearData.id, 
-                                rSize: indicatorYearData.rSize}
+                                   overall: indicatorYearData.overall, 
+                                   overallChange: indicatorYearData.overallChange, 
+                                   id: indicatorYearData.id, 
+                                   rSize: indicatorYearData.rSize}
                 }
             }
 
