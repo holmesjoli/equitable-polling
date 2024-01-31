@@ -106,9 +106,11 @@ function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
 
   let id: string | undefined = undefined;
 
-  if (pollHover.changeYearData !== undefined ) {
+  if (pollHover.type === "County" ) {
     id = pollHover.changeYearData.find((d: any) => d.changeYear == changeYear.changeYear).pollSummary.id;
-  } else {
+  } else if (pollHover.type === "Poll") {
+    id = pollHover.id;
+  }else {
     id = undefined;
   }
 
