@@ -96,7 +96,7 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
             <Autocomplete
             id="country-select-demo"
             fullWidth size="small"
-            options={selectedCounty.cntyfp === ''? selectedState.counties.features as GeoJSON.Feature[] : allOpt.concat(selectedState.counties.features as GeoJSON.Feature[]) }
+            options={allOpt.concat(selectedState.counties.features as GeoJSON.Feature[])}
             getOptionLabel={(option) => option.properties?.name}
             onChange = {(_, feature) => {
                 if (feature === null) {
@@ -183,8 +183,8 @@ export const Menu = styled.div<{ $geojsonid: GeoID; }>`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts, setChangeYearOpts} : 
-                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[], setChangeYearOpts: any}) {
+export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts} : 
+                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[]}) {
 
     return(
         <Menu $geojsonid={geoJsonId}>

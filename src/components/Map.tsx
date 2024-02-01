@@ -331,6 +331,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonId, changeYear, tractsData]); //tractsData needs to be there to update tractsData geographies
 
+    console.log(geoJsonId);
+    console.log(geoJsonBoundaryData);
+
     // Updates main geography and main boundary
     useEffect(() => {
         if (equityIndicator.variable === 'none') {
