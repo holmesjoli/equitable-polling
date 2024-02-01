@@ -21,7 +21,6 @@ export default function Home({}): JSX.Element {
     const [selectedState, setSelectedState] = useState(defaultState);
     const [selectedCounty, setSelectedCounty] = useState(defaultCounty);
     const [changeYearOpts, setChangeYearOpts] = useState<ChangeYear[]>(selectVariable.changeYear);
-    // const [countyOpts, setCounty] = useState<County[]>([]);
     const [changeYear, setChangeYear] = useState(changeYearOpts[0]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
@@ -41,8 +40,6 @@ export default function Home({}): JSX.Element {
             const opts = selectVariable.changeYear.filter((d: any) => d[selectedState.abbr]);
             setChangeYearOpts(opts);
             setChangeYear(opts[0]);
-
-            // const countyOpts = stateData.find((d: any) => d.stfp === selectedState.stfp).counties;
         }
     }, [selectedState]);
 

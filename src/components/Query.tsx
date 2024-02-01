@@ -91,12 +91,15 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
                     properties: {name: 'All counties', geoid: '0'}, 
                     geometry: {} as GeoJSON.Geometry} as GeoJSON.Feature];
 
+
+                    
     return (
         <div id="SelectCounty" className="QueryComponent">
             <Autocomplete
             id="country-select-demo"
             fullWidth size="small"
             options={allOpt.concat(selectedState.counties.features as GeoJSON.Feature[])}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.properties?.name}
             onChange = {(_, feature) => {
                 if (feature === null) {
