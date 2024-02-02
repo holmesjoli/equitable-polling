@@ -34,7 +34,7 @@ export default function Home({}): JSX.Element {
     const [pollHover, setPollHover] = useState({});
     const [geoHover, setGeoHover] = useState({});
 
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loadedCountyData, setLoadedCountyData] = useState<boolean>(false);
 
     // Set data
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>([]);
@@ -49,8 +49,7 @@ export default function Home({}): JSX.Element {
         const fetchPollingData = async () => {
             fetch(pollingLocsURL, {method: 'GET'})
                  .then(res => res.json())
-                 .then((data: any) => setPollingData(getPollingLocsData(data, changeYear) as PollingLoc[]))
-                 .finally(() => setLoading(false))
+                 .then((data: any) => setPollingData(getPollingLocsData(data, changeYear) as PollingLoc[]));
         };
 
         const fetchCountiesLongData = async () => {
@@ -72,13 +71,14 @@ export default function Home({}): JSX.Element {
             fetch(countiesGeo, {method: 'GET'})
                  .then(res => res.json())
                  .then((data: any) => setCountiesData(getCounties(data, countiesLongData)))
+                 .finally(() => setLoadedCountyData(true))
         };
 
         if (geoJsonId.type === 'State') {
             fetchCountiesData();
         }
 
-       }, [countiesLongData, geoJsonId])
+       }, [countiesLongData, geoJsonId]);
 
     return(
         <Main>
@@ -118,7 +118,8 @@ export default function Home({}): JSX.Element {
                 setSelectedCounty={setSelectedCounty} 
                 showPolls={showPolls} setShowPolls={setShowPolls} showVD={showVD} setShowVD={setShowVD}
                 setPollHover={setPollHover} changeYear={changeYear} equityIndicator={equityIndicator} 
-                setGeoHover={setGeoHover} pollingLocsData={pollingLocsData} countiesData={countiesData}/>
+                setGeoHover={setGeoHover} pollingLocsData={pollingLocsData} countiesData={countiesData}
+                loadedCountyData={loadedCountyData}/>
         </Main>
     )
 }

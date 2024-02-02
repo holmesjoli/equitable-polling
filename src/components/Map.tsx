@@ -84,11 +84,12 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
 
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, 
                            setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
-                           pollingLocsData, countiesData }: 
+                           pollingLocsData, countiesData, loadedCountyData }: 
                         {   mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, 
                             setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, 
                             showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, 
-                            setGeoHover: any, pollingLocsData: any, countiesData: GeoJSON.FeatureCollection }) {
+                            setGeoHover: any, pollingLocsData: any, countiesData: GeoJSON.FeatureCollection,
+                            loadedCountyData: boolean }) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -234,7 +235,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
 
         // Selected State
-        } else if (geoJsonId.type === "State") {
+        } else if (geoJsonId.type === "State" && loadedCountyData) {
 
             const state = stateData?.features.find(d => d.properties?.geoid === geoJsonId.geoid)?.properties as State;
             setSelectedState(state);
@@ -252,7 +253,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             });
 
         // Selected County
-        } else {
+        } else if (loadedCountyData) {
             let county = {} as County;
 
             // Updates counties within the selected county to and make it distinct from surrounding counties
@@ -290,7 +291,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
         }
 
-    }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData]);
+    }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData, loadedCountyData]);
 
     // Updates main geography and main boundary
     useEffect(() => {
@@ -359,11 +360,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
 export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, 
                               setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
-                              pollingLocsData, countiesData }: 
+                              pollingLocsData, countiesData, loadedCountyData }: 
                             { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, 
                               setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, 
                               showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, 
-                              setGeoHover: any, pollingLocsData: any, countiesData: GeoJSON.FeatureCollection }): JSX.Element {
+                              setGeoHover: any, pollingLocsData: any, countiesData: GeoJSON.FeatureCollection,
+                              loadedCountyData: boolean }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -390,7 +392,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                              showPolls={showPolls} setShowPolls={setShowPolls}
                              showVD={showVD} setShowVD={setShowVD} setPollHover={setPollHover}
                              changeYear={changeYear} equityIndicator={equityIndicator} setGeoHover={setGeoHover} 
-                             pollingLocsData={pollingLocsData} countiesData={countiesData}
+                             pollingLocsData={pollingLocsData} countiesData={countiesData} loadedCountyData={loadedCountyData}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>
