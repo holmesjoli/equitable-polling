@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/equitable-polling/static/css/main.3e8f1f26.css",
-    "main.js": "/equitable-polling/static/js/main.ad1456f8.js",
+    "main.js": "/equitable-polling/static/js/main.bc9c441f.js",
     "index.html": "/equitable-polling/index.html",
     "main.3e8f1f26.css.map": "/equitable-polling/static/css/main.3e8f1f26.css.map",
-    "main.ad1456f8.js.map": "/equitable-polling/static/js/main.ad1456f8.js.map"
+    "main.bc9c441f.js.map": "/equitable-polling/static/js/main.bc9c441f.js.map"
   },
   "entrypoints": [
     "static/css/main.3e8f1f26.css",
-    "static/js/main.ad1456f8.js"
+    "static/js/main.bc9c441f.js"
   ]
 }
