@@ -8,13 +8,13 @@ import * as d3 from 'd3';
 import * as Tooltip from "./Tooltip";
 
 // Types
-import { State, County, GeoID, PollingLoc, ChangeYear, PollChangeStatus } from "../utils/Types";
+import { State, County, GeoID, PollingLoc, ChangeYear, ChangeYearData } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 
 // Data
-import { stateData, countyData, tractData, vdData, getPollChangeStatus, pollingLocDataChangeYear } from "../utils/DM";
+import { stateData, countyData, tractData, vdData, changeYearDataAll } from "../utils/DM";
 
 // Styles
 import { layersStyle, highlightSelectedCounty, vdStyle, tractStyle, pollStyle } from "../utils/Theme";
@@ -99,10 +99,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-    const [pollingLocData, setPollingData] = useState<PollingLoc[]>(pollingLocDataChangeYear.find((d: any) => d.changeYear === changeYear?.changeYear)?.data || []);
 
-    console.log(pollingLocDataChangeYear)
-    console.log(changeYear.changeYear);
+    const [changeYearData, setChangeYearData] = useState<ChangeYearData | null>(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
+    const [pollingLocsData, setPollingData] = useState<PollingLoc[]>(changeYearData?.pollingLocsData || []);
+
+    console.log(pollingLocsData);
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -180,9 +181,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         [geoJsonId]
     );
 
-    // useEffect(() => {
-    //     setPollingDataAll(getPollChangeStatus(changeYear));
-    // }, [changeYear]);
+    useEffect(() => {
+        console.log(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear));
+        setChangeYearData(changeYearDataAll.find((d: any) => d.changeYear === changeYear.changeYear) || null);
+    }, [changeYear]);
 
     useEffect(() => {
         // United State
@@ -248,12 +250,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 .on('zoomend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingData(filterPointByBounds(mapRef, pollingLocDataChangeYear.find((d: any) => d.changeYear === changeYear?.changeYear)?.data || []));
+                    setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
                 })
                 .on('moveend', () => {
                     setGeoJsonData(filterGeoByBounds(mapRef, tractData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingData(filterPointByBounds(mapRef, pollingLocDataChangeYear.find((d: any) => d.changeYear === changeYear?.changeYear)?.data || []));
+                    setPollingData(filterPointByBounds(mapRef, changeYearData?.pollingLocsData || []));
                 });
         }
 
@@ -294,7 +296,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             <Pane name="poll-pane" style={{ zIndex: 200 }}>
             {showPolls ?
                 <FeatureGroup ref={pollRef} key="pollingLocFeatureGroup">
-                    {pollingLocData.map((d: PollingLoc, i: number) => (
+                    {pollingLocsData.map((d: PollingLoc, i: number) => (
                         <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} eventHandlers={{
                             click: () => {
                             //   console.log('marker clicked')
