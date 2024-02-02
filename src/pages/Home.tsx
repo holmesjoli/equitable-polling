@@ -10,9 +10,12 @@ import * as Tooltip from "../components/Tooltip";
 
 // Data 
 import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
+import { getPollingLocsData } from "../utils/DM";
 
 // Types
-import { GeoID } from "../utils/Types";
+import { GeoID, PollingLoc } from "../utils/Types";
+
+const pollingLocsURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/pollsChangeStatus.json';
 
 export default function Home({}): JSX.Element {
 
@@ -29,9 +32,29 @@ export default function Home({}): JSX.Element {
     const [pollHover, setPollHover] = useState({});
     const [geoHover, setGeoHover] = useState({});
 
-    useEffect(() => {
+    const [loading, setLoading] = useState<boolean>(true);
+
+    // Set data
+    const [pollingLocsData, setPollingData] = useState<PollingLoc[]>([]);
+
+    console.log(pollingLocsData);
+
+    useEffect(()=>{
         Tooltip.init();
     }, []);
+
+    useEffect(()=>{
+        const fetchPollingData = async () => {
+            fetch(pollingLocsURL, {method: 'GET'})
+                 .then(res => res.json())
+                 .then((data: any) => setPollingData(getPollingLocsData(data, changeYear) as PollingLoc[]))
+                 .finally(() => setLoading(false))
+         };
+
+         if (geoJsonId.type === 'County') {
+            fetchPollingData();
+         }
+       }, [changeYear, geoJsonId]);
 
     return(
         <Main>
@@ -67,11 +90,11 @@ export default function Home({}): JSX.Element {
                        selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
                        setGeoJsonId={setGeoJsonId}/>
             <Map geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
-                 selectedState={selectedState} setSelectedState={setSelectedState} 
-                 setSelectedCounty={setSelectedCounty} 
-                 showPolls={showPolls} setShowPolls={setShowPolls} setPollHover={setPollHover}
-                 showVD={showVD} setShowVD={setShowVD}
-                 changeYear={changeYear} equityIndicator={equityIndicator} setGeoHover={setGeoHover}/>
+                selectedState={selectedState} setSelectedState={setSelectedState} 
+                setSelectedCounty={setSelectedCounty} 
+                showPolls={showPolls} setShowPolls={setShowPolls} showVD={showVD} setShowVD={setShowVD}
+                setPollHover={setPollHover} changeYear={changeYear} equityIndicator={equityIndicator} 
+                setGeoHover={setGeoHover} pollingLocsData={pollingLocsData}/>
         </Main>
     )
 }

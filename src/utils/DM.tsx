@@ -5,13 +5,12 @@ import tractGeo from "../data/processed/tractGeoJSON.json";
 import vdGeo from "../data/processed/votingDistrictGeoJSON.json";
 import countyLong from "../data/processed/countyLongitudinal.json"; 
 import tractLong from "../data/processed/tractLongitudinal.json"; 
-import pollsChangeStatus from "../data/processed/pollsChangeStatus.json";
 
 // Scales
 import { theme, thresholdScale } from "./Theme";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, ChangeYearEquityIndicator } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, ChangeYear, ChangeYearEquityIndicator  } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
@@ -20,7 +19,6 @@ import { selectVariable } from "./Global";
 // Processed Data
 export const stateData = getStates();
 export const vdData = getVd();
-export const changeYearDataAll = getChangeYearData();
 export const tractsDataAll = getTracts();
 export const countiesData = getCounties();
 
@@ -206,33 +204,24 @@ export function getVd() {
 }
 
 // Get Polling Locations
-export function getChangeYearData() {
+export function getPollingLocsData(data: any, changeYear: ChangeYear) {
 
-    const changeStatus: ChangeYearData[] = [];
+    const pollingLoc: PollingLoc[] = [];
 
-    selectVariable.changeYear.forEach((e) => {
+        (data as any[])
+        .filter((d: any) => d.changeYear === changeYear.changeYear)
+        .forEach((d: any) => {
 
-        const pollingLoc: PollingLoc[] = [];
-        const tractsData: Feature[] = [];
+            pollingLoc.push({
+                    type: 'Poll',
+                    descr: 'Polling location',
+                    name: d.name,
+                    latlng: { lat: d.Y, lng: d.X } as LatLng,
+                    status: d.status,
+                    overall: d.overall,
+                    id: d.id
+                } as PollingLoc );
+        });
 
-        (pollsChangeStatus as any[])
-            .filter((d: any) => d.changeYear === e.changeYear)
-            .forEach((d: any) => {
-
-                pollingLoc.push({
-                        type: 'Poll',
-                        descr: 'Polling location',
-                        name: d.name,
-                        latlng: { lat: d.Y, lng: d.X } as LatLng,
-                        pollId: d.pollId,
-                        status: d.status,
-                        overall: d.overall,
-                        id: d.id
-                    } as PollingLoc );
-            });
-
-        changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as ChangeYearData);
-    });
-
-    return changeStatus;
+    return pollingLoc;
 }

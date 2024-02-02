@@ -213,9 +213,8 @@ getPollingLocations <- function(df) {
 getPollsChangeStatus <- function(df) {
 
   df <- df %>%
-    distinct(pollid, base_year, change_year, change_type, stfp, r3latitude, r3longitude,location_name_clean) %>% 
-    rename(pollId = pollid,
-           baseYear = base_year,
+    distinct(base_year, change_year, change_type, stfp, r3latitude, r3longitude,location_name_clean) %>% 
+    rename(baseYear = base_year,
            changeYear = change_year,
            status = change_type,
            X = r3longitude,
