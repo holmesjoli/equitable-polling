@@ -11,49 +11,35 @@ import pollsChangeStatus from "../data/processed/pollsChangeStatus.json";
 import { theme, thresholdScale } from "./Theme";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, ChangeYearEquityIndicator } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYear } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
-
-import { selectVariable } from "./Global";
 
 // Processed Data
 export const stateData = getStates();
 export const vdData = getVd();
-export const changeYearDataAll = getChangeYearData();
-export const tractsDataAll = getTracts();
-export const countiesData = getCounties();
 
 // Returns the equity measure for the selected equity indicator
-function findEquityMeasureByChangeYear(geoData: any, d: any) {
+function findEquityMeasureByChangeYear(geoData: any, geoid: any) {
 
-    const changeYearData: ChangeYearEquityIndicator[] = [];
+    const em = geoData.find((f: any) => f.geoid === geoid);
 
-        selectVariable.changeYear.forEach((e) => {
+    // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
+    let pctBlack;
+    if (em === undefined) {
+        pctBlack =  {equityMeasure: 0,
+                        strokeColor: theme.grey.primary,
+                        fillColor: theme.grey.tertiary}
+    } else {
+        pctBlack =  {equityMeasure: em!.pctBlack, 
+                        strokeColor: theme.darkGradientColor, 
+                        fillColor: thresholdScale(em.pctBlack) as string}
+    }
 
-            const em = geoData.find((f: any) => (f.baseYear === e.baseYear) && (f.geoid === d.geoid));
-
-            // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
-            let pctBlack;
-            if (em === undefined) {
-                pctBlack =  {equityMeasure: 0,
-                             strokeColor: theme.grey.primary,
-                             fillColor: theme.grey.tertiary}
-            } else {
-                pctBlack =  {equityMeasure: em!.pctBlack, 
-                             strokeColor: theme.darkGradientColor, 
-                             fillColor: thresholdScale(em.pctBlack) as string}
-            }
-
-            changeYearData.push({changeYear: e.changeYear, 
-                                 none: {equityMeasure: 0,
-                                        strokeColor: theme.grey.primary,
-                                        fillColor: theme.backgroundFill},
-                                 pctBlack: pctBlack
-                                 });
-        });
-
-    return changeYearData;
+    return {none: {equityMeasure: 0,
+                    strokeColor: theme.grey.primary,
+                    fillColor: theme.backgroundFill},
+            pctBlack: pctBlack};
 }
 
 // Structures the bounds for each geometry
@@ -114,13 +100,11 @@ function getStates() {
 }
 
 // Returns a feature collection of all the counties for the selected project states
-export function getCounties() {
+export function getCounties(countiesGeo: any[], countiesLong: any[]) {
 
     const features: Feature[] = [];
 
     (countiesGeo as any[]).forEach((d: any) => {
-
-        const changeYearData = findEquityMeasureByChangeYear(countiesLong, d);
 
         features.push({type: 'Feature',
             properties: {type: 'County',
@@ -132,7 +116,7 @@ export function getCounties() {
                          latlng: getLatLng(d),
                          zoom: 10,
                          selected: false,
-                         changeYearEquityIndicator: changeYearData,
+                         changeYearEquityIndicator: findEquityMeasureByChangeYear(countiesLong, d.geoid),
                          bounds: getBounds(d)
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
@@ -142,44 +126,33 @@ export function getCounties() {
 }
 
 // Returns a feature collection of all the tracts for the selected project states
-export function getTracts() {
+export function getTracts(data: any[], tractsLong: any[], decennialCensusYear: number) {
 
-    const censusYear: any[] = [];
+    const features: Feature[] = [];
 
-    [2010, 2020].forEach((year: number) => {
+    (data as any[])
+        .filter((d: any) => d.year === decennialCensusYear)
+        .forEach((d: any) => {
 
-        const features: Feature[] = [];
+            features.push({type: 'Feature', 
+                properties: {
+                    type: 'Tract',
+                    descr: 'Census tract',
+                    name: d.name,
+                    stfp: d.stfp,
+                    cntyfp: d.cntyfp,
+                    tractfp: d.tractfp,
+                    geoid: d.geoid,
+                    latlng: getLatLng(d),
+                    zoom: 12,
+                    selected: false,
+                    changeYearEquityIndicator: findEquityMeasureByChangeYear(tractsLong, d.geoid),
+                    bounds: getBounds(d),
+                } as unknown as Tract,
+                geometry: d.geometry as GeoJSON.Geometry})
+        });
 
-        (tractsGeo as any[])
-            .filter((d: any) => d.year === year)
-            .forEach((d: any) => {
-
-                const changeYearData = findEquityMeasureByChangeYear(tractsLong, d);
-
-                features.push({type: 'Feature', 
-                    properties: {
-                        type: 'Tract',
-                        descr: 'Census tract',
-                        name: d.name,
-                        stfp: d.stfp,
-                        cntyfp: d.cntyfp,
-                        tractfp: d.tractfp,
-                        geoid: d.geoid,
-                        latlng: getLatLng(d),
-                        zoom: 12,
-                        selected: false,
-                        changeYearEquityIndicator: changeYearData,
-                        bounds: getBounds(d),
-                    } as unknown as Tract,
-                    geometry: d.geometry as GeoJSON.Geometry})
-            });
-
-        let tractsData = {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
-
-        censusYear.push({decennialCensusYear: year, tractsData: tractsData});
-    });
-
-    return censusYear;
+    return {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 }
 
 export function getVd() {
@@ -207,32 +180,24 @@ export function getVd() {
 }
 
 // Get Polling Locations
-export function getChangeYearData() {
+export function getPollingLocsData(data: any[], changeYear: ChangeYear) {
 
-    const changeStatus: ChangeYearData[] = [];
+    const pollingLoc: PollingLoc[] = [];
 
-    selectVariable.changeYear.forEach((e) => {
+        (data as any[])
+        .filter((d: any) => d.changeYear === changeYear.changeYear)
+        .forEach((d: any) => {
 
-        const pollingLoc: PollingLoc[] = [];
-    
-        (pollsChangeStatus as any[])
-            .filter((d: any) => d.changeYear === e.changeYear)
-            .forEach((d: any) => {
+            pollingLoc.push({
+                    type: 'Poll',
+                    descr: 'Polling location',
+                    name: d.name,
+                    latlng: { lat: d.Y, lng: d.X } as LatLng,
+                    status: d.status,
+                    overall: d.overall,
+                    id: d.id
+                } as PollingLoc );
+        });
 
-                pollingLoc.push({
-                        type: 'Poll',
-                        descr: 'Polling location',
-                        name: d.name,
-                        latlng: { lat: d.Y, lng: d.X } as LatLng,
-                        pollId: d.pollId,
-                        status: d.status,
-                        overall: d.overall,
-                        id: d.id
-                    } as PollingLoc );
-            });
-
-        changeStatus.push({changeYear: e.changeYear, pollingLocsData: pollingLoc} as ChangeYearData);
-    });
-
-    return changeStatus;
+    return pollingLoc;
 }

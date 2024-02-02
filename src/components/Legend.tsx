@@ -143,12 +143,12 @@ function updatePollLegend(geo: string, pollHover: any) {
 }
 
 // Initiate equity legend
-function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any, changeYear: ChangeYear) {
+function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
 
   let fillColor: string | undefined = undefined;
 
   if (geoHover.changeYearEquityIndicator !== undefined ) {
-    fillColor = geoHover.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor;
+    fillColor = geoHover.changeYearEquityIndicator[equityIndicator.variable].fillColor;
   } else {
     fillColor = undefined;
   }
@@ -240,7 +240,7 @@ export function CountyLegend ({pollHover} : {pollHover: any}) {
   );
 }
 
-export function EquityLegend ({equityIndicator, geoHover, changeYear} : {equityIndicator: EquityIndicator, geoHover: any, changeYear: ChangeYear}) {
+export function EquityLegend ({equityIndicator, geoHover} : {equityIndicator: EquityIndicator, geoHover: any}) {
 
   useEffect(() => {
     initLegend(equityLegendId);
@@ -248,7 +248,7 @@ export function EquityLegend ({equityIndicator, geoHover, changeYear} : {equityI
 
   // Initiate legends
   useEffect(() => {
-    updateEquityLegend(equityIndicator, geoHover, changeYear);
+    updateEquityLegend(equityIndicator, geoHover);
   }, [equityIndicator, geoHover]);
 
   return (
