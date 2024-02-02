@@ -16,7 +16,6 @@ import { Feature } from "geojson";
 // Processed Data
 export const stateData = getStates();
 export const vdData = getVd();
-export const tractsDataAll = getTracts();
 
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoData: any, geoid: any) {
@@ -124,44 +123,33 @@ export function getCounties(countiesGeo: any[], countiesLong: any[]) {
 }
 
 // Returns a feature collection of all the tracts for the selected project states
-export function getTracts() {
+export function getTracts(data: any[], tractsLong: any[], decennialCensusYear: number) {
 
-    const censusYear: any[] = [];
+    const features: Feature[] = [];
 
-    [2010, 2020].forEach((year: number) => {
+    (data as any[])
+        .filter((d: any) => d.year === decennialCensusYear)
+        .forEach((d: any) => {
 
-        const features: Feature[] = [];
+            features.push({type: 'Feature', 
+                properties: {
+                    type: 'Tract',
+                    descr: 'Census tract',
+                    name: d.name,
+                    stfp: d.stfp,
+                    cntyfp: d.cntyfp,
+                    tractfp: d.tractfp,
+                    geoid: d.geoid,
+                    latlng: getLatLng(d),
+                    zoom: 12,
+                    selected: false,
+                    changeYearEquityIndicator: findEquityMeasureByChangeYear(tractsLong, d.geoid),
+                    bounds: getBounds(d),
+                } as unknown as Tract,
+                geometry: d.geometry as GeoJSON.Geometry})
+        });
 
-        (tractGeo as any[])
-            .filter((d: any) => d.year === year)
-            .forEach((d: any) => {
-
-                // const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
-
-                features.push({type: 'Feature', 
-                    properties: {
-                        type: 'Tract',
-                        descr: 'Census tract',
-                        name: d.name,
-                        stfp: d.stfp,
-                        cntyfp: d.cntyfp,
-                        tractfp: d.tractfp,
-                        geoid: d.geoid,
-                        latlng: getLatLng(d),
-                        zoom: 12,
-                        selected: false,
-                        // changeYearEquityIndicator: changeYearData,
-                        bounds: getBounds(d),
-                    } as unknown as Tract,
-                    geometry: d.geometry as GeoJSON.Geometry})
-            });
-
-        let tractsData = {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
-
-        censusYear.push({decennialCensusYear: year, tractsData: tractsData});
-    });
-
-    return censusYear;
+    return {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 }
 
 export function getVd() {

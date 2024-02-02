@@ -10,14 +10,16 @@ import * as Tooltip from "../components/Tooltip";
 
 // Data 
 import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
-import { getPollingLocsData, getCounties } from "../utils/DM";
+import { getPollingLocsData, getCounties, getTracts } from "../utils/DM";
 
 // Types
 import { GeoID, PollingLoc } from "../utils/Types";
 
 const pollingLocsURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/pollsChangeStatus.json';
 const countiesLongURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/countiesLongitudinal.json';
-const countiesGeo = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/countiesGeoJSON.json';
+const countiesGeoURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/countiesGeoJSON.json';
+const tractsLongURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/tractsLongitudinal.json';
+const tractsGeoURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/tractsGeoJSON.json';
 
 export default function Home({}): JSX.Element {
 
@@ -35,17 +37,29 @@ export default function Home({}): JSX.Element {
     const [geoHover, setGeoHover] = useState({});
 
     const [loadedCountyData, setLoadedCountyData] = useState<boolean>(false);
+    const [loadedTractData, setLoadedTractData] = useState<boolean>(false);
+    const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
 
     // Set data
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>([]);
     const [countiesLongData, setCountiesLongData] = useState<any[]>([]);
     const [countiesData, setCountiesData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
+    const [tractsLongData, setTractsLongData] = useState<any[]>([]);
+    const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
-    console.log(countiesData)
+    console.log(tractsData);
 
     useEffect(()=>{
         Tooltip.init();
     }, []);
+
+    useEffect(() => {
+        if (changeYear.baseYear < 2020) {
+            setDecennialCensusYear(2010);
+        } else {
+            setDecennialCensusYear(2020);
+        }
+    }, [changeYear]);
 
     useEffect(()=>{
         const fetchPollingData = async () => {
@@ -60,9 +74,16 @@ export default function Home({}): JSX.Element {
                  .then((data: any) => setCountiesLongData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
         };
 
+        const fetchTractsLongData = async () => {
+            fetch(tractsLongURL, {method: 'GET'})
+                 .then(res => res.json())
+                 .then((data: any) => setTractsLongData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
+        };
+
         if (geoJsonId.type === 'State') {
             fetchCountiesLongData();
         } else if (geoJsonId.type === 'County') {
+            fetchTractsLongData();
             fetchPollingData();
         }
 
@@ -70,14 +91,23 @@ export default function Home({}): JSX.Element {
 
        useEffect(()=>{
         const fetchCountiesData = async () => {
-            fetch(countiesGeo, {method: 'GET'})
+            fetch(countiesGeoURL, {method: 'GET'})
                  .then(res => res.json())
                  .then((data: any) => setCountiesData(getCounties(data, countiesLongData)))
                  .finally(() => setLoadedCountyData(true))
         };
 
+        const fetchTractsData = async () => {
+            fetch(tractsGeoURL, {method: 'GET'})
+                 .then(res => res.json())
+                 .then((data: any) => setTractsData(getTracts(data, tractsLongData, decennialCensusYear)))
+                 .finally(() => setLoadedTractData(true))
+        };
+
         if (geoJsonId.type === 'State') {
             fetchCountiesData();
+        } else if (geoJsonId.type === 'County') {
+            fetchTractsData();
         }
 
        }, [countiesLongData, geoJsonId]);
@@ -120,8 +150,9 @@ export default function Home({}): JSX.Element {
                 setSelectedCounty={setSelectedCounty} 
                 showPolls={showPolls} setShowPolls={setShowPolls} showVD={showVD} setShowVD={setShowVD}
                 setPollHover={setPollHover} changeYear={changeYear} equityIndicator={equityIndicator} 
-                setGeoHover={setGeoHover} pollingLocsData={pollingLocsData} countiesData={countiesData}
-                loadedCountyData={loadedCountyData}/>
+                setGeoHover={setGeoHover} 
+                pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
+                loadedCountyData={loadedCountyData} loadedTractData={loadedTractData}/>
         </Main>
     )
 }
