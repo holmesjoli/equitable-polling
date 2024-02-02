@@ -89,7 +89,8 @@ function getStates() {
                          geoid: e.geoid, 
                          latlng: getLatLng(e),
                          counties: countyData,
-                         zoom: e.zoom} as State, 
+                         zoom: e.zoom,
+                         abbr: e.abbr} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
     });
 

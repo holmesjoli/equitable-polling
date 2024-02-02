@@ -45,11 +45,13 @@ getCentroid <- function(df) {
 getStates <- function(state_fips, pth) {
   df <- tigris::states(cb = T) %>% 
     filter(STATEFP %in% state_fips) %>% 
-    select(NAME, STATEFP, GEOID, geometry) %>% 
+    select(NAME, STATEFP, GEOID, STUSPS, geometry) %>% 
     rename(stfp = STATEFP,
            name = NAME,
-           geoid = GEOID) %>% 
-    mutate(zoom = ifelse(stfp == "45", 8, 7))
+           geoid = GEOID,
+           abbr = STUSPS) %>% 
+    mutate(zoom = ifelse(stfp == "45", 8, 7),
+           abbr = tolower(abbr))
   
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)

@@ -8,6 +8,8 @@ import { QueryMenu } from "../components/Query";
 import Map from "../components/Map";
 import * as Tooltip from "../components/Tooltip";
 
+import { ChangeYear } from "../utils/Types";
+
 // Data 
 import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
 import { getPollingLocsData, getCounties, getTracts } from "../utils/DM";
@@ -25,14 +27,14 @@ export default function Home({}): JSX.Element {
 
     const [selectedState, setSelectedState] = useState(defaultState);
     const [selectedCounty, setSelectedCounty] = useState(defaultCounty);
-    const [changeYear, setChangeYear] = useState(selectVariable.changeYear[0]);
+    const [changeYearOpts, setChangeYearOpts] = useState<ChangeYear[]>(selectVariable.changeYear);
+    const [changeYear, setChangeYear] = useState(changeYearOpts[0]);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
     const [showPolls, setShowPolls] = useState(true);
     const [showVD, setShowVD] = useState(false);
     const [isFullScreen, setFullScreen] = useState(true);
     const [geoJsonId, setGeoJsonId] = useState<GeoID>(defaultMap);
-
     const [pollHover, setPollHover] = useState({});
     const [geoHover, setGeoHover] = useState({});
 
@@ -46,8 +48,6 @@ export default function Home({}): JSX.Element {
     const [countiesData, setCountiesData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [tractsLongData, setTractsLongData] = useState<any[]>([]);
     const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-
-    console.log(tractsData);
 
     useEffect(()=>{
         Tooltip.init();
@@ -112,6 +112,14 @@ export default function Home({}): JSX.Element {
 
        }, [countiesLongData, tractsLongData, decennialCensusYear, geoJsonId]);
 
+    useEffect(()=>{
+        if (selectedState.abbr !== '') {
+            const opts = selectVariable.changeYear.filter((d: any) => d[selectedState.abbr]);
+            setChangeYearOpts(opts);
+            setChangeYear(opts[0]);
+        }
+    }, [selectedState]);
+
     return(
         <Main>
             {geoJsonId.type === 'US'? 
@@ -142,6 +150,7 @@ export default function Home({}): JSX.Element {
             }
 
             <QueryMenu geoJsonId={geoJsonId} changeYear={changeYear} setChangeYear={setChangeYear} 
+                       changeYearOpts={changeYearOpts} setChangeYearOpts={setChangeYearOpts}
                        selectedState={selectedState} setSelectedState={setSelectedState} 
                        selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
                        setGeoJsonId={setGeoJsonId}/>
