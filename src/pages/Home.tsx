@@ -10,9 +10,12 @@ import * as Tooltip from "../components/Tooltip";
 
 // Data 
 import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
+import { getPollingLocsData } from "../utils/DM";
 
 // Types
-import { GeoID } from "../utils/Types";
+import { GeoID, PollingLoc } from "../utils/Types";
+
+const pollingLocsURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/pollsChangeStatus.json';
 
 export default function Home({}): JSX.Element {
 
@@ -29,9 +32,25 @@ export default function Home({}): JSX.Element {
     const [pollHover, setPollHover] = useState({});
     const [geoHover, setGeoHover] = useState({});
 
-    useEffect(() => {
+    const [loading, setLoading] = useState<boolean>(true);
+
+    // Set data
+    const [pollingLocsData, setPollingData] = useState<PollingLoc[]>([]);
+
+    useEffect(()=>{
         Tooltip.init();
     }, []);
+
+    useEffect(()=>{
+        const fetchData = async () => {
+            fetch(pollingLocsURL, {method: 'GET'})
+                 .then(res => res.json())
+                 .then((data: any) => setPollingData(getPollingLocsData(data, changeYear) as PollingLoc[]))
+                 .finally(() => setLoading(false))
+         };
+
+         fetchData();
+       }, [changeYear]);
 
     return(
         <Main>
@@ -68,7 +87,7 @@ export default function Home({}): JSX.Element {
                 selectedState={selectedState} setSelectedState={setSelectedState} 
                 setSelectedCounty={setSelectedCounty} 
                 showPolls={showPolls} setShowPolls={setShowPolls} showVD={showVD} setShowVD={setShowVD}
-                setPollHover={setPollHover} changeYear={changeYear}/>
+                setPollHover={setPollHover} changeYear={changeYear} pollingLocsData={pollingLocsData}/>
         </Main>
     )
 }
