@@ -3,55 +3,42 @@ import stateGeo from "../data/processed/stateGeoJSON.json";
 import countyGeo from "../data/processed/countyGeoJSON.json";  
 import tractGeo from "../data/processed/tractGeoJSON.json";
 import vdGeo from "../data/processed/votingDistrictGeoJSON.json";
-import countyLong from "../data/processed/countyLongitudinal.json"; 
 import tractLong from "../data/processed/tractLongitudinal.json"; 
 
 // Scales
 import { theme, thresholdScale } from "./Theme";
 
 // Types
-import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYearData, ChangeYear, ChangeYearEquityIndicator  } from "./Types";
+import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYear } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
-
-import { selectVariable } from "./Global";
 
 // Processed Data
 export const stateData = getStates();
 export const vdData = getVd();
 export const tractsDataAll = getTracts();
-export const countiesData = getCounties();
 
 // Returns the equity measure for the selected equity indicator
-function findEquityMeasureByChangeYear(geoData: any, d: any) {
+function findEquityMeasureByChangeYear(geoData: any, geoid: any) {
 
-    const changeYearData: ChangeYearEquityIndicator[] = [];
+    const em = geoData.find((f: any) => f.geoid === geoid);
 
-        selectVariable.changeYear.forEach((e) => {
+    // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
+    let pctBlack;
+    if (em === undefined) {
+        pctBlack =  {equityMeasure: 0,
+                        strokeColor: theme.grey.primary,
+                        fillColor: theme.grey.tertiary}
+    } else {
+        pctBlack =  {equityMeasure: em!.pctBlack, 
+                        strokeColor: theme.darkGradientColor, 
+                        fillColor: thresholdScale(em.pctBlack) as string}
+    }
 
-            const em = geoData.find((f: any) => (f.baseYear === e.baseYear) && (f.geoid === d.geoid));
-
-            // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
-            let pctBlack;
-            if (em === undefined) {
-                pctBlack =  {equityMeasure: 0,
-                             strokeColor: theme.grey.primary,
-                             fillColor: theme.grey.tertiary}
-            } else {
-                pctBlack =  {equityMeasure: em!.pctBlack, 
-                             strokeColor: theme.darkGradientColor, 
-                             fillColor: thresholdScale(em.pctBlack) as string}
-            }
-
-            changeYearData.push({changeYear: e.changeYear, 
-                                 none: {equityMeasure: 0,
-                                        strokeColor: theme.grey.primary,
-                                        fillColor: theme.backgroundFill},
-                                 pctBlack: pctBlack
-                                 });
-        });
-
-    return changeYearData;
+    return {none: {equityMeasure: 0,
+                    strokeColor: theme.grey.primary,
+                    fillColor: theme.backgroundFill},
+            pctBlack: pctBlack};
 }
 
 // Structures the bounds for each geometry
@@ -111,13 +98,11 @@ function getStates() {
 }
 
 // Returns a feature collection of all the counties for the selected project states
-export function getCounties() {
+export function getCounties(countiesGeo: any[], countiesLong: any[]) {
 
     const features: Feature[] = [];
 
-    (countyGeo as any[]).forEach((d: any) => {
-
-        const changeYearData = findEquityMeasureByChangeYear(countyLong, d);
+    (countiesGeo as any[]).forEach((d: any) => {
 
         features.push({type: 'Feature',
             properties: {type: 'County',
@@ -129,7 +114,7 @@ export function getCounties() {
                          latlng: getLatLng(d),
                          zoom: 10,
                          selected: false,
-                         changeYearEquityIndicator: changeYearData,
+                         changeYearEquityIndicator: findEquityMeasureByChangeYear(countiesLong, d.geoid),
                          bounds: getBounds(d)
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
@@ -151,7 +136,7 @@ export function getTracts() {
             .filter((d: any) => d.year === year)
             .forEach((d: any) => {
 
-                const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
+                // const changeYearData = findEquityMeasureByChangeYear(tractLong, d);
 
                 features.push({type: 'Feature', 
                     properties: {
@@ -165,7 +150,7 @@ export function getTracts() {
                         latlng: getLatLng(d),
                         zoom: 12,
                         selected: false,
-                        changeYearEquityIndicator: changeYearData,
+                        // changeYearEquityIndicator: changeYearData,
                         bounds: getBounds(d),
                     } as unknown as Tract,
                     geometry: d.geometry as GeoJSON.Geometry})
@@ -204,7 +189,7 @@ export function getVd() {
 }
 
 // Get Polling Locations
-export function getPollingLocsData(data: any, changeYear: ChangeYear) {
+export function getPollingLocsData(data: any[], changeYear: ChangeYear) {
 
     const pollingLoc: PollingLoc[] = [];
 

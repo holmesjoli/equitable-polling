@@ -9,14 +9,14 @@ import * as d3 from 'd3';
 import {mouseOverTextVD, mouseOverTextState, mouseOverTextCounty, mouseOverTextTract, pointerOver, pointerOut} from "./Tooltip";
 
 // Types
-import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator, ChangeYearData } from "../utils/Types";
+import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator } from "../utils/Types";
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 import { useStableCallback } from "../utils/Helper";
 
 // Data
-import { stateData, countiesData, vdData, tractsDataAll } from "../utils/DM";
+import { stateData, vdData, tractsDataAll } from "../utils/DM";
 
 // Styles
 import { layersStyle, highlightSelectedCounty, vdStyle, choroplethStyle, pollStyle } from "../utils/Theme";
@@ -84,11 +84,11 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
 
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, 
                            setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
-                           pollingLocsData }: 
+                           pollingLocsData, countiesData }: 
                         {   mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, 
                             setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, 
                             showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, 
-                            setGeoHover: any, pollingLocsData: any }) {
+                            setGeoHover: any, pollingLocsData: any, countiesData: GeoJSON.FeatureCollection }) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -216,6 +216,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     }, [decennialCensusYear]);
 
     useEffect(() => {
+
         // United State
         if (geoJsonId.type === "US") {
             setSelectedState(defaultState);
@@ -289,7 +290,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
         }
 
-    }, [geoJsonId, changeYear, tractsData, pollingLocsData]);
+    }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData]);
 
     // Updates main geography and main boundary
     useEffect(() => {
@@ -358,11 +359,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
 export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, setSelectedCounty, showPolls, 
                               setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
-                              pollingLocsData }: 
+                              pollingLocsData, countiesData }: 
                             { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, 
                               setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, 
                               showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, 
-                              setGeoHover: any, pollingLocsData: any }): JSX.Element {
+                              setGeoHover: any, pollingLocsData: any, countiesData: GeoJSON.FeatureCollection }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -389,7 +390,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                              showPolls={showPolls} setShowPolls={setShowPolls}
                              showVD={showVD} setShowVD={setShowVD} setPollHover={setPollHover}
                              changeYear={changeYear} equityIndicator={equityIndicator} setGeoHover={setGeoHover} 
-                             pollingLocsData={pollingLocsData}
+                             pollingLocsData={pollingLocsData} countiesData={countiesData}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>
