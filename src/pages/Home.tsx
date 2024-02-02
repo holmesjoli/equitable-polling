@@ -41,6 +41,8 @@ export default function Home({}): JSX.Element {
     const [countiesLongData, setCountiesLongData] = useState<any[]>([]);
     const [countiesData, setCountiesData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
+    console.log(countiesData)
+
     useEffect(()=>{
         Tooltip.init();
     }, []);

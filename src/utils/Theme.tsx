@@ -53,14 +53,14 @@ export function highlightSelectedCounty(feature: any) {
     };
 }
 
-export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
   if (feature.properties.type === "State") {
     return stateStyle();
   } else if (feature.properties.type === "County") {
-    return countyStyle(feature, equityIndicator, changeYear);
+    return countyStyle(feature, equityIndicator);
   } else if (feature.properties.type === "Tract") {
-    return tractStyle(feature, equityIndicator, changeYear);
+    return tractStyle(feature, equityIndicator);
   } else {
     return vdStyle(feature);
   }
@@ -76,14 +76,14 @@ export function stateStyle() {
   };
 }
 
-export function returnSpecificEquityIndicator(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-  return feature.properties!.changeYearEquityIndicator.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable];
+export function returnSpecificEquityIndicator(feature: any, equityIndicator: EquityIndicator) {
+  return feature.properties!.changeYearEquityIndicator[equityIndicator.variable];
 }
 
-export function countyStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+export function countyStyle(feature: any, equityIndicator: EquityIndicator) {
   return {
-    color: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).fillColor,
+    color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
+    fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
     weight: 1,
     opacity: 1,
     fillOpacity: .6
@@ -91,10 +91,10 @@ export function countyStyle(feature: any, equityIndicator: EquityIndicator, chan
 }
 
 
-export function tractStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
   return {
-    color: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature, equityIndicator, changeYear).fillColor,
+    color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
+    fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3

@@ -156,7 +156,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOut(event: any) {
         var layer = event.target;
-        layer.setStyle(choroplethStyle(layer.feature, equityIndicator, changeYear) as PathOptions);
+        layer.setStyle(choroplethStyle(layer.feature, equityIndicator) as PathOptions);
         pointerOut();
         d3.select(".Status .ComponentGroupInner span").attr("class", "");
         setGeoHover({});
@@ -299,10 +299,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         if (geoJsonId.type === 'County') {
             if (equityIndicator.variable === 'none') {
                 geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions); // Replaces geojson clickable elements with drilldown
+                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions); // Replaces geojson clickable elements with drilldown
             } else {
                 geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
+                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
             }
         } else {
 
@@ -311,7 +311,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
             } else {
                 geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator, changeYear) as PathOptions);
+                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
             }   
         }
 
