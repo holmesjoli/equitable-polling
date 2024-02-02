@@ -110,7 +110,7 @@ export default function Home({}): JSX.Element {
             fetchTractsData();
         }
 
-       }, [countiesLongData, tractsLongData, geoJsonId]);
+       }, [countiesLongData, tractsLongData, decennialCensusYear, geoJsonId]);
 
     return(
         <Main>
