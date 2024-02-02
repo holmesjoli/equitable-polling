@@ -1,4 +1,5 @@
 {
+  "homepage": "https://joliholmes.com/equitable-polling/",
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@emotion/is-prop-valid": "^1.2.1",

@@ -146,7 +146,6 @@ export function getPollChangeStatus() {
                         descr: 'Polling location',
                         name: d.name,
                         latlng: { lat: d.Y, lng: d.X } as LatLng,
-                        pollId: d.pollId,
                         status: d.status,
                         overall: d.overall,
                         id: d.id
