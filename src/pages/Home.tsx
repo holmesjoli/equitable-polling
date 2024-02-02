@@ -37,20 +37,24 @@ export default function Home({}): JSX.Element {
     // Set data
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>([]);
 
+    console.log(pollingLocsData);
+
     useEffect(()=>{
         Tooltip.init();
     }, []);
 
     useEffect(()=>{
-        const fetchData = async () => {
+        const fetchPollingData = async () => {
             fetch(pollingLocsURL, {method: 'GET'})
                  .then(res => res.json())
                  .then((data: any) => setPollingData(getPollingLocsData(data, changeYear) as PollingLoc[]))
                  .finally(() => setLoading(false))
          };
 
-         fetchData();
-       }, [changeYear]);
+         if (geoJsonId.type === 'County') {
+            fetchPollingData();
+         }
+       }, [changeYear, geoJsonId]);
 
     return(
         <Main>

@@ -250,7 +250,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
         }
 
-    }, [geoJsonId, changeYear]);
+    }, [geoJsonId, changeYear, pollingLocsData]);
 
     // Updates main geography and main boundary
     useEffect(() => {
