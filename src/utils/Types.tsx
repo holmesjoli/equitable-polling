@@ -14,7 +14,7 @@ export type ChangeYearData = {changeYear: string, none:EquityIndicatorData, pctB
 
 export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, 
                      geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean,
-                     changeYearData: ChangeYearData[], year: number
+                     changeYearData: ChangeYearData, year: number
                     };
 
 export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst: string, name: string, geoid: string, bounds: Bounds,
@@ -22,7 +22,7 @@ export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst:
 
 export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string,
                       latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds, 
-                      changeYearData: ChangeYearData[]
+                      changeYearData: any
                     };
 
 export type State = {type: string, stfp: string, geoid: string, name: string, counties: GeoJSON.FeatureCollection, 
@@ -35,9 +35,5 @@ export type EquityIndicator = {variable: string, descr: string};
 export type Indicator = {id: string, descr: string};
 
 export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, 
-                          pixelCoords?: PixelCoords, pollId: string, status: string | undefined, overall: string | undefined, id: string | undefined,
-                          baseYear: number};
-
-export type IndicatorStatus = {cntyfp: string, stfp: string, name: string, 
-                               baseYear: number, latlng: LatLng,
-                               changeYearData: ChangeYearData[]};
+                          pixelCoords?: PixelCoords,
+                          status: string | undefined, overall: string | undefined, id: string | undefined};

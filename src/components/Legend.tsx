@@ -57,10 +57,8 @@ function updateSizeLegend(pollHover: any, changeYear: ChangeYear) {
 
   if (pollHover.changeYearData !== undefined ) {
 
-    let changeYearData = pollHover.changeYearData.find((d: any) => d.changeYear == changeYear.changeYear);
-
-    if (changeYearData.pollSummary !== undefined) { // todo remove this ifelse once we have data for all counties
-      rSize = changeYearData.pollSummary.rSize;
+    if (pollHover.changeYearData.pollSummary !== undefined) { // todo remove this ifelse once we have data for all counties
+      rSize = pollHover.changeYearData.pollSummary.rSize;
     } else {
       rSize = undefined;
     }
@@ -118,7 +116,7 @@ function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
     if (pollHover.changeYearData.pollSummary === undefined) { // todo remove this ifelse once we have data for all counties
       id = undefined;
     } else {
-      id = pollHover.changeYearData.find((d: any) => d.changeYear == changeYear.changeYear).pollSummary.id;
+      id = pollHover.changeYearData.pollSummary.id;
     }
 
   } else if (pollHover.type === "Poll") {
@@ -162,12 +160,12 @@ function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
 }
 
 // Initiate equity legend
-function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any, changeYear: ChangeYear) {
+function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
 
   let fillColor: string | undefined = undefined;
 
-  if (geoHover.changeYearData !== undefined ) {
-    fillColor = geoHover.changeYearData.find((d: any) => d.changeYear == changeYear.changeYear)[equityIndicator.variable].fillColor;
+  if (geoHover.changeYearData  !== undefined ) {
+    fillColor = geoHover.changeYearData[equityIndicator.variable].fillColor;
   } else {
     fillColor = undefined;
   }
@@ -260,7 +258,7 @@ export function CountyLegend ({pollHover, changeYear} : {pollHover: any, changeY
   );
 }
 
-export function EquityLegend ({equityIndicator, geoHover, changeYear} : {equityIndicator: EquityIndicator, geoHover: any, changeYear: ChangeYear}) {
+export function EquityLegend ({equityIndicator, geoHover} : {equityIndicator: EquityIndicator, geoHover: any}) {
 
   useEffect(() => {
     initLegend(equityLegendId);
@@ -268,7 +266,7 @@ export function EquityLegend ({equityIndicator, geoHover, changeYear} : {equityI
 
   // Initiate legends
   useEffect(() => {
-    updateEquityLegend(equityIndicator, geoHover, changeYear);
+    updateEquityLegend(equityIndicator, geoHover);
   }, [equityIndicator, geoHover]);
 
   return (
