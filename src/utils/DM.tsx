@@ -14,12 +14,13 @@ import { Feature } from "geojson";
 export const stateData = getStates();
 
 // Returns the equity measure for the selected equity indicator
-function findEquityMeasureByChangeYear(geoData: any, geoid: any) {
+function findEquityMeasureByChangeYear(geoid: any,geoData: any, pollSummaryData: any[] | undefined = undefined) {
 
     const em = geoData.find((f: any) => f.geoid === geoid);
 
     // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
     let pctBlack;
+    let pollSummary = undefined;
     if (em === undefined) {
         pctBlack =  {equityMeasure: 0,
                         strokeColor: theme.grey.primary,
@@ -30,10 +31,25 @@ function findEquityMeasureByChangeYear(geoData: any, geoid: any) {
                         fillColor: thresholdScale(em.pctBlack) as string}
     }
 
+    if (pollSummaryData != undefined) {
+        const indicatorYearData = pollSummaryData.find((f: any) => f.geoid === geoid);
+
+        if (indicatorYearData !== undefined) { // todo removed if once we have complete data
+
+            pollSummary = {changeNoPolls: indicatorYearData.changeNoPolls, 
+                        overall: indicatorYearData.overall, 
+                        overallChange: indicatorYearData.overallChange, 
+                        id: indicatorYearData.id, 
+                        rSize: indicatorYearData.rSize}
+        }
+    }
+
     return {none: {equityMeasure: 0,
                     strokeColor: theme.grey.primary,
                     fillColor: theme.backgroundFill},
-            pctBlack: pctBlack};
+            pctBlack: pctBlack,
+            pollSummary: pollSummary
+        };
 }
 
 // Structures the bounds for each geometry
@@ -94,7 +110,7 @@ function getStates() {
 }
 
 // Returns a feature collection of all the counties for the selected project states
-export function getCounties(countiesGeo: any[], countiesLong: any[]) {
+export function getCounties(countiesGeo: any[], countiesLong: any[], pollSummaryData: any[]) {
 
     const features: Feature[] = [];
 
@@ -110,7 +126,7 @@ export function getCounties(countiesGeo: any[], countiesLong: any[]) {
                          latlng: getLatLng(d),
                          zoom: 10,
                          selected: false,
-                         changeYearEquityIndicator: findEquityMeasureByChangeYear(countiesLong, d.geoid),
+                         changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong, pollSummaryData),
                          bounds: getBounds(d)
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
@@ -140,7 +156,7 @@ export function getTracts(data: any[], tractsLong: any[], decennialCensusYear: n
                     latlng: getLatLng(d),
                     zoom: 12,
                     selected: false,
-                    changeYearEquityIndicator: findEquityMeasureByChangeYear(tractsLong, d.geoid),
+                    changeYearData: findEquityMeasureByChangeYear(d.geoid, tractsLong),
                     bounds: getBounds(d),
                 } as unknown as Tract,
                 geometry: d.geometry as GeoJSON.Geometry})
