@@ -53,8 +53,6 @@ export default function Home({}): JSX.Element {
     const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
-    console.log(vdData);
-
     const fetchPollingData = async () => {
         fetch(pollingLocsURL, {method: 'GET'})
              .then(res => res.json())
