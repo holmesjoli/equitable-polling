@@ -5,10 +5,7 @@ import * as d3 from 'd3';
 import { theme, returnSpecificEquityIndicator } from '../utils/Theme';
 
 //Types
-import { EquityIndicator, ChangeYear, ChangeYearData } from '../utils/Types';
-
-// Helper functions
-import { filterPollSummaryByChangeYear } from "../utils/Helper";
+import { EquityIndicator, ChangeYear } from '../utils/Types';
 
 const selector = "root";
 
@@ -58,9 +55,9 @@ function mouseOverGeo(feature: any) {
     return `<div class="ComponentGroupInner SemiBold">${feature.properties.name} ${feature.properties.descr}</div>`;
 }
 
-function mouseOverEquityMeasure(changeYearData: ChangeYearData[], equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+function mouseOverEquityMeasure(feature: GeoJSON.Feature, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
     if(equityIndicator.variable !== 'none') {
-        const ei = returnSpecificEquityIndicator(changeYearData, equityIndicator, changeYear);
+        const ei = returnSpecificEquityIndicator(feature, equityIndicator);
         return `<span><span class="SemiBold focusColor">${ei.equityMeasure}${equityIndicator.descr}</span> in base year ${changeYear.baseYear}</span>`;
     } else {
         return '';
@@ -77,14 +74,14 @@ export function mouseOverTextVD(feature: any) {
 }
 
 export function mouseOverTextTract(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-    return `<div class="ComponentGroupInner SemiBold">${feature.properties.descr} ${feature.properties.name}</div><div>${mouseOverEquityMeasure(feature.properties.changeYearData, equityIndicator, changeYear)}</div>`
+    return `<div class="ComponentGroupInner SemiBold">${feature.properties.descr} ${feature.properties.name}</div><div>${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</div>`
 }
 
 export function mouseOverTextCounty(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
 
     const countyName = mouseOverGeo(feature);
-    const ei = `<div class="DetailInformation">${mouseOverEquityMeasure(feature.properties.changeYearData, equityIndicator, changeYear)}</div>`;
-    const pollSummary = filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear);
+    const ei = `<div class="DetailInformation">${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</div>`;
+    const pollSummary = feature.properties.changeYearData.pollSummary;
     const noChanges = `<div class="DetailInformation"><span class="SemiBold">${pollSummary?.changeNoPolls}</span> poll locations changed</div>`;
 
     let netChanges;

@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-import { EquityIndicator, ChangeYear, ChangeYearData, EquityIndicatorData } from "./Types";
+import { EquityIndicator } from "./Types";
 
 export const theme = {
     fontSize: 12,
@@ -64,14 +64,14 @@ export function highlightSelectedGeographyChoropleth(feature: any) {
   };
 }
 
-export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
   if (feature.properties.type === "State") {
     return stateStyle();
   } else if (feature.properties.type === "County") {
-    return countyStyle(feature, equityIndicator, changeYear);
+    return countyStyle(feature, equityIndicator);
   } else if (feature.properties.type === "Tract") {
-    return tractStyle(feature, equityIndicator, changeYear);
+    return tractStyle(feature, equityIndicator);
   } else {
     return vdStyle(feature);
   }
@@ -87,22 +87,29 @@ export function stateStyle() {
   };
 }
 
-export function returnSpecificEquityIndicator(changeYearData: ChangeYearData[], equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-  return changeYearData.find((d: any) => d.changeYear == changeYear.changeYear)?.[equityIndicator.variable] as EquityIndicatorData;
+export function returnSpecificEquityIndicator(feature: any, equityIndicator: EquityIndicator) {
+  return feature.properties!.changeYearData[equityIndicator.variable];
 }
 
-export function countyStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+export function countyStyle(feature: any, equityIndicator: EquityIndicator) {
   return {
-    color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).fillColor,
-    weight: 1,
-    opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.highlightOpacity : theme.nonHighlightOpacity
+    color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
+    fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
   };
 }
 
-export function tractStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-  return countyStyle(feature, equityIndicator, changeYear);
+// export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
+//   return {
+//     color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
+//     fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
+//     weight: 1,
+//     opacity: getStrokeOpacity(feature.properties!.selected),
+//     fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.highlightOpacity : theme.nonHighlightOpacity
+//   };
+// }
+
+export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
+  return countyStyle(feature, equityIndicator);
 }
 
 // Voting district styles

@@ -6,8 +6,9 @@ import { point, bounds, PathOptions } from 'leaflet';
 import * as d3 from 'd3';
 
 // Components
-import {mouseOverTextVD, mouseOverTextState, mouseOverTextTract, mouseOverTextPoll, mouseOverTextPollSummary, pointerOver, pointerOut} from "./Tooltip";
-
+import {mouseOverTextVD, mouseOverTextState, mouseOverTextTract, mouseOverTextPoll, 
+        mouseOverTextPollSummary, pointerOver, pointerOut} from "./Tooltip";
+        
 // Types
 import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator } from "../utils/Types";
 
@@ -16,12 +17,11 @@ import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/G
 import { useStableCallback } from "../utils/Helper";
 
 // Data
-import { stateData, countiesData, vdData, pollLocsDataAll, tractsDataAll } from "../utils/DM";
+import { stateData } from "../utils/DM";
 
 // Styles
 import { layersStyle, highlightSelectedGeography, highlightSelectedGeographyChoropleth, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
 
-import { filterPollSummaryByChangeYear } from "../utils/Helper";
 
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
@@ -84,23 +84,24 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
     return data;
 }
 
-function filterPollingLocationsByChangeYear(changeYear: ChangeYear) {
-    return pollLocsDataAll.find((d: any) => d.changeYear === changeYear.changeYear)?.pollingLocsData || [];
-}
-
-function filterTractsByDecennialCensusYear(decennialCensusYear: number) {
-    return tractsDataAll.find((d: any) => d.decennialCensusYear === decennialCensusYear).tractsData;
-}
-
-function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, showVD, setShowVD, setPollHover, changeYear, equityIndicator, setGeoHover }: 
-                         { mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, showVD: boolean, setShowVD: any, setPollHover: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, setGeoHover: any}) {
+function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, 
+                           setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
+                           pollingLocsData, countiesData, tractsData, vdData, loadedCountyData, loadedTractData, loadedVdData }: 
+                        {   mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, 
+                            selectedState: State, setSelectedState: any, 
+                            selectedCounty: any, setSelectedCounty: any, 
+                            showPolls: boolean, setShowPolls: any, setPollHover: any, 
+                            showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, 
+                            setGeoHover: any, 
+                            pollingLocsData: any, countiesData: GeoJSON.FeatureCollection, tractsData: GeoJSON.FeatureCollection,
+                            vdData: GeoJSON.FeatureCollection,
+                            loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean }) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
-    const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
-    const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection | never[]>(filterTractsByDecennialCensusYear(decennialCensusYear));
-    const [pollingLocsData, setPollingLocsData] = useState<PollingLoc[] | never[]>(filterPollingLocationsByChangeYear(changeYear));
+
+    const [pollingLocsInBound, setPollingLocsInBound] = useState<any[]>([]);
 
     const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
@@ -172,7 +173,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOut(event: any) {
         var layer = event.target;
-        layer.setStyle(choroplethStyle(layer.feature, equityIndicator, changeYear) as PathOptions);
+        layer.setStyle(choroplethStyle(layer.feature, equityIndicator) as PathOptions);
         pointerOut();
         d3.select(".Status .ComponentGroupInner span").attr("class", "");
         setGeoHover({});
@@ -222,21 +223,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     );
 
     useEffect(() => {
-        setPollingLocsData(filterPollingLocationsByChangeYear(changeYear));
-
-        // Sets the decennial census year
-        if (changeYear.baseYear < 2020) {
-            setDecennialCensusYear(2010);
-        } else {
-            setDecennialCensusYear(2020);
-        }
-    }, [changeYear]);
-
-    useEffect(() => {
-        setTractsData(filterTractsByDecennialCensusYear(decennialCensusYear));
-    }, [decennialCensusYear]);
-
-    useEffect(() => {
         // United State
         if (geoJsonId.type === "US") {
             setSelectedState(defaultState);
@@ -251,7 +237,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
 
         // Selected State
-        } else if (geoJsonId.type === "State") {
+        } else if (geoJsonId.type === "State" && loadedCountyData) {
 
             let state = {} as State;
 
@@ -285,8 +271,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
 
         // Selected County
-        } else if (geoJsonId.type === "County") {
-
+        } else if (loadedCountyData && loadedTractData) {
             let county = {} as County;
 
             // Updates counties within the selected county to and make it distinct from surrounding counties
@@ -304,7 +289,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
             // Updates voting districts within the selected county to and make it distinct from surrounding voting districts
             updateSelectedFeature(vdData, county);
-
+          
             setSelectedCounty(county);
             setShowPolls(true);
 
@@ -314,11 +299,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesData));
                     setGeoJsonData(filterGeoByBounds(mapRef, tractsData));
                     setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingLocsData(filterPointByBounds(mapRef, filterPollingLocationsByChangeYear(changeYear)));
+                    setPollingLocsInBound(filterPointByBounds(mapRef, pollingLocsData));
                 });
         }
 
-    }, [geoJsonId, changeYear, tractsData]); //tractsData needs to be there to update tractsData geographies
+    }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData, loadedCountyData]);
 
     // Updates main geography and main boundary
     useEffect(() => {
@@ -339,7 +324,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         } else {
             geoJsonVdRef.current?.clearLayers().addData({} as GeoJSON.FeatureCollection);
         }
-    }, [geoJsonVdData]);
+    }, [geoJsonVdData, showVD, loadedVdData]);
 
     return(
         <>
@@ -349,7 +334,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             <Pane name="geo-pane" style={{ zIndex: 100 }}>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
-                {showVD ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
+                {showVD &&  loadedVdData ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
             </Pane>
             <Pane name="poll-pane" style={{ zIndex: 200 }}>
 
@@ -357,10 +342,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 <FeatureGroup key="pollChangeSummaryFeatureGroup">
                     {
                         countiesData.features.map((feature: any, i: number) => {
-                            if (filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear) !== undefined) {
-
+                            if (feature.properties.changeYearData.pollSummary !== undefined) {
                                 return (
-                                    <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear), feature.properties.selected)} radius={pollSummarySize(filterPollSummaryByChangeYear(feature.properties.changeYearData, changeYear))} eventHandlers={{
+                                    <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(feature.properties.changeYearData.pollSummary)} radius={pollSummarySize(feature.properties.changeYearData.pollSummary)} eventHandlers={{
                                         click: () => {
                                             setGeoJsonId({geoid: feature.properties.geoid, 
                                                           name: feature.properties.name, 
@@ -384,8 +368,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 </FeatureGroup> : null}
             {showPolls ?
                 <FeatureGroup key="pollingLocFeatureGroup">
-                    {pollingLocsData.map((d: PollingLoc, i: number) => (
-                        <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={300} eventHandlers={{
+                    {pollingLocsInBound.map((d: PollingLoc, i: number) => (
+                        <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} eventHandlers={{
                             mouseover: () => {
                                 mouseOverPollingLoc(d);
                             },
@@ -400,8 +384,17 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     )
 }
 
-export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover }: 
-                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, setGeoHover: any }): JSX.Element {
+export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, 
+                              setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
+                              pollingLocsData, countiesData, tractsData, 
+                              vdData, loadedCountyData, loadedTractData, loadedVdData }: 
+                            { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, 
+                            selectedCounty: any,
+                              setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, 
+                              showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, 
+                              setGeoHover: any, 
+                              pollingLocsData: any, countiesData: GeoJSON.FeatureCollection, tractsData: GeoJSON.FeatureCollection,
+                              vdData: GeoJSON.FeatureCollection, loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -427,7 +420,10 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                              selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty}
                              showPolls={showPolls} setShowPolls={setShowPolls}
                              showVD={showVD} setShowVD={setShowVD} setPollHover={setPollHover}
-                             changeYear={changeYear} equityIndicator={equityIndicator} setGeoHover={setGeoHover}
+                             changeYear={changeYear} equityIndicator={equityIndicator} setGeoHover={setGeoHover} 
+                             pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
+                             vdData={vdData} 
+                             loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>

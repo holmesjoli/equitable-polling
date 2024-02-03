@@ -118,7 +118,7 @@ export function StateStatus ({equityIndicator, setEquityIndicator, geoHover, pol
       <ComponentGroup title="Legend">
         <ComponentGroupInner title="Equity indicator">
           <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
-          {equityIndicator.variable !== "none"?  <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover} changeYear={changeYear}/>: null}
+          {equityIndicator.variable !== "none"?  <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover} />: null}
         </ComponentGroupInner>
         <StateLegend pollHover={pollHover} changeYear={changeYear}/>
       </ComponentGroup>
@@ -136,7 +136,7 @@ export function CountyStatus ({equityIndicator, setEquityIndicator, showPolls, s
         <ComponentGroup title="Legend">
           <ComponentGroupInner title="Equity indicator">
               <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
-              {equityIndicator.variable !== "none"?  <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover} changeYear={changeYear}/>: null}
+              {equityIndicator.variable !== "none"?  <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover} />: null}
           </ComponentGroupInner>
           <ComponentGroupInner title="Voting districts">
             <VDSwitch showVD={showVD} setShowVD={setShowVD}/>
