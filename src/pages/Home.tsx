@@ -22,6 +22,8 @@ const countiesLongURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-
 const countiesGeoURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/countiesGeoJSON.json';
 const tractsLongURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/tractsLongitudinal.json';
 const tractsGeoURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/tractsGeoJSON.json';
+const vdGeoURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/votingDistrictsGeoJSON.json';
+
 
 export default function Home({}): JSX.Element {
 
@@ -48,6 +50,41 @@ export default function Home({}): JSX.Element {
     const [countiesData, setCountiesData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [tractsLongData, setTractsLongData] = useState<any[]>([]);
     const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
+    const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
+
+    const fetchPollingData = async () => {
+        fetch(pollingLocsURL, {method: 'GET'})
+             .then(res => res.json())
+             .then((data: any) => setPollingData(getPollingLocsData(data, changeYear) as PollingLoc[]));
+    };
+
+    const fetchCountiesLongData = async () => {
+        fetch(countiesLongURL, {method: 'GET'})
+             .then(res => res.json())
+             .then((data: any) => setCountiesLongData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
+    };
+
+    const fetchCountiesData = async () => {
+        fetch(countiesGeoURL, {method: 'GET'})
+             .then(res => res.json())
+             .then((data: any) => setCountiesData(getCounties(data, countiesLongData)))
+             .finally(() => setLoadedCountyData(true))
+    };
+
+    const fetchTractsLongData = async () => {
+        fetch(tractsLongURL, {method: 'GET'})
+             .then(res => res.json())
+             .then((data: any) => setTractsLongData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
+    };
+
+    const fetchTractsData = async () => {
+        fetch(tractsGeoURL, {method: 'GET'})
+             .then(res => res.json())
+             .then((data: any) => setTractsData(getTracts(data, tractsLongData, decennialCensusYear)))
+             .finally(() => setLoadedTractData(true))
+    };
+
+    // React Hooks
 
     useEffect(()=>{
         Tooltip.init();
@@ -62,23 +99,6 @@ export default function Home({}): JSX.Element {
     }, [changeYear]);
 
     useEffect(()=>{
-        const fetchPollingData = async () => {
-            fetch(pollingLocsURL, {method: 'GET'})
-                 .then(res => res.json())
-                 .then((data: any) => setPollingData(getPollingLocsData(data, changeYear) as PollingLoc[]));
-        };
-
-        const fetchCountiesLongData = async () => {
-            fetch(countiesLongURL, {method: 'GET'})
-                 .then(res => res.json())
-                 .then((data: any) => setCountiesLongData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
-        };
-
-        const fetchTractsLongData = async () => {
-            fetch(tractsLongURL, {method: 'GET'})
-                 .then(res => res.json())
-                 .then((data: any) => setTractsLongData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
-        };
 
         if (geoJsonId.type === 'State') {
             fetchCountiesLongData();
@@ -89,28 +109,15 @@ export default function Home({}): JSX.Element {
 
        }, [changeYear, geoJsonId]);
 
-       useEffect(()=>{
-        const fetchCountiesData = async () => {
-            fetch(countiesGeoURL, {method: 'GET'})
-                 .then(res => res.json())
-                 .then((data: any) => setCountiesData(getCounties(data, countiesLongData)))
-                 .finally(() => setLoadedCountyData(true))
-        };
+    useEffect(()=>{
 
-        const fetchTractsData = async () => {
-            fetch(tractsGeoURL, {method: 'GET'})
-                 .then(res => res.json())
-                 .then((data: any) => setTractsData(getTracts(data, tractsLongData, decennialCensusYear)))
-                 .finally(() => setLoadedTractData(true))
-        };
+    if (geoJsonId.type === 'State') {
+        fetchCountiesData();
+    } else if (geoJsonId.type === 'County') {
+        fetchTractsData();
+    }
 
-        if (geoJsonId.type === 'State') {
-            fetchCountiesData();
-        } else if (geoJsonId.type === 'County') {
-            fetchTractsData();
-        }
-
-       }, [countiesLongData, tractsLongData, decennialCensusYear, geoJsonId]);
+    }, [countiesLongData, tractsLongData, decennialCensusYear, geoJsonId]);
 
     useEffect(()=>{
         if (selectedState.abbr !== '') {
