@@ -57,7 +57,7 @@ function mouseOverGeo(feature: any) {
 
 function mouseOverEquityMeasure(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
     if(equityIndicator.variable !== 'none') {
-        const ei = returnSpecificEquityIndicator(feature, equityIndicator, changeYear);
+        const ei = returnSpecificEquityIndicator(feature, equityIndicator);
         return `${ei.equityMeasure}${equityIndicator.descr} in base year ${changeYear.baseYear}`
     } else {
         return '';
