@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-import { EquityIndicator, ChangeYear, ChangeYearData } from "./Types";
+import { EquityIndicator } from "./Types";
 
 export const theme = {
     fontSize: 12,
@@ -54,14 +54,14 @@ export function highlightSelectedCounty(feature: any) {
     };
 }
 
-export function choroplethStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
   if (feature.properties.type === "State") {
     return stateStyle();
   } else if (feature.properties.type === "County") {
-    return countyStyle(feature, equityIndicator, changeYear);
+    return countyStyle(feature, equityIndicator);
   } else if (feature.properties.type === "Tract") {
-    return tractStyle(feature, equityIndicator, changeYear);
+    return tractStyle(feature, equityIndicator);
   } else {
     return vdStyle(feature);
   }
@@ -77,24 +77,25 @@ export function stateStyle() {
   };
 }
 
-export function returnSpecificEquityIndicator(changeYearData: ChangeYearData[], equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-  return changeYearData.find((d: any) => d.changeYear == changeYear.changeYear)?.[equityIndicator.variable];
+export function returnSpecificEquityIndicator(feature: any, equityIndicator: EquityIndicator) {
+  return feature.properties!.changeYearData[equityIndicator.variable];
 }
 
-export function countyStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+export function countyStyle(feature: any, equityIndicator: EquityIndicator) {
   return {
-    color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor ,
-    fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).fillColor,
+    color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
+    fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
     weight: 1,
     opacity: 1,
     fillOpacity: .6
   };
 }
 
-export function tractStyle(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
+
+export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
   return {
-    color: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature.properties!.changeYearData, equityIndicator, changeYear).fillColor,
+    color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
+    fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3
