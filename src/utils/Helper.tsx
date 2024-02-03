@@ -14,8 +14,3 @@ export function useStableCallback<Args extends unknown[], Return>(callback: (...
   
     return stableCallback;
 }
-
-export function filterPollSummaryByChangeYear(changeYearData: ChangeYearData[], changeYear: ChangeYear) {
-  // console.log(changeYearData);
-  return changeYearData.find((d: any) => d.changeYear === changeYear.changeYear)?.pollSummary;
-}
