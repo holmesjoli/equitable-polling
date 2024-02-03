@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.2.18",
     "@types/react-leaflet-markercluster": "^3.0.4",
     "d3": "^7.8.5",
+    "gh-pages": "^6.1.1",
     "leaflet": "^1.9.4",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
