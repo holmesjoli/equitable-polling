@@ -1,11 +1,6 @@
 // Raw Data
 import statesGeo from "../data/processed/statesGeoJSON.json";
 import countiesGeo from "../data/processed/countiesGeoJSON.json";  
-import tractsGeo from "../data/processed/tractsGeoJSON.json";
-import vdsGeo from "../data/processed/votingDistrictsGeoJSON.json";
-import countiesLong from "../data/processed/countiesLongitudinal.json"; 
-import tractsLong from "../data/processed/tractsLongitudinal.json"; 
-import pollsChangeStatus from "../data/processed/pollsChangeStatus.json";
 
 // Scales
 import { theme, thresholdScale } from "./Theme";
@@ -17,7 +12,6 @@ import { Feature } from "geojson";
 
 // Processed Data
 export const stateData = getStates();
-export const vdData = getVd();
 
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoData: any, geoid: any) {
@@ -155,11 +149,11 @@ export function getTracts(data: any[], tractsLong: any[], decennialCensusYear: n
     return {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 }
 
-export function getVd() {
+export function getVd(data: any[]) {
 
     const features: Feature[] = [];
 
-    (vdsGeo as any[]).forEach((d: any) => {
+    (data as any[]).forEach((d: any) => {
 
         features.push({type: 'Feature', 
             properties: {type: 'Voting district',

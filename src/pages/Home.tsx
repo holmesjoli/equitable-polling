@@ -12,7 +12,7 @@ import { ChangeYear } from "../utils/Types";
 
 // Data 
 import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
-import { getPollingLocsData, getCounties, getTracts } from "../utils/DM";
+import { getPollingLocsData, getCounties, getTracts, getVd } from "../utils/DM";
 
 // Types
 import { GeoID, PollingLoc } from "../utils/Types";
@@ -42,6 +42,7 @@ export default function Home({}): JSX.Element {
 
     const [loadedCountyData, setLoadedCountyData] = useState<boolean>(false);
     const [loadedTractData, setLoadedTractData] = useState<boolean>(false);
+    const [loadedVdData, setLoadedVdData] = useState<boolean>(false);
     const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
 
     // Set data
@@ -51,6 +52,8 @@ export default function Home({}): JSX.Element {
     const [tractsLongData, setTractsLongData] = useState<any[]>([]);
     const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
+
+    console.log(vdData);
 
     const fetchPollingData = async () => {
         fetch(pollingLocsURL, {method: 'GET'})
@@ -84,6 +87,13 @@ export default function Home({}): JSX.Element {
              .finally(() => setLoadedTractData(true))
     };
 
+    const fetchVdData = async () => {
+        fetch(vdGeoURL, {method: 'GET'})
+             .then(res => res.json())
+             .then((data: any) => setVdData(getVd(data)))
+             .finally(() => setLoadedVdData(true))
+    };
+
     // React Hooks
 
     useEffect(()=>{
@@ -105,6 +115,7 @@ export default function Home({}): JSX.Element {
         } else if (geoJsonId.type === 'County') {
             fetchTractsLongData();
             fetchPollingData();
+            fetchVdData();
         }
 
        }, [changeYear, geoJsonId]);
@@ -168,7 +179,8 @@ export default function Home({}): JSX.Element {
                 setPollHover={setPollHover} changeYear={changeYear} equityIndicator={equityIndicator} 
                 setGeoHover={setGeoHover} 
                 pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
-                loadedCountyData={loadedCountyData} loadedTractData={loadedTractData}/>
+                vdData={vdData}
+                loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData}/>
         </Main>
     )
 }
