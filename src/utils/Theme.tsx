@@ -95,18 +95,11 @@ export function countyStyle(feature: any, equityIndicator: EquityIndicator) {
   return {
     color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
     fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
+    weight: 1,
+    opacity: getStrokeOpacity(feature.properties!.selected),
+    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.highlightOpacity : theme.nonHighlightOpacity
   };
 }
-
-// export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
-//   return {
-//     color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
-//     fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
-//     weight: 1,
-//     opacity: getStrokeOpacity(feature.properties!.selected),
-//     fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.highlightOpacity : theme.nonHighlightOpacity
-//   };
-// }
 
 export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
   return countyStyle(feature, equityIndicator);
