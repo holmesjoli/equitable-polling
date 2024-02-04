@@ -231,6 +231,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setShowVD(false);
             setShowPolls(false);
 
+            stateData.features.forEach((d: GeoJSON.Feature) => {
+                d.properties!.selected = false;
+            });
+
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
                 .on('moveend', () => {
                     setGeoJsonData(stateData);
@@ -239,7 +243,20 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         // Selected State
         } else if (geoJsonId.type === "State" && loadedCountyData) {
 
-            const state = stateData?.features.find(d => d.properties?.geoid === geoJsonId.geoid)?.properties as State;
+            let state = {} as State;
+
+            // Updates counties within the selected county to and make it distinct from surrounding counties
+            stateData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.geoid === geoJsonId.geoid) {
+                    d.properties!.selected = true;
+                    state = d.properties as State;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
+            console.log(stateData);
+
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData(stateData);

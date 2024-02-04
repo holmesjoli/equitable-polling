@@ -44,6 +44,10 @@ function getFillOpacity(d: any) {
   return d ? theme.highlightOpacity : theme.nonHighlightOpacity;
 }
 
+function getWeight(d: any) {
+  return d ? 3 : 2;
+}
+
 // Selected county styles
 export function highlightSelectedCounty(feature: any) {
     return {
@@ -58,7 +62,7 @@ export function highlightSelectedCounty(feature: any) {
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
   if (feature.properties.type === "State") {
-    return stateStyle();
+    return stateStyle(feature);
   } else if (feature.properties.type === "County") {
     return countyStyle(feature, equityIndicator);
   } else if (feature.properties.type === "Tract") {
@@ -68,13 +72,13 @@ export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) 
   }
 }
 
-export function stateStyle() {
+export function stateStyle(feature: any) {
   return {
     color: theme.grey.primary,
     fillColor: theme.backgroundFill,
-    weight: 1,
+    weight: feature.properties!.selected ? 2: 1,
     opacity: 1,
-    fillOpacity: .6
+    fillOpacity: theme.highlightOpacity
   };
 }
 
