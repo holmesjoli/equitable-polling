@@ -64,8 +64,6 @@ export default function Home({}): JSX.Element {
              .then((data: any) => setCountiesLongData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
     };
 
-    console.log(countiesLongData);
-
     const fetchCountiesData = async () => {
         fetch(countiesGeoURL, {method: 'GET'})
              .then(res => res.json())
