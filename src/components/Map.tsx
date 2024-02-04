@@ -232,9 +232,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setShowPolls(false);
 
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
-                .on('zoomend', () => {
-                    setGeoJsonData(stateData);
-                })
                 .on('moveend', () => {
                     setGeoJsonData(stateData);
                 });
@@ -250,9 +247,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setShowPolls(false);
 
             mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
-            .on('zoomend', () => {
-                setGeoJsonData(filterGeoByBounds(mapRef, countiesData));
-            })
             .on('moveend', () => {
                 setGeoJsonData(filterGeoByBounds(mapRef, countiesData));
             });
@@ -282,12 +276,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
             mapRef.current
                 .flyTo(county.latlng, county.zoom) // zooms to county level
-                .on('zoomend', () => {
-                    setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesData));
-                    setGeoJsonData(filterGeoByBounds(mapRef, tractsData));
-                    setGeoJsonVdData(filterGeoByBounds(mapRef, vdData));
-                    setPollingLocsInBound(filterPointByBounds(mapRef, pollingLocsData));
-                })
                 .on('moveend', () => {
                     setGeoJsonBoundaryData(filterGeoByBounds(mapRef, countiesData));
                     setGeoJsonData(filterGeoByBounds(mapRef, tractsData));
