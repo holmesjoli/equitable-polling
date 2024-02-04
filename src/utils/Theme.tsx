@@ -10,12 +10,12 @@ export const theme = {
     focusColorDark: '#113A55',
     darkGradientColor: "#113A55",
     fontFamily: 'Inter',
-    highlightOpacity: .8,
+    highlightOpacity: .7,
     nonHighlightOpacity: .3,
     lineHeight: 1.2
 }
 
-export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
+export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: theme.highlightOpacity, weight: 1 },
                             outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
                             greyOut: { color: theme.grey.secondary, fillOpacity: 0.7, weight: 0},
                             State: {
@@ -31,11 +31,7 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                               highlight: { weight: 3 }
                             }
                           }
-
-function getColor(d: any) {
-    return d ? theme.backgroundFill : theme.grey.primary;
-}
-
+                          
 function getStrokeOpacity(d: any) {
   return d ? 1 : theme.nonHighlightOpacity;
 }
@@ -44,11 +40,15 @@ function getFillOpacity(d: any) {
   return d ? theme.highlightOpacity : theme.nonHighlightOpacity;
 }
 
+function getWeight(d: any) {
+  return d ? 3 : 2;
+}
+
 // Selected county styles
 export function highlightSelectedCounty(feature: any) {
     return {
       color: theme.grey.primary,
-      fillColor: getColor(feature.properties!.selected),
+      fillColor: theme.backgroundFill,
       weight: 3,
       opacity: getStrokeOpacity(feature.properties!.selected),
       fillOpacity: getFillOpacity(feature.properties!.selected)
@@ -58,7 +58,7 @@ export function highlightSelectedCounty(feature: any) {
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
   if (feature.properties.type === "State") {
-    return stateStyle();
+    return stateStyle(feature);
   } else if (feature.properties.type === "County") {
     return countyStyle(feature, equityIndicator);
   } else if (feature.properties.type === "Tract") {
@@ -68,13 +68,13 @@ export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) 
   }
 }
 
-export function stateStyle() {
+export function stateStyle(feature: any) {
   return {
     color: theme.grey.primary,
     fillColor: theme.backgroundFill,
-    weight: 1,
+    weight: feature.properties!.selected ? 2: 1,
     opacity: 1,
-    fillOpacity: .6
+    fillOpacity: theme.highlightOpacity
   };
 }
 
@@ -91,7 +91,6 @@ export function countyStyle(feature: any, equityIndicator: EquityIndicator) {
     fillOpacity: theme.highlightOpacity
   };
 }
-
 
 export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
   return {
