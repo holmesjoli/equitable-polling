@@ -65,7 +65,7 @@ function mouseOverEquityMeasure(feature: GeoJSON.Feature, equityIndicator: Equit
 }
 
 export function mouseOverTextPoll(d: any) {
-    return `<div class="ComponentGroupInner SemiBold">${d.name}</div><div>Status:<span class=${d.overall}> ${d.status}</span></div>`;
+    return `<div class="ComponentGroupInner SemiBold">${d.name}</div><div>Status:<span class="${d.overall} SemiBold"> ${d.status}</span></div>`;
 }
 
 // todo update back to `${mouseOverGeo(feature)}` when we have more information on the state to add here

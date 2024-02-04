@@ -1,6 +1,3 @@
-// React
-import {useState, useEffect} from 'react';
-
 // MUI
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -11,10 +8,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 
 // Types
-import { State, County, ChangeYear, Indicator, GeoID } from '../utils/Types';
+import { State, County, ChangeYear, GeoID } from '../utils/Types';
 
 // Globals
-import { selectVariable, defaultCounty } from "../utils/Global";
+import { defaultCounty } from "../utils/Global";
 
 // Styles
 import styled from "styled-components";
@@ -96,7 +93,8 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
             <Autocomplete
             id="country-select-demo"
             fullWidth size="small"
-            options={selectedCounty.cntyfp === ''? selectedState.counties.features as GeoJSON.Feature[] : allOpt.concat(selectedState.counties.features as GeoJSON.Feature[]) }
+            options={allOpt.concat(selectedState.counties.features as GeoJSON.Feature[])}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.properties?.name}
             onChange = {(_, feature) => {
                 if (feature === null) {
@@ -183,8 +181,8 @@ export const Menu = styled.div<{ $geojsonid: GeoID; }>`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts, setChangeYearOpts} : 
-                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[], setChangeYearOpts: any}) {
+export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts} : 
+                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[]}) {
 
     return(
         <Menu $geojsonid={geoJsonId}>

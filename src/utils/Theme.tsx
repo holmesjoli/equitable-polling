@@ -10,7 +10,8 @@ export const theme = {
     focusColorDark: '#113A55',
     darkGradientColor: "#113A55",
     fontFamily: 'Inter',
-    choroplethOpacity: .8,
+    highlightOpacity: .8,
+    nonHighlightOpacity: .3,
     lineHeight: 1.2
 }
 
@@ -98,7 +99,7 @@ export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
     fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3
+    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.highlightOpacity : .3
   };
 }
 
