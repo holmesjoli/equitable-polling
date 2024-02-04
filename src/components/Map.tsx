@@ -266,9 +266,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setShowPolls(false);
 
             mapRef.current.flyTo(state.latlng, state.zoom) // zooms to state level
-                .on('moveend', () => {
-                    setGeoJsonData(filterGeoByBounds(mapRef, countiesData));
-                });
+            .on('moveend', () => {
+                setGeoJsonData(filterGeoByBounds(mapRef, countiesData));
+            });
 
         // Selected County
         } else if (loadedCountyData && loadedTractData) {

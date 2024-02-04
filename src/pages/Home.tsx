@@ -175,7 +175,7 @@ export default function Home({}): JSX.Element {
             }
 
             <QueryMenu geoJsonId={geoJsonId} changeYear={changeYear} setChangeYear={setChangeYear} 
-                       changeYearOpts={changeYearOpts} 
+                       changeYearOpts={changeYearOpts}
                        selectedState={selectedState} setSelectedState={setSelectedState} 
                        selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
                        setGeoJsonId={setGeoJsonId}/>
