@@ -18,28 +18,17 @@ function findEquityMeasureByChangeYear(geoid: any, geoData: any, addPollSummary 
 
     const em = geoData.find((f: any) => f.geoid === geoid);
 
-    // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
     let pctBlack;
-    if (em === undefined) {
-        pctBlack =  {equityMeasure: 0,
-                        strokeColor: theme.grey.primary,
-                        fillColor: theme.grey.tertiary}
-    } else {
+    let pollSummary;
+    if (em !== undefined) {
         pctBlack =  {equityMeasure: em!.pctBlack, 
                         strokeColor: theme.darkGradientColor, 
                         fillColor: thresholdScale(em.pctBlack) as string}
-    }
-
-    let pollSummary = undefined;
-
-    console.log(em)
-    if (addPollSummary) { // todo removed if once we have complete data
-
         pollSummary = {changeNoPolls: em.changeNoPolls, 
-                       overall: em.overall, 
-                       overallChange: em.overallChange, 
-                       id: em.id, 
-                       rSize: em.rSize}
+            overall: em.overall, 
+            overallChange: em.overallChange, 
+            id: em.id, 
+            rSize: em.rSize}
     }
 
     return {none: {equityMeasure: 0,
@@ -47,7 +36,7 @@ function findEquityMeasureByChangeYear(geoid: any, geoData: any, addPollSummary 
                     fillColor: theme.backgroundFill},
             pctBlack: pctBlack,
             pollSummary: pollSummary
-        };
+    };
 }
 
 // Structures the bounds for each geometry
