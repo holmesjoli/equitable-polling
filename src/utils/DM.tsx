@@ -103,7 +103,7 @@ function getStates() {
                          counties: countyData,
                          zoom: e.zoom,
                          abbr: e.abbr,
-                         selected: true} as State, 
+                         selected: false} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
     });
 
