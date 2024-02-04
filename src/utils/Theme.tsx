@@ -31,11 +31,7 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                               highlight: { weight: 3 }
                             }
                           }
-
-function getColor(d: any) {
-    return d ? theme.backgroundFill : theme.grey.primary;
-}
-
+                          
 function getStrokeOpacity(d: any) {
   return d ? 1 : theme.nonHighlightOpacity;
 }
@@ -52,7 +48,7 @@ function getWeight(d: any) {
 export function highlightSelectedCounty(feature: any) {
     return {
       color: theme.grey.primary,
-      fillColor: getColor(feature.properties!.selected),
+      fillColor: theme.backgroundFill,
       weight: 3,
       opacity: getStrokeOpacity(feature.properties!.selected),
       fillOpacity: getFillOpacity(feature.properties!.selected)
@@ -95,7 +91,6 @@ export function countyStyle(feature: any, equityIndicator: EquityIndicator) {
     fillOpacity: theme.highlightOpacity
   };
 }
-
 
 export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
   return {
