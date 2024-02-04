@@ -181,8 +181,8 @@ export const Menu = styled.div<{ $geojsonid: GeoID; }>`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts, setChangeYearOpts} : 
-                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[], setChangeYearOpts: any}) {
+export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts} : 
+                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[]}) {
 
     return(
         <Menu $geojsonid={geoJsonId}>
