@@ -14,34 +14,21 @@ import { Feature } from "geojson";
 export const stateData = getStates();
 
 // Returns the equity measure for the selected equity indicator
-function findEquityMeasureByChangeYear(geoid: any,geoData: any, pollSummaryData: any[] | undefined = undefined) {
+function findEquityMeasureByChangeYear(geoid: any, geoData: any, addPollSummary = false) {
 
     const em = geoData.find((f: any) => f.geoid === geoid);
 
-    // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
     let pctBlack;
-    let pollSummary = undefined;
-    if (em === undefined) {
-        pctBlack =  {equityMeasure: 0,
-                        strokeColor: theme.grey.primary,
-                        fillColor: theme.grey.tertiary}
-    } else {
+    let pollSummary;
+    if (em !== undefined) {
         pctBlack =  {equityMeasure: em!.pctBlack, 
                         strokeColor: theme.darkGradientColor, 
                         fillColor: thresholdScale(em.pctBlack) as string}
-    }
-
-    if (pollSummaryData != undefined) {
-        const indicatorYearData = pollSummaryData.find((f: any) => f.geoid === geoid);
-
-        if (indicatorYearData !== undefined) { // todo removed if once we have complete data
-
-            pollSummary = {changeNoPolls: indicatorYearData.changeNoPolls, 
-                        overall: indicatorYearData.overall, 
-                        overallChange: indicatorYearData.overallChange, 
-                        id: indicatorYearData.id, 
-                        rSize: indicatorYearData.rSize}
-        }
+        pollSummary = {changeNoPolls: em.changeNoPolls, 
+            overall: em.overall, 
+            overallChange: em.overallChange, 
+            id: em.id, 
+            rSize: em.rSize}
     }
 
     return {none: {equityMeasure: 0,
@@ -49,7 +36,7 @@ function findEquityMeasureByChangeYear(geoid: any,geoData: any, pollSummaryData:
                     fillColor: theme.backgroundFill},
             pctBlack: pctBlack,
             pollSummary: pollSummary
-        };
+    };
 }
 
 // Structures the bounds for each geometry
@@ -111,7 +98,7 @@ function getStates() {
 }
 
 // Returns a feature collection of all the counties for the selected project states
-export function getCounties(countiesGeo: any[], countiesLong: any[], pollSummaryData: any[]) {
+export function getCounties(countiesGeo: any[], countiesLong: any[]) {
 
     const features: Feature[] = [];
 
@@ -127,7 +114,7 @@ export function getCounties(countiesGeo: any[], countiesLong: any[], pollSummary
                          latlng: getLatLng(d),
                          zoom: 10,
                          selected: false,
-                         changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong, pollSummaryData),
+                         changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong, true),
                          bounds: getBounds(d)
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})

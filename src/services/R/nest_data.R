@@ -174,9 +174,12 @@ getLongitudinal <- function(df, state_fips, years) {
 
 #' Get Counties longitudinal
 #' Writes out a json file at the year-cntyfp level
-getCountiesLongitudinal <- function(df, state_fips, years, pth) {
+getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
 
   df <- getLongitudinal(df, state_fips, years)
+  pollSummary <- getPollSummary(pollSummary)
+  df <- df %>% 
+    right_join(pollSummary)
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countiesLongitudinal.json"))
   
@@ -236,7 +239,7 @@ getPollsChangeStatus <- function(df) {
   return(df)
 }
 
-getIndicatorsChangeStatus<- function(df, state_fips) {
+getPollSummary <- function(df) {
   
   df <- df %>% 
     select(changeyear, cntyfp, baseyear, nopollsadded, nopollsremoved, changenopolls) %>% 
@@ -263,9 +266,6 @@ getIndicatorsChangeStatus<- function(df, state_fips) {
                           overallChange < 0 & overallChange >= -3 ~ "-1",
                           overallChange < -3 & overallChange >= -10 ~ "-2",
                           overallChange < -10 ~ "-3"))
-
-  exportJSON <- toJSON(df)
-  write(exportJSON, "../data/processed/indicatorsChangeStatus.json")
 
   return(df)
 }

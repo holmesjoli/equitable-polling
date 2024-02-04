@@ -18,7 +18,6 @@ import { getPollingLocsData, getCounties, getTracts, getVd } from "../utils/DM";
 import { GeoID, PollingLoc } from "../utils/Types";
 
 const pollingLocsURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/pollsChangeStatus.json';
-const pollSummaryURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/indicatorsChangeStatus.json';
 const countiesLongURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/countiesLongitudinal.json';
 const countiesGeoURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/countiesGeoJSON.json';
 const tractsLongURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/tractsLongitudinal.json';
@@ -43,11 +42,9 @@ export default function Home({}): JSX.Element {
     const [loadedCountyData, setLoadedCountyData] = useState<boolean>(false);
     const [loadedTractData, setLoadedTractData] = useState<boolean>(false);
     const [loadedVdData, setLoadedVdData] = useState<boolean>(false);
-    // const [loadedPollingSummaryData, setLoadedPollingSummary] = useState<boolean>(false);
     const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
 
     // Set data
-    const [pollSummaryData, setPollSummaryData] = useState<PollingLoc[]>([]);
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>([]);
     const [countiesLongData, setCountiesLongData] = useState<any[]>([]);
     const [countiesData, setCountiesData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -61,13 +58,6 @@ export default function Home({}): JSX.Element {
              .then((data: any) => setPollingData(getPollingLocsData(data, changeYear) as PollingLoc[]));
     };
 
-    const fetchPollSummaryData = async () => {
-        fetch(pollSummaryURL, {method: 'GET'})
-             .then(res => res.json())
-             .then((data: any) => setPollSummaryData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
-            //  .finally(() => setLoadedPollingSummary(true));
-    };
-
     const fetchCountiesLongData = async () => {
         fetch(countiesLongURL, {method: 'GET'})
              .then(res => res.json())
@@ -77,7 +67,7 @@ export default function Home({}): JSX.Element {
     const fetchCountiesData = async () => {
         fetch(countiesGeoURL, {method: 'GET'})
              .then(res => res.json())
-             .then((data: any) => setCountiesData(getCounties(data, countiesLongData, pollSummaryData)))
+             .then((data: any) => setCountiesData(getCounties(data, countiesLongData)))
              .finally(() => setLoadedCountyData(true))
     };
 
@@ -118,7 +108,6 @@ export default function Home({}): JSX.Element {
 
         if (geoJsonId.type === 'State') {
             fetchCountiesLongData();
-            fetchPollSummaryData();
         } else if (geoJsonId.type === 'County') {
             fetchTractsLongData();
             fetchPollingData();
@@ -135,7 +124,7 @@ export default function Home({}): JSX.Element {
             fetchTractsData();
         }
 
-    }, [countiesLongData, pollSummaryData, tractsLongData, decennialCensusYear, geoJsonId]);
+    }, [countiesLongData, tractsLongData, decennialCensusYear, geoJsonId]);
 
     useEffect(()=>{
         if (selectedState.abbr !== '') {
