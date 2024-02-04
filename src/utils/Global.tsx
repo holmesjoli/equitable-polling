@@ -50,4 +50,5 @@ export const defaultState = {type: 'State',
                              counties: {} as GeoJSON.FeatureCollection, 
                              latlng: defaultMap.latlng, 
                              zoom: 5,
-                             abbr: ''} as State;
+                             abbr: '',
+                             selected: false} as State;
