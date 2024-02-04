@@ -10,12 +10,12 @@ export const theme = {
     focusColorDark: '#113A55',
     darkGradientColor: "#113A55",
     fontFamily: 'Inter',
-    highlightOpacity: .8,
+    highlightOpacity: .7,
     nonHighlightOpacity: .3,
     lineHeight: 1.2
 }
 
-export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
+export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: theme.highlightOpacity, weight: 1 },
                             outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
                             greyOut: { color: theme.grey.secondary, fillOpacity: 0.7, weight: 0},
                             State: {
