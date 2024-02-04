@@ -37,11 +37,11 @@ function getColor(d: any) {
 }
 
 function getStrokeOpacity(d: any) {
-  return d ? 1 : .35;
+  return d ? 1 : theme.nonHighlightOpacity;
 }
 
 function getFillOpacity(d: any) {
-  return d ? .6 : .35;
+  return d ? theme.highlightOpacity : theme.nonHighlightOpacity;
 }
 
 // Selected county styles
@@ -88,7 +88,7 @@ export function countyStyle(feature: any, equityIndicator: EquityIndicator) {
     fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
     weight: 1,
     opacity: 1,
-    fillOpacity: .6
+    fillOpacity: theme.highlightOpacity
   };
 }
 
@@ -99,7 +99,7 @@ export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
     fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.highlightOpacity : .3
+    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.highlightOpacity : theme.nonHighlightOpacity
   };
 }
 

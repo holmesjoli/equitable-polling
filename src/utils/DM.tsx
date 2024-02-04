@@ -86,7 +86,7 @@ function getStates() {
                              stfp: d.stfp,
                              geoid: d.geoid,
                              latlng: getLatLng(d),
-                             bounds: getBounds(d) 
+                             bounds: getBounds(d)
                             }, 
                 geometry: d.geometry as GeoJSON.Geometry})
         });
@@ -102,7 +102,8 @@ function getStates() {
                          latlng: getLatLng(e),
                          counties: countyData,
                          zoom: e.zoom,
-                         abbr: e.abbr} as State, 
+                         abbr: e.abbr,
+                         selected: false} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
     });
 
