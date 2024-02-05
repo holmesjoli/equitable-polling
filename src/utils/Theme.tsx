@@ -47,7 +47,7 @@ function getWeight(d: any) {
 }
 
 // Selected county styles
-export function highlightSelectedGeographicBoundary(feature: any) {
+export function highlightGeographicBoundary(feature: any) {
     return {
       color: theme.grey.primary,
       weight: 3,
@@ -58,14 +58,26 @@ export function highlightSelectedGeographicBoundary(feature: any) {
 
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
-  if (feature.properties.type === "State") {
-    return stateStyle(feature);
-  } else if (feature.properties.type === "County") {
-    return countyStyle(feature, equityIndicator);
-  } else if (feature.properties.type === "Tract") {
-    return tractStyle(feature, equityIndicator);
-  } else {
+  if (feature.properties.type === 'Voting district') {
     return vdStyle(feature);
+  } else {
+    if (equityIndicator.variable === 'none') {
+      return {
+        color: theme.grey.primary,
+        fillColor: theme.backgroundFill,
+        weight: 1,
+        opacity: getStrokeOpacity(feature.properties!.selected),
+        fillOpacity: getFillOpacity(feature.properties!.selected)
+      }
+    } else {
+      return {
+        color: feature.properties!.changeYearData[equityIndicator.variable].strokeColor,
+        fillColor: feature.properties!.changeYearData[equityIndicator.variable].fillColor,
+        weight: 1,
+        opacity: getStrokeOpacity(feature.properties!.selected),
+        fillOpacity: getFillOpacity(feature.properties!.selected)
+      }
+    }
   }
 }
 

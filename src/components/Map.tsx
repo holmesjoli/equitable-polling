@@ -20,7 +20,7 @@ import { useStableCallback } from "../utils/Helper";
 import { stateData } from "../utils/DM";
 
 // Styles
-import { layersStyle, highlightSelectedGeographicBoundary, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
+import { layersStyle, highlightGeographicBoundary, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
 
 
 // Returns the bounds of the current map view
@@ -312,22 +312,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Updates main geography and main boundary
     useEffect(() => {
-        // Update boundary and interactive layer
-        if (geoJsonId.type === 'County') {
-            if (equityIndicator.variable === 'none') {
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions); // Replaces geojson clickable elements with drilldown
-            } else {
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
-            }
-        } else {
-            if (equityIndicator.variable === 'none') {
-                geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
-            } else {
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
-            }   
-        }
-
-        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedGeographicBoundary);
+        geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
+        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightGeographicBoundary);
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
 
