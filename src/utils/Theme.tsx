@@ -16,7 +16,7 @@ export const theme = {
 }
 
 export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: theme.highlightOpacity, weight: 1 },
-                            outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
+                            outline: { color: theme.grey.primary, fill: false, weight: 2 },
                             greyOut: { color: theme.grey.secondary, fillOpacity: 0.7, weight: 0},
                             State: {
                               highlight: { weight: 2 },
@@ -56,7 +56,7 @@ export function highlightGeographicBoundary(feature: any) {
     color: theme.grey.primary,
     weight: getWeight(feature.properties!.selected),
     opacity: 1,
-    fillOpacity: 0
+    fill: false
   };
 }
 
@@ -67,7 +67,7 @@ export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) 
       color: theme.focusColorDark,
       weight: 1,
       opacity: getStrokeOpacity(feature.properties!.selected),
-      fillOpacity: 0
+      fill: false
     }
   } else {
     if (equityIndicator.variable === 'none') {
@@ -100,7 +100,7 @@ export function vdStyle(feature: any) {
     color: theme.focusColorDark,
     weight: 2,
     opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: 0
+    fill: false
   };
 }
 

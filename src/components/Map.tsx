@@ -274,8 +274,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData]);
 
-    // console.log(geoJsonData, geoJsonBoundaryData)
-
     // Updates main geography and main boundary
     useEffect(() => {
         geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightGeographicBoundary);
