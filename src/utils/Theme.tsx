@@ -87,7 +87,7 @@ export function returnSpecificEquityIndicator(feature: any, equityIndicator: Equ
 export function vdStyle(feature: any) {
   return {
     color: theme.focusColorDark,
-    weight: 1,
+    weight: 2,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: 0
   };
