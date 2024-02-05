@@ -70,7 +70,8 @@ getCounties <- function(state_fips, pth) {
     rename(stfp = STATEFP,
            cntyfp = COUNTYFP,
            name = NAME,
-           geoid = GEOID)
+           geoid = GEOID) %>% 
+    mutate(cntyfp = paste0(stfp, cntyfp))
 
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)
@@ -100,8 +101,7 @@ getTracts <- function(state_fips, years, pth) {
           rename(cntyfp = COUNTY,
                  stfp = STATE,
                  name = NAME,
-                 tractfp = TRACT) %>% 
-          mutate(geoid = paste0(stfp, cntyfp, tractfp))
+                 tractfp = TRACT)
 
       } else {
         df <- df %>% 
@@ -113,9 +113,14 @@ getTracts <- function(state_fips, years, pth) {
                  geoid = GEOID)
       }
 
+      df <- df %>% 
+        mutate(geoid = paste0(stfp, cntyfp, tractfp),
+               cntyfp = paste0(stfp, cntyfp),
+               tractfp = geoid)
+
       df <- cbind(df, getBbox(df))
       df <- getCentroid(df)
-      
+
       return(df)
 
     }) %>% bind_rows()
@@ -143,11 +148,12 @@ getVd <- function(state_fips, pth, year = 2020) {
              geoid = GEOID20,
              name = NAME20) %>% 
       select(stfp, cntyfp, vtdst, geoid, name, geometry) %>% 
-      mutate(year = year)
-    
+      mutate(year = year,
+             cntyfp = paste0(stfp, cntyfp))
+
     df <- cbind(df, getBbox(df))
     df <- getCentroid(df)
-    
+
     return(df)
   }) %>% dplyr::bind_rows()
   

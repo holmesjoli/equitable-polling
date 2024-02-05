@@ -31,20 +31,22 @@ export default function Home({}): JSX.Element {
     const [selectedCounty, setSelectedCounty] = useState(defaultCounty);
     const [changeYearOpts, setChangeYearOpts] = useState<ChangeYear[]>(selectVariable.changeYear);
     const [changeYear, setChangeYear] = useState(changeYearOpts[0]);
+    const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
     const [equityIndicator, setEquityIndicator] = useState(selectVariable.equityIndicator[0]);
     const [indicator, setIndicator] = useState(selectVariable.indicator[0]);
     const [showPolls, setShowPolls] = useState(true);
     const [showVD, setShowVD] = useState(false);
     const [isFullScreen, setFullScreen] = useState(true);
     const [geoJsonId, setGeoJsonId] = useState<GeoID>(defaultMap);
+
     const [pollHover, setPollHover] = useState({});
     const [geoHover, setGeoHover] = useState({});
 
+    // Data loaded
     const [loadedStateData, setLoadedStateData] = useState<boolean>(false);
     const [loadedCountyData, setLoadedCountyData] = useState<boolean>(false);
     const [loadedTractData, setLoadedTractData] = useState<boolean>(false);
     const [loadedVdData, setLoadedVdData] = useState<boolean>(false);
-    const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
 
     // Set data
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>([]);
@@ -159,6 +161,9 @@ export default function Home({}): JSX.Element {
 
     }, [selectedState]);
 
+
+    if (loadedCountyData) console.log(countiesData.features.filter((d: any) => d.properties!.selected))
+
     return(
         <Main>
             {geoJsonId.type === 'US'? 
@@ -203,6 +208,7 @@ export default function Home({}): JSX.Element {
                 pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
                 vdData={vdData} statesData={statesData}
                 loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData} 
+                setCountiesData={setCountiesData}
                 />
                 </>: null
             }
