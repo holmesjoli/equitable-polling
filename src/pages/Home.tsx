@@ -203,7 +203,7 @@ export default function Home({}): JSX.Element {
                 pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
                 vdData={vdData} statesData={statesData}
                 loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData} 
-                setCountiesData={setCountiesData}/>
+                />
                 </>: null
             }
         </Main>
