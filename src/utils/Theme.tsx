@@ -4,7 +4,7 @@ import { EquityIndicator } from "./Types";
 
 export const theme = {
     fontSize: 12,
-    grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
+    grey: {primary: '#757575', secondary: '#9d9d9d', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#1D618E',
     focusColorDark: '#113A55',
