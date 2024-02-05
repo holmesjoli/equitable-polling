@@ -232,12 +232,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     
             setCountiesData(countiesData);
 
-            console.log(countiesData.features.filter(d => d.properties && d.properties.stfp === selectedState.stfp));
+            // console.log(countiesData.features.filter(d => d.properties && d.properties.stfp === selectedState.stfp));
         }
     
     }, [selectedState]);
 
-    console.log(geoJsonData, geoJsonBoundaryData);
+    // console.log(geoJsonData, geoJsonBoundaryData);
 
     useEffect(() => {
         // United State
