@@ -14,7 +14,7 @@ import { Feature } from "geojson";
 export const stateData = getStates();
 
 // Returns the equity measure for the selected equity indicator
-function findEquityMeasureByChangeYear(geoid: any, geoData: any, addPollSummary = false) {
+function findEquityMeasureByChangeYear(geoid: any, geoData: any) {
 
     const em = geoData.find((f: any) => f.geoid === geoid);
 
@@ -114,7 +114,7 @@ export function getCounties(countiesGeo: any[], countiesLong: any[]) {
                          latlng: getLatLng(d),
                          zoom: 10,
                          selected: false,
-                         changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong, true),
+                         changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong),
                          bounds: getBounds(d)
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
