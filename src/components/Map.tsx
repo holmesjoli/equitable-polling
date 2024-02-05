@@ -208,7 +208,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         const properties = layer.feature.properties;
 
         if (properties.type !== "Tract") {
-            setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
+            setGeoJsonId({geoid: properties.geoid, type: properties.type} as GeoID);
         }        
     }
 
@@ -218,7 +218,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const onClickRect = useMemo(
         () => ({
           click() {
-            setGeoJsonId({geoid: defaultMap.geoid, name: defaultMap.name, type: defaultMap.type, latlng: defaultMap.latlng, zoom: defaultMap.zoom} as GeoID);
+            setGeoJsonId({geoid: defaultMap.geoid, type: defaultMap.type} as GeoID);
           }
         }),
         [geoJsonId]
@@ -363,10 +363,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                                     <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(feature.properties.changeYearData.pollSummary)} radius={pollSummarySize(feature.properties.changeYearData.pollSummary)} eventHandlers={{
                                         click: () => {
                                             setGeoJsonId({geoid: feature.properties.geoid, 
-                                                          name: feature.properties.name, 
-                                                          type: feature.properties.type, 
-                                                          latlng: feature.properties.latlng,
-                                                          zoom: feature.properties.zoom} as GeoID);
+                                                          type: feature.properties.type} as GeoID);
                                         },
                                         mouseover: () => {
                                             stableMouseoverPollSummaryCallback(feature);

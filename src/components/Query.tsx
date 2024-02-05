@@ -58,7 +58,7 @@ function SelectState({ selectedState, setSelectedState, setSelectedCounty, setGe
         const state = stateData.features.find(d => d.properties!.stfp === event.target.value)!.properties as State;
         setSelectedState(state);
         setSelectedCounty(defaultCounty);
-        setGeoJsonId({geoid: state.geoid, name: state.name, type: state.type, latlng: state.latlng, zoom: state.zoom} as GeoID);
+        setGeoJsonId({geoid: state.geoid, type: state.type} as GeoID);
     };
 
     return (
@@ -101,11 +101,11 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
                     return;
                 } else if (feature?.properties?.geoid === '0') {
                     setSelectedCounty(defaultCounty);
-                    setGeoJsonId({geoid: selectedState.geoid, name: selectedState.name, type: selectedState.type, latlng: selectedState.latlng, zoom: selectedState.zoom} as GeoID);
+                    setGeoJsonId({geoid: selectedState.geoid, type: selectedState.type} as GeoID);
                 } else {
                     const properties = feature?.properties;
                     setSelectedCounty(properties as County);
-                    setGeoJsonId({geoid: properties!.geoid, name: properties!.name, type: properties!.type, latlng: properties!.latlng, zoom: properties!.zoom} as GeoID);
+                    setGeoJsonId({geoid: properties!.geoid, type: properties!.type} as GeoID);
                 }
             }}
             renderOption={(props, option) => (
