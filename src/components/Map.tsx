@@ -235,7 +235,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     
             setCountiesData(countiesData);
 
-            console.log(countiesData.features.filter(d => d.properties && d.properties.stfp === '45'));
+            console.log(countiesData.features.filter(d => d.properties && d.properties.stfp === selectedState.stfp));
         }
     
     }, [selectedState])
@@ -321,13 +321,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     // Updates main geography and main boundary
     useEffect(() => {
-        // Update boundary and interactive layer
-        if (equityIndicator.variable === 'none') {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightGeographicBoundary);
-        } else {
-            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-        }   
-
+        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightGeographicBoundary);
         geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
