@@ -239,6 +239,16 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
             let state = statesData.features.find((d: GeoJSON.Feature) => d.properties!.geoid === geoJsonId.geoid)!.properties as State;
 
+            countiesData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.stfp === selectedState.stfp) {
+                    d.properties!.selected = true;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
+            setCountiesData(countiesData);
+
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData(statesData);
@@ -272,10 +282,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     d.properties!.selected = false;
                 }
             });
-
-            // console.log(geoJsonId.geoid)
-            // console.log(tractsData.features)
-            // console.log(tractsData.features.filter((d: any) => d.properties!.selected))
 
             setTractsData(tractsData);
 

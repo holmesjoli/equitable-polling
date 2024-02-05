@@ -147,23 +147,7 @@ export default function Home({}): JSX.Element {
             setChangeYear(opts[0]);
         }
 
-        if (loadedCountyData) {
-            countiesData.features.forEach((d: GeoJSON.Feature) => {
-                if (d.properties!.stfp === selectedState.stfp) {
-                    d.properties!.selected = true;
-                } else {
-                    d.properties!.selected = false;
-                }
-            });
-
-            setCountiesData(countiesData);
-        }
-
     }, [selectedState]);
-
-// console.log(countiesData);
-// console.log(geoJsonId);
-    // if (loadedCountyData) console.log(countiesData.features.filter((d: any) => d.properties!.selected))
 
     return(
         <Main>
