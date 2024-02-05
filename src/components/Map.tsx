@@ -111,6 +111,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const stableMouseoverCallback = useStableCallback(mouseOver);  
     const stableMouseoverPollSummaryCallback = useStableCallback(mouseOverPollSummary);
 
+    // Mouseover -----------------------------------------------------------
+
     function mouseOver(event: any) {
         var layer = event.target;
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
@@ -123,20 +125,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             mouseOverTract(layer, coords);
         }
     }
-
-    function mouseOverPollingLoc(d: any) {
-        var coords = mapRef.current.latLngToContainerPoint(d.latlng);
-        pointerOver(coords.x + 20, coords.y - 10, mouseOverTextPoll(d));
-        setPollHover(d);
-    }
-
-    function mouseOverVD(event: any) {
-        var layer = event.target;
-        layer.setStyle(layersStyle.VD.highlight);
-        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        pointerOver(coords.x + 20, coords.y - 10, mouseOverTextVD(layer.feature));
-    }
-
     function mouseOverTract(layer: any, coords: any) {
         layer.setStyle(layersStyle.Tract.highlight);
         pointerOver(coords.x, coords.y, mouseOverTextTract(layer.feature, equityIndicator, changeYear));
@@ -153,6 +141,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature));
     }
 
+    function mouseOverPollingLoc(d: any) {
+        var coords = mapRef.current.latLngToContainerPoint(d.latlng);
+        pointerOver(coords.x + 20, coords.y - 10, mouseOverTextPoll(d));
+        setPollHover(d);
+    }
+
     function mouseOverCountyorPollSummary(feature: any) {
         var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
         pointerOver(coords.x + 30, coords.y - 10, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
@@ -163,6 +157,15 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     function mouseOverPollSummary(feature: any) {
         mouseOverCountyorPollSummary(feature);
     }
+
+    function mouseOverVD(event: any) {
+        var layer = event.target;
+        layer.setStyle(layersStyle.VD.highlight);
+        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
+        pointerOver(coords.x + 20, coords.y - 10, mouseOverTextVD(layer.feature));
+    }
+
+    // Mouseout -----------------------------------------------------------
 
     function mouseOutPoll() {
         pointerOut();
@@ -184,16 +187,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
           mouseout: stableMouseoutCallback,
           click: onClickFeature
         });
-        pointerOut();
-    }
-
-    function onEachVD(_: any, layer: any) {
-
-        layer.on({
-          mouseover: mouseOverVD,
-          mouseout: stableMouseoutCallback
-        });
-        pointerOut();
     }
 
     function onClickFeature(event: any) {
@@ -203,6 +196,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         if (properties.type !== "Tract") {
             setGeoJsonId({geoid: properties.geoid, name: properties.name, type: properties.type, latlng: properties.latlng, zoom: properties.zoom} as GeoID);
         }        
+    }
+
+    function onEachVD(_: any, layer: any) {
+
+        layer.on({
+          mouseover: mouseOverVD,
+          mouseout: stableMouseoutCallback
+        });
     }
 
     // React Hooks ---------------------------------------------------
@@ -271,14 +272,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
         }
 
-    }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData, loadedCountyData]);
+    }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData]);
 
     // console.log(geoJsonData, geoJsonBoundaryData)
 
     // Updates main geography and main boundary
     useEffect(() => {
-        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-        geoJsonRef.current?.clearLayers().addData(geoJsonData)
+        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightGeographicBoundary);
+        geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
 
@@ -297,8 +298,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect} ref={rectRef}/>
             </Pane>
             <Pane name="geo-pane" style={{ zIndex: 100 }}>
-                {/* {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={highlightGeographicBoundary} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null} */}
-                <GeoJSON data={geoJsonData} style={(feature) => choroplethStyle(feature, equityIndicator) as PathOptions} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
+                {/* {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null} */}
+                <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
                 {/* {showVD &&  loadedVdData ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> } */}
             </Pane>
             <Pane name="poll-pane" style={{ zIndex: 200 }}>
