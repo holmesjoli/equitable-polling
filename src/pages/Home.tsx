@@ -176,7 +176,8 @@ export default function Home({}): JSX.Element {
                 setGeoHover={setGeoHover} 
                 pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
                 vdData={vdData}
-                loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData}/>
+                loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData} 
+                setCountiesData={setCountiesData}/>
         </Main>
     )
 }

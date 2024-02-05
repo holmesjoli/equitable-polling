@@ -45,61 +45,38 @@ function getWeight(d: any) {
 }
 
 // Selected county styles
-export function highlightSelectedCounty(feature: any) {
-    return {
-      color: theme.grey.primary,
-      fillColor: theme.backgroundFill,
-      weight: 3,
-      opacity: getStrokeOpacity(feature.properties!.selected),
-      fillOpacity: getFillOpacity(feature.properties!.selected)
-    };
+export function highlightGeographicBoundary(feature: any) {
+  return {
+    color: theme.grey.primary,
+    weight: getWeight(feature.properties!.selected),
+    opacity: 1,
+    fillOpacity: 0
+  };
 }
 
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
-  if (feature.properties.type === "State") {
-    return stateStyle(feature);
-  } else if (feature.properties.type === "County") {
-    return countyStyle(feature, equityIndicator);
-  } else if (feature.properties.type === "Tract") {
-    return tractStyle(feature, equityIndicator);
+  if (equityIndicator.variable === 'none') {
+    return {
+      color: theme.grey.primary,
+      fillColor: theme.backgroundFill,
+      weight: 1,
+      opacity: getStrokeOpacity(feature.properties!.selected),
+      fillOpacity: getFillOpacity(feature.properties!.selected)
+    }
   } else {
-    return vdStyle(feature);
+    return {
+      color: feature.properties!.changeYearData[equityIndicator.variable].strokeColor,
+      fillColor: feature.properties!.changeYearData[equityIndicator.variable].fillColor,
+      weight: 1,
+      opacity: getStrokeOpacity(feature.properties!.selected),
+      fillOpacity: getFillOpacity(feature.properties!.selected)
+    }
   }
-}
-
-export function stateStyle(feature: any) {
-  return {
-    color: theme.grey.primary,
-    fillColor: theme.backgroundFill,
-    weight: feature.properties!.selected ? 2: 1,
-    opacity: 1,
-    fillOpacity: theme.highlightOpacity
-  };
 }
 
 export function returnSpecificEquityIndicator(feature: any, equityIndicator: EquityIndicator) {
   return feature.properties!.changeYearData[equityIndicator.variable];
-}
-
-export function countyStyle(feature: any, equityIndicator: EquityIndicator) {
-  return {
-    color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
-    weight: 1,
-    opacity: 1,
-    fillOpacity: theme.highlightOpacity
-  };
-}
-
-export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
-  return {
-    color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
-    weight: 1,
-    opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.highlightOpacity : theme.nonHighlightOpacity
-  };
 }
 
 // Voting district styles

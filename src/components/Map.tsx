@@ -20,7 +20,7 @@ import { useStableCallback } from "../utils/Helper";
 import { stateData } from "../utils/DM";
 
 // Styles
-import { layersStyle, highlightSelectedCounty, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
+import { layersStyle, highlightGeographicBoundary, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
 
 
 // Returns the bounds of the current map view
@@ -86,7 +86,7 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
 
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, 
                            setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
-                           pollingLocsData, countiesData, tractsData, vdData, loadedCountyData, loadedTractData, loadedVdData }: 
+                           pollingLocsData, countiesData, tractsData, vdData, loadedCountyData, loadedTractData, loadedVdData, setCountiesData }: 
                         {   mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, 
                             selectedState: State, setSelectedState: any, 
                             selectedCounty: any, setSelectedCounty: any, 
@@ -95,7 +95,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                             setGeoHover: any, 
                             pollingLocsData: any, countiesData: GeoJSON.FeatureCollection, tractsData: GeoJSON.FeatureCollection,
                             vdData: GeoJSON.FeatureCollection,
-                            loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean }) {
+                            loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean, setCountiesData: any }) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>(stateData);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -223,6 +223,24 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     );
 
     useEffect(() => {
+
+        if (loadedCountyData) {
+            countiesData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.stfp === geoJsonId.geoid) {
+                    d.properties!.selected = true;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+    
+            setCountiesData(countiesData);
+
+            console.log(countiesData.features.filter(d => d.properties && d.properties.stfp === '45'));
+        }
+    
+    }, [selectedState])
+
+    useEffect(() => {
         // United State
         if (geoJsonId.type === "US") {
             setSelectedState(defaultState);
@@ -304,23 +322,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     // Updates main geography and main boundary
     useEffect(() => {
         // Update boundary and interactive layer
-        if (geoJsonId.type === 'County') {
-            if (equityIndicator.variable === 'none') {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions); // Replaces geojson clickable elements with drilldown
-            } else {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
-            }
+        if (equityIndicator.variable === 'none') {
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightGeographicBoundary);
         } else {
-            if (equityIndicator.variable === 'none') {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
-                geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
-            } else {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
-                geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
-            }   
-        }
+            geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
+        }   
+
+        geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
 
@@ -394,14 +402,14 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, 
                               setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
                               pollingLocsData, countiesData, tractsData, 
-                              vdData, loadedCountyData, loadedTractData, loadedVdData }: 
+                              vdData, loadedCountyData, loadedTractData, loadedVdData, setCountiesData }: 
                             { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, 
                             selectedCounty: any,
                               setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, 
                               showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, 
                               setGeoHover: any, 
                               pollingLocsData: any, countiesData: GeoJSON.FeatureCollection, tractsData: GeoJSON.FeatureCollection,
-                              vdData: GeoJSON.FeatureCollection, loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean }): JSX.Element {
+                              vdData: GeoJSON.FeatureCollection, loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean, setCountiesData: any }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -431,6 +439,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                              pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
                              vdData={vdData} 
                              loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData}
+                             setCountiesData={setCountiesData}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>
