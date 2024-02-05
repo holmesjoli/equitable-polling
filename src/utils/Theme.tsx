@@ -28,7 +28,9 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                               highlight: { weight: 3 },
                             },
                             VD: {
-                              highlight: { weight: 3 }
+                              highlight: { weight: 3,
+                              fillColor: theme.focusColorDark,
+                              fillOpacity: theme.nonHighlightOpacity}
                             }
                           }
                           
@@ -108,7 +110,7 @@ export function vdStyle(feature: any) {
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: 0
-  };
+  }
 }
 
 // Poll styles
