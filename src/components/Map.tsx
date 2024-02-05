@@ -108,20 +108,19 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     // Functions ---------------------------------------------------
 
     const stableMouseoutCallback = useStableCallback(mouseOut);
-    const stableMouseoverCallback = useStableCallback(mouseOver);
-  
+    const stableMouseoverCallback = useStableCallback(mouseOver);  
     const stableMouseoverPollSummaryCallback = useStableCallback(mouseOverPollSummary);
-
 
     function mouseOver(event: any) {
         var layer = event.target;
+        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
 
         if (layer.feature.properties.type === "State") {
-            mouseOverState(layer);
+            mouseOverState(layer, coords);
         } else if (layer.feature.properties.type === "County") {
-            mouseOverCounty(layer);
+            mouseOverCounty(layer, coords);
         } else if (layer.feature.properties.type === "Tract") {
-            mouseOverTract(layer);
+            mouseOverTract(layer, coords);
         }
     }
 
@@ -138,11 +137,20 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         pointerOver(coords.x + 20, coords.y - 10, mouseOverTextVD(layer.feature));
     }
 
-    function mouseOverTract(layer: any) {
+    function mouseOverTract(layer: any, coords: any) {
         layer.setStyle(layersStyle.Tract.highlight);
-        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         pointerOver(coords.x, coords.y, mouseOverTextTract(layer.feature, equityIndicator, changeYear));
         setGeoHover(layer.feature.properties);
+    }
+
+    function mouseOverCounty(layer: any, coords: any) {
+        layer.setStyle(layersStyle.County.highlight);
+        mouseOverCountyorPollSummary(layer.feature);
+    }
+
+    function mouseOverState(layer: any, coords: any) {
+        layer.setStyle(layersStyle.State.highlight);
+        pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature));
     }
 
     function mouseOverCountyorPollSummary(feature: any) {
@@ -151,22 +159,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         setPollHover(feature.properties);
         setGeoHover(feature.properties);
     }
-
-    function mouseOverCounty(layer: any) {
-        layer.setStyle(layersStyle.County.highlight);
-        mouseOverCountyorPollSummary(layer.feature);
-    }
-
+    
     function mouseOverPollSummary(feature: any) {
         mouseOverCountyorPollSummary(feature);
-    }
-
-    function mouseOverState(layer: any) {
-        console.log('hit')
-        console.log(layersStyle.State.highlight);
-        layer.setStyle(layersStyle.State.highlight);
-        var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
-        pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature));
     }
 
     function mouseOutPoll() {
@@ -178,7 +173,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         var layer = event.target;
         layer.setStyle(choroplethStyle(layer.feature, equityIndicator) as PathOptions);
         pointerOut();
-        // d3.select(".Status .ComponentGroupInner span").attr("class", "");
         setGeoHover({});
         setPollHover({});
     }
