@@ -40,6 +40,10 @@ function getFillOpacity(d: any) {
   return d ? theme.highlightOpacity : theme.nonHighlightOpacity;
 }
 
+function getPollFillOpacity(d: any) {
+  return d ? 1 : theme.nonHighlightOpacity;
+}
+
 function getWeight(d: any) {
   return d ? 3 : 2;
 }
@@ -95,8 +99,8 @@ export function pollStyle(point: any, selected: boolean = true) {
     fillColor: pollFillScale(point.id) as string,
     color: pollStrokeScale(point.overall) as string,
     weight: 1,
-    opacity: getFillOpacity(selected),
-    fillOpacity: getFillOpacity(selected)
+    opacity: getPollFillOpacity(selected),
+    fillOpacity: getPollFillOpacity(selected)
   };
 }
 
