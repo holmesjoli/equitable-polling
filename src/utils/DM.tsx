@@ -31,10 +31,7 @@ function findEquityMeasureByChangeYear(geoid: any, geoData: any, addPollSummary 
             rSize: em.rSize}
     }
 
-    return {none: {equityMeasure: 0,
-                    strokeColor: theme.grey.primary,
-                    fillColor: theme.backgroundFill},
-            pctBlack: pctBlack,
+    return {pctBlack: pctBlack,
             pollSummary: pollSummary
     };
 }
