@@ -1,7 +1,3 @@
-// Raw Data
-import statesGeo from "../data/processed/statesGeoJSON.json";
-import countiesGeo from "../data/processed/countiesGeoJSON.json";  
-
 // Scales
 import { theme, thresholdScale } from "./Theme";
 
@@ -9,9 +5,6 @@ import { theme, thresholdScale } from "./Theme";
 import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYear } from "./Types";
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
-
-// Processed Data
-export const stateData = getStates();
 
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoid: any, geoData: any, addPollSummary = false) {
@@ -56,30 +49,11 @@ function returnFeatureCollection(features: Feature[]) {
     return {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 }
 
-function getStates() {
+export function getStates(data: any) {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
-    (statesGeo as any[]).forEach((e: any) => {
-
-        const countyFeatures = [] as GeoJSON.Feature[];
-
-        (countiesGeo as any[]).filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
-
-            countyFeatures.push({type: 'Feature', 
-                properties: {type: 'County',
-                             descr: 'County',
-                             name: d.name,
-                             cntyfp: d.cntyfp,
-                             stfp: d.stfp,
-                             geoid: d.geoid,
-                             latlng: getLatLng(d),
-                             bounds: getBounds(d)
-                            }, 
-                geometry: d.geometry as GeoJSON.Geometry})
-        });
-
-        const countyData = {type: 'FeatureCollection', features: countyFeatures} as GeoJSON.FeatureCollection;
+    (data as any[]).forEach((e: any) => {
 
         stateFeatures.push({type: 'Feature', 
             properties: {type: 'State',
@@ -88,10 +62,9 @@ function getStates() {
                          stfp: e.stfp,
                          geoid: e.geoid, 
                          latlng: getLatLng(e),
-                         counties: countyData,
                          zoom: e.zoom,
                          abbr: e.abbr,
-                         selected: false} as State, 
+                         selected: true} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
     });
 

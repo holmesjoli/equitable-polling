@@ -12,11 +12,12 @@ import { ChangeYear } from "../utils/Types";
 
 // Data 
 import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
-import { getPollingLocsData, getCounties, getTracts, getVd } from "../utils/DM";
+import { getPollingLocsData, getCounties, getTracts, getVd, getStates } from "../utils/DM";
 
 // Types
 import { GeoID, PollingLoc } from "../utils/Types";
 
+const statesURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/statesGeoJSON.json';
 const pollingLocsURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/pollsChangeStatus.json';
 const countiesLongURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/countiesLongitudinal.json';
 const countiesGeoURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/countiesGeoJSON.json';
@@ -39,6 +40,7 @@ export default function Home({}): JSX.Element {
     const [pollHover, setPollHover] = useState({});
     const [geoHover, setGeoHover] = useState({});
 
+    const [loadedStateData, setLoadedStateData] = useState<boolean>(false);
     const [loadedCountyData, setLoadedCountyData] = useState<boolean>(false);
     const [loadedTractData, setLoadedTractData] = useState<boolean>(false);
     const [loadedVdData, setLoadedVdData] = useState<boolean>(false);
@@ -51,6 +53,7 @@ export default function Home({}): JSX.Element {
     const [tractsLongData, setTractsLongData] = useState<any[]>([]);
     const [tractsData, setTractsData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [vdData, setVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
+    const [statesData, setStateData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
 
     const fetchPollingData = async () => {
         fetch(pollingLocsURL, {method: 'GET'})
@@ -69,6 +72,13 @@ export default function Home({}): JSX.Element {
              .then(res => res.json())
              .then((data: any) => setCountiesData(getCounties(data, countiesLongData)))
              .finally(() => setLoadedCountyData(true))
+    };
+
+    const fetchStatesData = async () => {
+        fetch(statesURL, {method: 'GET'})
+             .then(res => res.json())
+             .then((data: any) => setStateData(getStates(data)))
+             .finally(() => setLoadedStateData(true))
     };
 
     const fetchTractsLongData = async () => {
@@ -95,6 +105,8 @@ export default function Home({}): JSX.Element {
     useEffect(()=>{
         Tooltip.init();
     }, []);
+
+    fetchStatesData();
 
     useEffect(() => {
         if (changeYear.baseYear < 2020) {
@@ -162,12 +174,13 @@ export default function Home({}): JSX.Element {
                 )}
                 </>
             }
-
-            <QueryMenu geoJsonId={geoJsonId} changeYear={changeYear} setChangeYear={setChangeYear} 
+            { loadedStateData ? 
+            <>
+            <QueryMenu geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId}  
+                       changeYear={changeYear} setChangeYear={setChangeYear} 
                        changeYearOpts={changeYearOpts}
-                       selectedState={selectedState} setSelectedState={setSelectedState} 
-                       selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
-                       setGeoJsonId={setGeoJsonId}/>
+                       statesData={statesData} selectedState={selectedState} setSelectedState={setSelectedState} 
+                       countiesData={countiesData} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} />
             <Map geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                 selectedState={selectedState} setSelectedState={setSelectedState} 
                 selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
@@ -175,9 +188,11 @@ export default function Home({}): JSX.Element {
                 setPollHover={setPollHover} changeYear={changeYear} equityIndicator={equityIndicator} 
                 setGeoHover={setGeoHover} 
                 pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
-                vdData={vdData}
+                vdData={vdData} statesData={statesData}
                 loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData} 
                 setCountiesData={setCountiesData}/>
+                </>: null
+            }
         </Main>
     )
 }
