@@ -55,7 +55,7 @@ export function highlightGeographicBoundary(feature: any) {
   return {
     color: theme.grey.primary,
     weight: getWeight(feature.properties!.selected),
-    opacity: 1,
+    opacity: getStrokeOpacity(feature.properties!.selected),
     fill: false
   };
 }
