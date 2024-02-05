@@ -271,7 +271,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData, loadedCountyData]);
 
-    console.log(geoJsonData, geoJsonBoundaryData)
+    // console.log(geoJsonData, geoJsonBoundaryData)
 
     // Updates main geography and main boundary
     useEffect(() => {

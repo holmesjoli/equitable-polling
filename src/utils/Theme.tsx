@@ -28,7 +28,9 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                               highlight: { weight: 3 },
                             },
                             VD: {
-                              highlight: { weight: 3 }
+                              highlight: { weight: 3,
+                                          fillColor: theme.focusColorDark,
+                                          fillOpacity: theme.nonHighlightOpacity}
                             }
                           }
                           
@@ -60,21 +62,30 @@ export function highlightGeographicBoundary(feature: any) {
 
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
-  if (equityIndicator.variable === 'none') {
+  if (feature.properties.type === 'Voting district') {
     return {
-      color: theme.grey.primary,
-      fillColor: theme.backgroundFill,
+      color: theme.focusColorDark,
       weight: 1,
       opacity: getStrokeOpacity(feature.properties!.selected),
-      fillOpacity: getFillOpacity(feature.properties!.selected)
+      fillOpacity: 0
     }
   } else {
-    return {
-      color: feature.properties!.changeYearData[equityIndicator.variable].strokeColor,
-      fillColor: feature.properties!.changeYearData[equityIndicator.variable].fillColor,
-      weight: 1,
-      opacity: getStrokeOpacity(feature.properties!.selected),
-      fillOpacity: getFillOpacity(feature.properties!.selected)
+    if (equityIndicator.variable === 'none') {
+      return {
+        color: theme.grey.primary,
+        fillColor: theme.backgroundFill,
+        weight: 1,
+        opacity: getStrokeOpacity(feature.properties!.selected),
+        fillOpacity: getFillOpacity(feature.properties!.selected)
+      }
+    } else {
+      return {
+        color: feature.properties!.changeYearData[equityIndicator.variable].strokeColor,
+        fillColor: feature.properties!.changeYearData[equityIndicator.variable].fillColor,
+        weight: 1,
+        opacity: getStrokeOpacity(feature.properties!.selected),
+        fillOpacity: getFillOpacity(feature.properties!.selected)
+      }
     }
   }
 }
