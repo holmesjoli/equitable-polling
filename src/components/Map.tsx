@@ -71,7 +71,7 @@ function filterPointByBounds(mapRef: any, data: any) {
 function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) {
 
     data.features.forEach((d: GeoJSON.Feature) => {
-        if ((d.properties!.cntyfp === county.cntyfp) && (d.properties!.stfp === county.stfp)) {
+        if ((d.properties!.cntyfp === county.cntyfp)) {
             d.properties!.selected = true;
         } else {
             d.properties!.selected = false;
