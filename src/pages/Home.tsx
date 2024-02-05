@@ -144,6 +144,19 @@ export default function Home({}): JSX.Element {
             setChangeYearOpts(opts);
             setChangeYear(opts[0]);
         }
+
+        if (loadedCountyData) {
+            countiesData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.stfp === geoJsonId.geoid) {
+                    d.properties!.selected = true;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
+            setCountiesData(countiesData);
+        }
+
     }, [selectedState]);
 
     return(

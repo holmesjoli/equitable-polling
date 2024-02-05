@@ -220,26 +220,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     );
 
     useEffect(() => {
-
-        if (loadedCountyData) {
-            countiesData.features.forEach((d: GeoJSON.Feature) => {
-                if (d.properties!.stfp === geoJsonId.geoid) {
-                    d.properties!.selected = true;
-                } else {
-                    d.properties!.selected = false;
-                }
-            });
-    
-            setCountiesData(countiesData);
-
-            // console.log(countiesData.features.filter(d => d.properties && d.properties.stfp === selectedState.stfp));
-        }
-    
-    }, [selectedState]);
-
-    // console.log(geoJsonData, geoJsonBoundaryData);
-
-    useEffect(() => {
         // United State
         if (geoJsonId.type === "US") {
             setSelectedState(defaultState);
@@ -256,14 +236,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         // Selected State
         } else if (geoJsonId.type === "State" && loadedCountyData) {
 
-            let state = {} as State;
-
-            // Updates counties within the selected county to and make it distinct from surrounding counties
-            statesData.features.forEach((d: GeoJSON.Feature) => {
-                if (d.properties!.geoid === geoJsonId.geoid) {
-                    state = d.properties as State;
-                } 
-            });
+            let state = statesData.features.find((d: GeoJSON.Feature) => d.properties!.geoid === geoJsonId.geoid)!.properties as State;
 
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
@@ -278,17 +251,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
         // Selected County
         } else if (loadedCountyData && loadedTractData) {
-            let county = {} as County;
 
-            // Updates counties within the selected county to and make it distinct from surrounding counties
-            countiesData.features.forEach((d: GeoJSON.Feature) => {
-                if (d.properties!.geoid === geoJsonId.geoid) {
-                    d.properties!.selected = true;
-                    county = d.properties as County;
-                } else {
-                    d.properties!.selected = false;
-                }
-            });
+            let county = countiesData.features.find((d: GeoJSON.Feature) => d.properties!.geoid === geoJsonId.geoid)!.properties as County;
 
             // Updates tract within the selected county to and make it distinct from surrounding tracts
             updateSelectedFeature(tractsData as GeoJSON.FeatureCollection || [], county);
