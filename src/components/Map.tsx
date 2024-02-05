@@ -20,7 +20,7 @@ import { useStableCallback } from "../utils/Helper";
 import { stateData } from "../utils/DM";
 
 // Styles
-import { layersStyle, highlightSelectedCounty, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
+import { layersStyle, highlightSelectedGeographicBoundary, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
 
 
 // Returns the bounds of the current map view
@@ -315,21 +315,19 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         // Update boundary and interactive layer
         if (geoJsonId.type === 'County') {
             if (equityIndicator.variable === 'none') {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedCounty);
                 geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions); // Replaces geojson clickable elements with drilldown
             } else {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
                 geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
             }
         } else {
             if (equityIndicator.variable === 'none') {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData);
                 geoJsonRef.current?.clearLayers().addData(geoJsonData); // Replaces geojson clickable elements with drilldown
             } else {
-                geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData)
                 geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
             }   
         }
+
+        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightSelectedGeographicBoundary);
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
 

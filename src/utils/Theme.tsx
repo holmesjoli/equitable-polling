@@ -16,7 +16,7 @@ export const theme = {
 }
 
 export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: theme.highlightOpacity, weight: 1 },
-                            outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
+                            outline: { color: theme.grey.primary, fill: false, weight: 2 },
                             greyOut: { color: theme.grey.secondary, fillOpacity: 0.7, weight: 0},
                             State: {
                               highlight: { weight: 2 },
@@ -45,13 +45,12 @@ function getWeight(d: any) {
 }
 
 // Selected county styles
-export function highlightSelectedCounty(feature: any) {
+export function highlightSelectedGeographicBoundary(feature: any) {
     return {
       color: theme.grey.primary,
-      fillColor: theme.backgroundFill,
       weight: 3,
       opacity: getStrokeOpacity(feature.properties!.selected),
-      fillOpacity: getFillOpacity(feature.properties!.selected)
+      fill: false
     };
 }
 
