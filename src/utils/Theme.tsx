@@ -4,7 +4,7 @@ import { EquityIndicator } from "./Types";
 
 export const theme = {
     fontSize: 12,
-    grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
+    grey: {primary: '#757575', secondary: '#9d9d9d', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#1D618E',
     focusColorDark: '#113A55',
@@ -90,13 +90,13 @@ export function vdStyle(feature: any) {
 }
 
 // Poll styles
-export function pollStyle(point: any) {
+export function pollStyle(point: any, selected: boolean = true) {
   return {
     fillColor: pollFillScale(point.id) as string,
     color: pollStrokeScale(point.overall) as string,
     weight: 1,
-    opacity: 1,
-    fillOpacity: 1
+    opacity: getFillOpacity(selected),
+    fillOpacity: getFillOpacity(selected)
   };
 }
 
