@@ -234,7 +234,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             setShowPolls(false);
 
             stateData.features.forEach((d: GeoJSON.Feature) => {
-                d.properties!.selected = false;
+                d.properties!.selected = true;
             });
 
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
@@ -245,17 +245,25 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         // Selected State
         } else if (geoJsonId.type === "State" && loadedCountyData) {
 
-            let state = {} as State;
+            let state = stateData.features.find((d: GeoJSON.Feature) => d.properties!.geoid === geoJsonId.geoid)!.properties as State;
 
-            // Updates counties within the selected county to and make it distinct from surrounding counties
-            stateData.features.forEach((d: GeoJSON.Feature) => {
-                if (d.properties!.geoid === geoJsonId.geoid) {
+             stateData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.stfp === geoJsonId.geoid) {
                     d.properties!.selected = true;
-                    state = d.properties as State;
                 } else {
                     d.properties!.selected = false;
                 }
             });
+
+            countiesData.features.forEach((d: GeoJSON.Feature) => {
+                if (d.properties!.stfp === geoJsonId.geoid) {
+                    d.properties!.selected = true;
+                } else {
+                    d.properties!.selected = false;
+                }
+            });
+
+            setCountiesData(countiesData);
 
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
@@ -313,9 +321,11 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     // Updates main geography and main boundary
     useEffect(() => {
         geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
-        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle(highlightGeographicBoundary);
+        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle((feature) => highlightGeographicBoundary(feature, equityIndicator) as PathOptions);
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
+
+    console.log(stateData);
 
     // Updates the voting districts
     useEffect(() => {

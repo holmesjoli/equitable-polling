@@ -47,13 +47,16 @@ function getWeight(d: any) {
 }
 
 // Selected county styles
-export function highlightGeographicBoundary(feature: any) {
-    return {
-      color: theme.grey.primary,
-      weight: 3,
-      opacity: getStrokeOpacity(feature.properties!.selected),
-      fill: false
-    };
+export function highlightGeographicBoundary(feature: any, equityIndicator: EquityIndicator) {
+
+  let color = equityIndicator.variable === 'none' ? theme.grey.primary: theme.focusColor;
+
+  return {
+    color: color,
+    weight: getWeight(feature.properties!.selected),
+    opacity: getStrokeOpacity(feature.properties!.selected),
+    fill: false
+  };
 }
 
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {

@@ -31,7 +31,10 @@ function findEquityMeasureByChangeYear(geoid: any, geoData: any, addPollSummary 
             rSize: em.rSize}
     }
 
-    return {pctBlack: pctBlack,
+    return { none: {equityMeasure: 0,
+                    strokeColor: theme.grey.primary,
+                    fillColor: theme.backgroundFill},
+            pctBlack: pctBlack,
             pollSummary: pollSummary
     };
 }
@@ -87,7 +90,7 @@ function getStates() {
                          counties: countyData,
                          zoom: e.zoom,
                          abbr: e.abbr,
-                         selected: false} as State, 
+                         selected: true} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
     });
 
