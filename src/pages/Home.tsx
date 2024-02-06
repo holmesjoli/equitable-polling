@@ -13,6 +13,8 @@ import { ChangeYear } from "../utils/Types";
 // Data 
 import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
 import { getPollingLocsData, getCounties, getTracts, getVd } from "../utils/DM";
+import { getStates } from "../utils/DM";
+
 
 // Types
 import { GeoID, PollingLoc } from "../utils/Types";
@@ -39,12 +41,14 @@ export default function Home({}): JSX.Element {
     const [pollHover, setPollHover] = useState({});
     const [geoHover, setGeoHover] = useState({});
 
+    const [loadedStateData, setLoadedStateData] = useState<boolean>(false);
     const [loadedCountyData, setLoadedCountyData] = useState<boolean>(false);
     const [loadedTractData, setLoadedTractData] = useState<boolean>(false);
     const [loadedVdData, setLoadedVdData] = useState<boolean>(false);
     const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
 
     // Set data
+    const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(getStates());
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>([]);
     const [countiesLongData, setCountiesLongData] = useState<any[]>([]);
     const [countiesData, setCountiesData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -167,7 +171,7 @@ export default function Home({}): JSX.Element {
                        changeYearOpts={changeYearOpts}
                        selectedState={selectedState} setSelectedState={setSelectedState} 
                        selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
-                       setGeoJsonId={setGeoJsonId}/>
+                       setGeoJsonId={setGeoJsonId} stateData={stateData}/>
             <Map geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                 selectedState={selectedState} setSelectedState={setSelectedState} 
                 selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
@@ -175,7 +179,7 @@ export default function Home({}): JSX.Element {
                 setPollHover={setPollHover} changeYear={changeYear} equityIndicator={equityIndicator} 
                 setGeoHover={setGeoHover} 
                 pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
-                vdData={vdData}
+                vdData={vdData} stateData={stateData}
                 loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData}
                 setCountiesData={setCountiesData} setTractsData={setTractsData}/>
         </Main>

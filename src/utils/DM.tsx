@@ -10,9 +10,6 @@ import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYear } 
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
-// Processed Data
-export const stateData = getStates();
-
 // Returns the equity measure for the selected equity indicator
 function findEquityMeasureByChangeYear(geoid: any, geoData: any) {
 
@@ -55,7 +52,7 @@ function returnFeatureCollection(features: Feature[]) {
     return {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 }
 
-function getStates() {
+export function getStates() {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
