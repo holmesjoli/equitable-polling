@@ -54,7 +54,7 @@ function returnFeatureCollection(features: Feature[]) {
     return {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 }
 
-export function getStates() {
+export function getStates(data: any) {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
