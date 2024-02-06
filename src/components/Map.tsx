@@ -277,7 +277,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             });
 
         // Selected County
-        } else if (loadedCountyData && loadedTractData && loadedVdData) {
+        } else if (geoJsonId.type === "County" && loadedCountyData && loadedTractData && loadedVdData) {
             let county = countiesData.features.find((d: GeoJSON.Feature) => d.properties!.geoid === geoJsonId.geoid)!.properties as County;
 
             countiesData.features.forEach((d: GeoJSON.Feature) => {
@@ -325,7 +325,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
 
-    console.log(stateData);
+    // console.log(geoJsonBoundaryData);
 
     // Updates the voting districts
     useEffect(() => {
