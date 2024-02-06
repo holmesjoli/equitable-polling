@@ -15,7 +15,7 @@ export default function Methodology({}): JSX.Element {
                         <h4>Geographical Changes</h4>
                         <p>Although county boundaries stay fairly static year-over-year, the Census Bureau updates census tract geographies when the 
                             decennial census is updated. For this reason, years 2012 – 2018 rely on census tract geographies from 2010, and years 2020 
-                            and 2022 rely on census tract geographies from 2022. </p>
+                            and 2022 rely on census tract geographies from 2022.</p>
                     </div>
                     <div>
                         <h4>Polling Location Data</h4>
