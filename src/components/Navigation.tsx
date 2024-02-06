@@ -8,7 +8,7 @@ export function Navigation(): JSX.Element {
     return (
         <div className="Navigation">
             <div className="Navigation_branding">
-                <h1><NavLink to="/">Equitable Polling Locations</NavLink></h1>
+                <h1><NavLink to="/">Polling Equity Dashboard</NavLink></h1>
             </div>
             <div className="Navigation_links">
                 {/* <NavLink to="/Trends" className={({ isActive }) => (isActive ? 'active' : 'inactive')}><h3>Trends</h3></NavLink>
