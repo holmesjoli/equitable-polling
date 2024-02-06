@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 
 import { EquityIndicator } from "./Types";
+import { featureGroup } from 'leaflet';
 
 export const theme = {
     fontSize: 12,
@@ -65,16 +66,17 @@ export function highlightGeographicBoundary(feature: any, equityIndicator: Equit
 
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
-  console.log(feature.properties)
-
- 
+  let color = theme.grey.primary;
+  let fillColor = theme.backgroundFill;
 
   if (feature.properties.type === 'Voting district') {
     return vdStyle(feature);
   } else {
 
-    let color = equityIndicator.variable === 'none' ? theme.grey.primary: feature.properties!.changeYearData[equityIndicator.variable].strokeColor;
-    let fillColor = equityIndicator.variable === 'none' ? theme.backgroundFill: feature.properties!.changeYearData[equityIndicator.variable].fillColor;
+    if (equityIndicator.variable !== 'none' && feature.properties!.changeYearData[equityIndicator.variable] !== undefined) {
+      color = feature.properties!.changeYearData[equityIndicator.variable].strokeColor;
+      fillColor = feature.properties!.changeYearData[equityIndicator.variable].fillColor;
+    }
 
     return {
       color: color,
