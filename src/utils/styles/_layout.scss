@@ -25,6 +25,20 @@ body {
   overflow: hidden;
 }
 
+.Informational-Content {
+  margin: auto 18rem;
+  min-height: calc(100vh - $navHeight - $footerHeight);
+  padding: 3.75rem 0;
+}
+
+.Informational-Content .Inner {
+  margin-bottom: 2rem;
+}
+
+.Informational-Content .Inner p {
+  margin-bottom: .5rem;
+}
+
 // Top navigation
 .Navigation {
   grid-column-start: 1;

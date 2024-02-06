@@ -46,8 +46,11 @@ export const defaultCounty = {type: 'County',
 
 export const defaultState = {type: 'State',
                              name:'', 
-                             stfp:'',
+                             stfp:'', 
+
                              latlng: defaultMap.latlng, 
                              zoom: 5,
                              abbr: '',
                              selected: false} as State;
+
+export const appTitle = 'Polling Equity Dashboard';
