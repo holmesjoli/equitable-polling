@@ -73,7 +73,7 @@ export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) 
     return vdStyle(feature);
   } else {
 
-    if (equityIndicator.variable !== 'none' && feature.properties!.changeYearData[equityIndicator.variable] !== undefined) {
+    if (equityIndicator.variable !== 'none' && feature.properties!.changeYearData !== undefined) {
       color = feature.properties!.changeYearData[equityIndicator.variable].strokeColor;
       fillColor = feature.properties!.changeYearData[equityIndicator.variable].fillColor;
     }

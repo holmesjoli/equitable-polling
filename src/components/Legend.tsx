@@ -113,7 +113,7 @@ function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
 
   if (pollHover.type === "County" ) {
 
-    if (pollHover.changeYearData.pollSummary === undefined) { // todo remove this ifelse once we have data for all counties
+    if (pollHover.changeYearData === undefined) { // todo remove this ifelse once we have data for all counties
       id = undefined;
     } else {
       id = pollHover.changeYearData.pollSummary.id;

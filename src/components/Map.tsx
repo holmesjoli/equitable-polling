@@ -355,7 +355,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 <FeatureGroup key="pollChangeSummaryFeatureGroup">
                     {
                         countiesData.features.map((feature: any, i: number) => {
-                            if (feature.properties.changeYearData.pollSummary !== undefined) {
+                            if (feature.properties.changeYearData !== undefined) {
                                 return (
                                     <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(feature.properties.changeYearData.pollSummary, feature.properties.selected)} radius={pollSummarySize(feature.properties.changeYearData.pollSummary)} eventHandlers={{
                                         click: () => {

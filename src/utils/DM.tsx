@@ -26,14 +26,16 @@ function findEquityMeasureByChangeYear(geoid: any, geoData: any) {
             overallChange: em.overallChange, 
             id: em.id, 
             rSize: em.rSize}
-    }
 
-    return { none: {equityMeasure: 0,
-                    strokeColor: theme.grey.primary,
-                    fillColor: theme.backgroundFill},
-            pctBlack: pctBlack,
-            pollSummary: pollSummary
-    };
+        return { none: {equityMeasure: 0, //todo refactor to remove none
+                strokeColor: theme.grey.primary,
+                fillColor: theme.backgroundFill},
+                pctBlack: pctBlack,
+                pollSummary: pollSummary
+        };
+    } else {
+        return undefined;
+    }
 }
 
 // Structures the bounds for each geometry
