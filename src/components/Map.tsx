@@ -316,7 +316,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
         }
 
-    }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData, loadedCountyData]);
+    }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData]);
 
     // Updates main geography and main boundary
     useEffect(() => {
@@ -335,6 +335,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             geoJsonVdRef.current?.clearLayers().addData({} as GeoJSON.FeatureCollection);
         }
     }, [geoJsonVdData, showVD, loadedVdData]);
+
+    // console.log(geoJsonBoundaryData);
 
     return(
         <>
