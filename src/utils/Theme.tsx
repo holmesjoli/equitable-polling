@@ -65,25 +65,23 @@ export function highlightGeographicBoundary(feature: any, equityIndicator: Equit
 
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
+  console.log(feature.properties)
+
+ 
+
   if (feature.properties.type === 'Voting district') {
     return vdStyle(feature);
   } else {
-    if (equityIndicator.variable === 'none') {
-      return {
-        color: theme.grey.primary,
-        fillColor: theme.backgroundFill,
-        weight: 1,
-        opacity: getStrokeOpacity(feature.properties!.selected),
-        fillOpacity: getFillOpacity(feature.properties!.selected)
-      }
-    } else {
-      return {
-        color: feature.properties!.changeYearData[equityIndicator.variable].strokeColor,
-        fillColor: feature.properties!.changeYearData[equityIndicator.variable].fillColor,
-        weight: 1,
-        opacity: getStrokeOpacity(feature.properties!.selected),
-        fillOpacity: getFillOpacity(feature.properties!.selected)
-      }
+
+    let color = equityIndicator.variable === 'none' ? theme.grey.primary: feature.properties!.changeYearData[equityIndicator.variable].strokeColor;
+    let fillColor = equityIndicator.variable === 'none' ? theme.backgroundFill: feature.properties!.changeYearData[equityIndicator.variable].fillColor;
+
+    return {
+      color: color,
+      fillColor: fillColor,
+      weight: 1,
+      opacity: getStrokeOpacity(feature.properties!.selected),
+      fillOpacity: getFillOpacity(feature.properties!.selected)
     }
   }
 }

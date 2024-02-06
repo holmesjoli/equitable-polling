@@ -326,6 +326,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
 
     // console.log(geoJsonBoundaryData);
+    console.log(geoJsonData);
 
     // Updates the voting districts
     useEffect(() => {

@@ -99,6 +99,10 @@ export default function Home({}): JSX.Element {
              .finally(() => setLoadedVdData(true))
     };
 
+    
+    console.log(stateData);
+
+
     // React Hooks --------------------------------------------------------------------------
     useEffect(()=>{
         Tooltip.init();
@@ -110,7 +114,13 @@ export default function Home({}): JSX.Element {
         } else {
             setDecennialCensusYear(2020);
         }
+
+        setLoadedCountiesLongData(false);
+        setLoadedTractsLongData(false);
     }, [changeYear]);
+
+    console.log(loadedCountiesLongData,)
+    console.log(loadedCountyData)
 
     useEffect(()=>{
 
@@ -122,7 +132,7 @@ export default function Home({}): JSX.Element {
             fetchVdData();
         }
 
-       }, [changeYear, geoJsonId]);
+    }, [changeYear, geoJsonId]);
 
     useEffect(()=>{
 
@@ -170,6 +180,8 @@ export default function Home({}): JSX.Element {
                 )}
                 </>
             }
+
+            
 
             <QueryMenu geoJsonId={geoJsonId} changeYear={changeYear} setChangeYear={setChangeYear} 
                        changeYearOpts={changeYearOpts}
