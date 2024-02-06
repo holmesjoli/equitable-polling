@@ -60,25 +60,6 @@ export function getStates() {
 
     (statesGeo as any[]).forEach((e: any) => {
 
-        const countyFeatures = [] as GeoJSON.Feature[];
-
-        (countiesGeo as any[]).filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
-
-            countyFeatures.push({type: 'Feature', 
-                properties: {type: 'County',
-                             descr: 'County',
-                             name: d.name,
-                             cntyfp: d.cntyfp,
-                             stfp: d.stfp,
-                             geoid: d.geoid,
-                             latlng: getLatLng(d),
-                             bounds: getBounds(d)
-                            }, 
-                geometry: d.geometry as GeoJSON.Geometry})
-        });
-
-        const countyData = {type: 'FeatureCollection', features: countyFeatures} as GeoJSON.FeatureCollection;
-
         stateFeatures.push({type: 'Feature', 
             properties: {type: 'State',
                          descr: '',
@@ -86,7 +67,6 @@ export function getStates() {
                          stfp: e.stfp,
                          geoid: e.geoid, 
                          latlng: getLatLng(e),
-                         counties: countyData,
                          zoom: e.zoom,
                          abbr: e.abbr,
                          selected: true} as State, 
