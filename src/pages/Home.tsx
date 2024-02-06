@@ -67,7 +67,7 @@ export default function Home({}): JSX.Element {
     const fetchCountiesLongData = async () => {
         fetch(countiesLongURL, {method: 'GET'})
              .then(res => res.json())
-             .then((data: any) => setCountiesLongData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
+             .then((data: any) => setCountiesLongData(data.filter((d: any) => d.changeYear === changeYear.changeYear)))
              .finally(() => setLoadedCountiesLongData(true));
     };
 
@@ -100,7 +100,7 @@ export default function Home({}): JSX.Element {
     };
 
     
-    console.log(stateData);
+    // console.log(stateData);
 
 
     // React Hooks --------------------------------------------------------------------------
@@ -118,9 +118,6 @@ export default function Home({}): JSX.Element {
         setLoadedCountiesLongData(false);
         setLoadedTractsLongData(false);
     }, [changeYear]);
-
-    console.log(loadedCountiesLongData,)
-    console.log(loadedCountyData)
 
     useEffect(()=>{
 
@@ -180,8 +177,6 @@ export default function Home({}): JSX.Element {
                 )}
                 </>
             }
-
-            
 
             <QueryMenu geoJsonId={geoJsonId} changeYear={changeYear} setChangeYear={setChangeYear} 
                        changeYearOpts={changeYearOpts}

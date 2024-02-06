@@ -54,7 +54,7 @@ function getWeight(d: any) {
 // Selected county styles
 export function highlightGeographicBoundary(feature: any, equityIndicator: EquityIndicator) {
 
-  let color = equityIndicator.variable === 'none' ? theme.grey.primary: theme.focusColor;
+  let color = equityIndicator.variable === 'none' || feature.properties!.selected === false? theme.grey.primary: theme.focusColor;
 
   return {
     color: color,

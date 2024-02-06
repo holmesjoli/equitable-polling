@@ -321,12 +321,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     // Updates main geography and main boundary
     useEffect(() => {
         geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
-        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle((feature) => highlightGeographicBoundary(feature, equityIndicator) as PathOptions);
+        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle((feature) => highlightGeographicBoundary(feature, equityIndicator) as unknown as PathOptions);
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
-
-    // console.log(geoJsonBoundaryData);
-    console.log(geoJsonData);
 
     // Updates the voting districts
     useEffect(() => {
@@ -336,8 +333,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             geoJsonVdRef.current?.clearLayers().addData({} as GeoJSON.FeatureCollection);
         }
     }, [geoJsonVdData, showVD, loadedVdData]);
-
-    // console.log(geoJsonBoundaryData);
 
     return(
         <>
