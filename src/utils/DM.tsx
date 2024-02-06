@@ -10,11 +10,8 @@ import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYear } 
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
-// Processed Data
-export const stateData = getStates();
-
 // Returns the equity measure for the selected equity indicator
-function findEquityMeasureByChangeYear(geoid: any, geoData: any, addPollSummary = false) {
+function findEquityMeasureByChangeYear(geoid: any, geoData: any) {
 
     const em = geoData.find((f: any) => f.geoid === geoid);
 
@@ -31,7 +28,7 @@ function findEquityMeasureByChangeYear(geoid: any, geoData: any, addPollSummary 
             rSize: em.rSize}
     }
 
-    return {none: {equityMeasure: 0,
+    return { none: {equityMeasure: 0,
                     strokeColor: theme.grey.primary,
                     fillColor: theme.backgroundFill},
             pctBlack: pctBlack,
@@ -55,7 +52,7 @@ function returnFeatureCollection(features: Feature[]) {
     return {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 }
 
-function getStates() {
+export function getStates() {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
@@ -90,7 +87,7 @@ function getStates() {
                          counties: countyData,
                          zoom: e.zoom,
                          abbr: e.abbr,
-                         selected: false} as State, 
+                         selected: true} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
     });
 
@@ -114,7 +111,7 @@ export function getCounties(countiesGeo: any[], countiesLong: any[]) {
                          latlng: getLatLng(d),
                          zoom: 10,
                          selected: false,
-                         changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong, true),
+                         changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong),
                          bounds: getBounds(d)
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
