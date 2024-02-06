@@ -8,12 +8,12 @@ export default function About({}): JSX.Element {
         <Main>
             {<div className="Informational-Content">
                 <div className="Inner">
-                <h3>{appTitle}</h3>
-                <p>The {appTitle} aggregates data sources to empower voting rights organizations to defend and advocate for United States voters. 
-                The interactive visualization provides organizations with summarized and detailed information about where polling locations have been 
-                opened and closed in select states over the last decade so that voter advocacy organizations can fight for equitable access to polling 
-                locations. The data visualization incorporates additional equity information such as racial breakdown, poverty level (coming soon!), 
-                and disability status (coming soon!) so that voting advocates can target impact toward the most disenfranchised groups.</p>
+                    <h3>{appTitle}</h3>
+                    <p>The {appTitle} aggregates data sources to empower voting rights organizations to defend and advocate for United States voters. 
+                    The interactive visualization provides organizations with summarized and detailed information about where polling locations have been 
+                    opened and closed in select states over the last decade so that voter advocacy organizations can fight for equitable access to polling 
+                    locations. The data visualization incorporates additional equity information such as racial breakdown, poverty level (coming soon!), 
+                    and disability status (coming soon!) so that voting advocates can target impact toward the most disenfranchised groups.</p>
                 </div>
                 <div className="Inner">
                     <h3><a href="https://www.newdata.org/">The Center for New Data</a></h3>
