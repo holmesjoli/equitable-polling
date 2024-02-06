@@ -38,6 +38,10 @@ function getStrokeOpacity(d: any) {
   return d ? 1 : theme.nonHighlightOpacity;
 }
 
+function getPollFillOpacity(d: any) {
+  return d ? 1 : theme.nonHighlightOpacity;
+}
+
 function getFillOpacity(d: any) {
   return d ? theme.highlightOpacity : theme.nonHighlightOpacity;
 }
@@ -99,13 +103,13 @@ export function vdStyle(feature: any) {
 }
 
 // Poll styles
-export function pollStyle(point: any) {
+export function pollStyle(point: any, selected: boolean = true) {
   return {
     fillColor: pollFillScale(point.id) as string,
     color: pollStrokeScale(point.overall) as string,
     weight: 1,
-    opacity: 1,
-    fillOpacity: 1
+    opacity: getPollFillOpacity(selected),
+    fillOpacity: getPollFillOpacity(selected)
   };
 }
 
