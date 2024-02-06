@@ -165,7 +165,12 @@ function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
   let fillColor: string | undefined = undefined;
 
   if (geoHover.changeYearData  !== undefined ) {
-    fillColor = geoHover.changeYearData[equityIndicator.variable].fillColor;
+
+    if (geoHover.changeYearData[equityIndicator.variable] !== undefined) {
+      fillColor = geoHover.changeYearData[equityIndicator.variable].fillColor;
+    } else {
+      fillColor = undefined;
+    }
   } else {
     fillColor = undefined;
   }

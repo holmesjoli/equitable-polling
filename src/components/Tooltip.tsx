@@ -58,7 +58,16 @@ function mouseOverGeo(feature: any) {
 function mouseOverEquityMeasure(feature: GeoJSON.Feature, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
     if(equityIndicator.variable !== 'none') {
         const ei = returnSpecificEquityIndicator(feature, equityIndicator);
-        return `<span><span class="SemiBold focusColor">${ei.equityMeasure}${equityIndicator.descr}</span> in base year ${changeYear.baseYear}</span>`;
+
+        if (ei !== undefined) {
+            return `<span><span class="SemiBold focusColor">${ei.equityMeasure}${equityIndicator.descr}</span> in base year ${changeYear.baseYear}</span>`;
+        } else {
+            if (feature.properties) {
+                return `<span>Missing data for ${feature.properties.name} ${feature.properties.descr} in base year ${changeYear.baseYear}</span>`;
+            } else {
+                return '';
+            }
+        }
     } else {
         return '';
     }
