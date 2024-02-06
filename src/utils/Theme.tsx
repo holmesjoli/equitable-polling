@@ -65,8 +65,6 @@ export function highlightGeographicBoundary(feature: any, equityIndicator: Equit
 
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
-  console.log(feature.properties!.changeYearData)
-
   if (feature.properties.type === 'Voting district') {
     return vdStyle(feature);
   } else {
