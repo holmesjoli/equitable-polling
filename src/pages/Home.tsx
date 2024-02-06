@@ -181,7 +181,7 @@ export default function Home({}): JSX.Element {
                 pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
                 vdData={vdData} stateData={stateData}
                 loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData}
-                setCountiesData={setCountiesData} setTractsData={setTractsData}/>
+                setStateData={setStateData} setCountiesData={setCountiesData} setTractsData={setTractsData}/>
         </Main>
     )
 }

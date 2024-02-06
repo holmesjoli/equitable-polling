@@ -83,7 +83,7 @@ function updateSelectedFeature(data: GeoJSON.FeatureCollection, county: County) 
 function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSelectedState, selectedCounty, setSelectedCounty, showPolls, 
                            setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
                            pollingLocsData, stateData, countiesData, tractsData, vdData, loadedCountyData, loadedTractData, loadedVdData ,
-                           setCountiesData, setTractsData}: 
+                           setStateData, setCountiesData, setTractsData}: 
                         {   mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, 
                             selectedState: State, setSelectedState: any, 
                             selectedCounty: any, setSelectedCounty: any, 
@@ -93,7 +93,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                             pollingLocsData: any, stateData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection, tractsData: GeoJSON.FeatureCollection,
                             vdData: GeoJSON.FeatureCollection,
                             loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean,
-                            setCountiesData: any, setTractsData: any }) {
+                            setStateData: any, setCountiesData: any, setTractsData: any }) {
 
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -233,6 +233,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 d.properties!.selected = true;
             });
 
+            setStateData(stateData);
+
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
                 .on('moveend', () => {
                     setGeoJsonData(stateData);
@@ -250,6 +252,8 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     d.properties!.selected = false;
                 }
             });
+
+            setStateData(stateData);
 
             countiesData.features.forEach((d: GeoJSON.Feature) => {
                 if (d.properties!.stfp === geoJsonId.geoid) {
@@ -312,7 +316,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 });
         }
 
-    }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData]);
+    }, [geoJsonId, changeYear, tractsData, pollingLocsData, countiesData, stateData]);
 
     // Updates main geography and main boundary
     useEffect(() => {
@@ -393,7 +397,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                               setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
                               pollingLocsData, stateData, countiesData, tractsData, vdData, 
                               loadedCountyData, loadedTractData, loadedVdData,
-                              setCountiesData, setTractsData }: 
+                              setStateData, setCountiesData, setTractsData }: 
                             { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, 
                             selectedCounty: any,
                               setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, 
@@ -401,7 +405,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                               setGeoHover: any, 
                               pollingLocsData: any, stateData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection, tractsData: GeoJSON.FeatureCollection,
                               vdData: GeoJSON.FeatureCollection, loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean,
-                              setCountiesData: any, setTractsData: any }): JSX.Element {
+                              setStateData: any, setCountiesData: any, setTractsData: any }): JSX.Element {
 
     const mapRef = useRef(null);
 
@@ -431,7 +435,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                              pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
                              vdData={vdData} stateData={stateData}
                              loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData}
-                             setCountiesData={setCountiesData} setTractsData={setTractsData}
+                             setStateData={setStateData} setCountiesData={setCountiesData} setTractsData={setTractsData}
                              />
             <ZoomControl position="bottomright" />
         </MapContainer>
