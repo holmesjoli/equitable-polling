@@ -7,7 +7,22 @@ export default function Methodology({}): JSX.Element {
              {<div className="Informational-Content">
                 <div className="Inner">
                     <h3>Data Sources</h3>
-                    <h4></h4>
+                    <p>To create the Polling Equity Dashboard, the team identified multiple data sources and created a data pipeline to clean and aggregate the data for the application.</p>
+                        <div>
+                            <h4>Geographic Boundary Data</h4>
+                            <ul>
+                                <li><a className="SemiBold" href="https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html">TIGER</a> files maintained by the US Census Bureau</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Demographic data</h4>
+                            <ul>
+                                <li><a className="SemiBold" href="https://www.census.gov/programs-surveys/acs/data.html">American Community Survey (ACS)</a> files maintained by the US Census Bureau</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Polling Location Data</h4>
+                        </div>
                 </div>
                 <div className="Inner">
                     <h3>Data Caveats</h3>
