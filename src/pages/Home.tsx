@@ -42,7 +42,9 @@ export default function Home({}): JSX.Element {
     const [geoHover, setGeoHover] = useState({});
 
     const [loadedStateData, setLoadedStateData] = useState<boolean>(false);
+    const [loadedCountiesLongData, setLoadedCountiesLongData] = useState<boolean>(false);
     const [loadedCountyData, setLoadedCountyData] = useState<boolean>(false);
+    const [loadedTractsLongData, setLoadedTractsLongData] = useState<boolean>(false);
     const [loadedTractData, setLoadedTractData] = useState<boolean>(false);
     const [loadedVdData, setLoadedVdData] = useState<boolean>(false);
     const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
@@ -66,19 +68,21 @@ export default function Home({}): JSX.Element {
         fetch(countiesLongURL, {method: 'GET'})
              .then(res => res.json())
              .then((data: any) => setCountiesLongData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
+             .finally(() => setLoadedCountiesLongData(true));
     };
 
     const fetchCountiesData = async () => {
         fetch(countiesGeoURL, {method: 'GET'})
              .then(res => res.json())
              .then((data: any) => setCountiesData(getCounties(data, countiesLongData)))
-             .finally(() => setLoadedCountyData(true))
+             .finally(() => setLoadedCountyData(true));
     };
 
     const fetchTractsLongData = async () => {
         fetch(tractsLongURL, {method: 'GET'})
              .then(res => res.json())
              .then((data: any) => setTractsLongData(data.filter((d: any) => d.baseYear === changeYear.baseYear)))
+             .finally(() => setLoadedTractsLongData(true));
     };
 
     const fetchTractsData = async () => {
@@ -122,13 +126,13 @@ export default function Home({}): JSX.Element {
 
     useEffect(()=>{
 
-        if (geoJsonId.type === 'State') {
+        if (geoJsonId.type === 'State' && loadedCountiesLongData) {
             fetchCountiesData();
-        } else if (geoJsonId.type === 'County') {
+        } else if (geoJsonId.type === 'County' && loadedTractsLongData) {
             fetchTractsData();
         }
 
-    }, [countiesLongData, tractsLongData, decennialCensusYear, geoJsonId]);
+    }, [loadedCountiesLongData, loadedTractsLongData, countiesLongData, tractsLongData, decennialCensusYear, geoJsonId]);
 
     useEffect(()=>{
         if (selectedState.abbr !== '') {
