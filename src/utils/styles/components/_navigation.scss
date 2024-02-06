@@ -12,4 +12,10 @@
         margin: $appMargin;
         padding: $appPadding;
     }
+
+    a:hover h3 {
+        background-color: $appPanelColor;
+        border: none;
+        color: #333333;
+    }
 }

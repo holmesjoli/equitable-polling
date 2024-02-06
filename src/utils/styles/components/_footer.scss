@@ -2,7 +2,7 @@
     background-color: $appPanelColor;
     padding: $appPadding;
     border-top: 1px solid $appBorderColor;
-    min-height: 5vh;
+    height: $footerHeight;
     // position: fixed;
     left: 0;
     bottom: 0;
