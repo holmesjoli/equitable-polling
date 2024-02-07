@@ -95,6 +95,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                             loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean,
                             setStatesData: any, setCountiesData: any, setTractsData: any }) {
 
+    const [loadedGeoJsonData, setLoadedGeoJsonData] = useState<boolean>(false);
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonBoundaryData, setGeoJsonBoundaryData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [geoJsonVdData, setGeoJsonVdData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -234,10 +235,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             });
 
             setStatesData(statesData);
+            
 
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
                 .on('moveend', () => {
                     setGeoJsonData(statesData);
+                    setLoadedGeoJsonData(true);
                 });
 
         // Selected State
@@ -341,7 +344,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             </Pane>
             <Pane name="geo-pane" style={{ zIndex: 100 }}>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
-                <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/>
+                { loadedGeoJsonData ? <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/> : null }
                 {showVD &&  loadedVdData ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
             </Pane>
             <Pane name="poll-pane" style={{ zIndex: 200 }}>

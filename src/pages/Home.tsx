@@ -48,6 +48,8 @@ export default function Home({}): JSX.Element {
     const [loadedVdData, setLoadedVdData] = useState<boolean>(false);
     const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
 
+    // console.log('statesdata', loadedStatesData)
+
     // Set data
     const [statesData, setStatesData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>([]);
@@ -185,7 +187,7 @@ export default function Home({}): JSX.Element {
                 </>
             }
       
-            {loadedCountyData ? 
+            {loadedCountyData && loadedStatesData ? 
                 <QueryMenu geoJsonId={geoJsonId} changeYear={changeYear} setChangeYear={setChangeYear} 
                         changeYearOpts={changeYearOpts}
                         selectedState={selectedState} setSelectedState={setSelectedState} 
