@@ -15,7 +15,7 @@
 .leaflet-control-zoom-in {
     transform: rotate(-90deg);
     margin: 4px;
-    border: 1px solid $appBorderColor;
+    border: 1px solid $appBorderColorPrimary;
     font-family: $baseFont;
     font: normal 16px $baseFont;
 }
@@ -37,7 +37,7 @@
 .leaflet-bar a:last-child,
 .leaflet-control-zoom.leaflet-bar.leaflet-control,
 .leaflet-touch .leaflet-bar {
-    border: 1px solid $appBorderColor;
+    border: 1px solid $appBorderColorPrimary;
 }
 
 .leaflet-touch .leaflet-bar {

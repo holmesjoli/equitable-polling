@@ -25,23 +25,30 @@ body {
 }
 
 .Informational-Content {
-  margin: auto 18rem 0 18rem;
+  margin: auto 20rem 0 20rem;
   min-height: calc(100vh - $navHeight - $footerHeight);
-  padding: 3.75rem 0 0 0;
+  padding: 3rem 0 0 0;
+}
+
+.Informational-Content h2 {
+  padding-left: $appPadding*2;
 }
 
 .Informational-Content .Inner-h3 {
-  margin-bottom: 2rem;
-  border-top: 1px solid $appBorderColor;
-  padding-top: $appPadding/2;
+  margin-bottom: $appMargin*2;
+  background-color: $appPanelColor;
+  padding: $appPadding*2;
+  border-radius: $appBorderRadius;
 }
 
 .Informational-Content .Inner-h3 .Inner-h4 {
-  margin: $appMargin 0;
+  margin-bottom: $appMargin;
+  border-top: 1px solid $appBorderColorSecondary;
+  padding-top: $appPadding/2;
 }
 
 .Informational-Content .Inner-h3 p {
-  margin-bottom: .625rem;
+  margin-bottom: $appMargin;
 }
 
 // Top navigation
@@ -145,7 +152,7 @@ body {
 }
 
 .layout_group.border {
-  border-bottom: 1px solid $appBorderColor;
+  border-bottom: 1px solid $appBorderColorPrimary;
 }
 
 .layout_group.pad {

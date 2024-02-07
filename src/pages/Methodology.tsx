@@ -21,9 +21,9 @@ export default function Methodology({}): JSX.Element {
                                 <li><a className="SemiBold" href="https://www.census.gov/programs-surveys/acs/data.html">American Community Survey (ACS)</a> files maintained by the US Census Bureau</li>
                             </ul>
                         </div>
-                        <div className="Inner-h4">
+                        {/* <div className="Inner-h4">
                             <h4>Polling Location Data</h4>
-                        </div>
+                        </div> */}
                 </div>
                 <div className="Inner-h3">
                     <h3>Data Caveats</h3>
