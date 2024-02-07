@@ -160,12 +160,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
     }
 
-    function mouseOutPollingLoc() {
-        pointerOut();
-        setPollHover({});
-    }
-
-    function mouseOutPollSummary() {
+    function mouseOutPoll() {
         pointerOut();
         setPollHover({});
     }
@@ -364,7 +359,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                                             stableMouseoverPollSummaryCallback(feature);
                                         },
                                         mouseout: () => {    
-                                            mouseOutPollSummary();
+                                            mouseOutPoll();
                                         }
                                     }}/>
                                 );
@@ -382,7 +377,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                                 mouseOverPollingLoc(d);
                             },
                             mouseout: () => {    
-                                mouseOutPollingLoc();
+                                mouseOutPoll();
                             }
                           }}/>
                     ))}
