@@ -1,7 +1,6 @@
 html, body {
   margin: 0;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 body {
@@ -26,17 +25,34 @@ body {
 }
 
 .Informational-Content {
-  margin: auto 18rem;
+  margin: auto 20rem 0 20rem;
   min-height: calc(100vh - $navHeight - $footerHeight);
-  padding: 3.75rem 0;
+  padding: 3rem 0 0 0;
 }
 
-.Informational-Content .Inner {
-  margin-bottom: 2rem;
+.Informational-Content h2 {
+  padding-left: $appPadding*2;
 }
 
-.Informational-Content .Inner p {
-  margin-bottom: .5rem;
+.Informational-Content .Inner-h3 {
+  margin-bottom: $appMargin*2;
+  background-color: $appPanelColor;
+  padding: $appPadding*2;
+  border-radius: $appBorderRadius;
+}
+
+.Informational-Content .Inner-h3 .Inner-h4 {
+  margin-bottom: $appMargin;
+  border-top: 1px solid $appBorderColorSecondary;
+  padding-top: $appPadding/2;
+}
+
+.Informational-Content .Inner-h3 p {
+  margin-bottom: $appMargin;
+}
+
+.Inner-h4 p {
+  margin-left: $appMargin;
 }
 
 // Top navigation
@@ -140,7 +156,7 @@ body {
 }
 
 .layout_group.border {
-  border-bottom: 1px solid $appBorderColor;
+  border-bottom: 1px solid $appBorderColorPrimary;
 }
 
 .layout_group.pad {
