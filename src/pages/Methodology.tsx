@@ -8,7 +8,7 @@ export default function Methodology({}): JSX.Element {
                 <h2>Methodology</h2>
                 <div className="Inner-h3">
                     <h3>Data Sources</h3>
-                    <p>To create the Polling Equity Dashboard, the team identified multiple data sources and created a data pipeline to clean and aggregate the data for the application.</p>
+                    {/* <p>To create the Polling Equity Dashboard, the team identified multiple data sources and created a data pipeline to clean and aggregate the data.</p> */}
                         <div className="Inner-h4">
                             <h4>Geographic Boundary Data</h4>
                             <ul>
@@ -28,6 +28,13 @@ export default function Methodology({}): JSX.Element {
                 <div className="Inner-h3">
                     <h3>Data Caveats</h3>
                     <div className="Inner-h4">
+                        <h4>Missing Data and Data Aggregations</h4>
+                        <ul>
+                            <li><span className="SemiBold">Mississippi</span> is missing data polling location data from 2020, necessitating change calculations between 2018 and 2022.</li>
+                            <li><span className="SemiBold">Georgia</span> is missing polling location data for 2012 and 2014.</li>
+                        </ul>
+                    </div>
+                    <div className="Inner-h4">
                         <h4>Geographical Changes</h4>
                         <p>Although county boundaries stay fairly static year-over-year, the Census Bureau updates census tract geographies when the 
                             decennial census is updated. For this reason, years 2012 – 2018 rely on census tract geographies from 2010, and years 2020 
@@ -41,14 +48,6 @@ export default function Methodology({}): JSX.Element {
                         <p>To address these inconsistencies, our team at the Center for New Data used a method called <span className="Italic">fuzzy logic matching</span> to identify 
                             which polling locations were used year-over-year, and polling locations that were added or removed. The Center for New Data 
                             is confident in this data cleaning and matching approach, however, there is room for some error.</p>
-                    </div>
-                    <div className="Inner-h4">
-                        <h4>Missing Data</h4>
-                        <p>The team encountered some instances of missing data for specific states.</p>
-                        <ul>
-                            <li><span className="SemiBold">Mississippi</span> is missing data polling location data from 2020</li>
-                            <li><span className="SemiBold">Georgia</span> is missing polling location data for 2012 and 2014</li>
-                        </ul>
                     </div>
                 </div>
               </div>}

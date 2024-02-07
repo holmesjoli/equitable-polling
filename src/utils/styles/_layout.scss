@@ -51,6 +51,10 @@ body {
   margin-bottom: $appMargin;
 }
 
+.Inner-h4 p {
+  margin-left: $appMargin;
+}
+
 // Top navigation
 .Navigation {
   grid-column-start: 1;
