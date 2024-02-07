@@ -5,34 +5,35 @@ export default function Methodology({}): JSX.Element {
     return(
         <Main>
              {<div className="Informational-Content">
-                <div className="Inner">
+                <h2>Methodology</h2>
+                <div className="Inner-h3">
                     <h3>Data Sources</h3>
                     <p>To create the Polling Equity Dashboard, the team identified multiple data sources and created a data pipeline to clean and aggregate the data for the application.</p>
-                        <div>
+                        <div className="Inner-h4">
                             <h4>Geographic Boundary Data</h4>
                             <ul>
                                 <li><a className="SemiBold" href="https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html">TIGER</a> files maintained by the US Census Bureau</li>
                             </ul>
                         </div>
-                        <div>
+                        <div className="Inner-h4">
                             <h4>Demographic data</h4>
                             <ul>
                                 <li><a className="SemiBold" href="https://www.census.gov/programs-surveys/acs/data.html">American Community Survey (ACS)</a> files maintained by the US Census Bureau</li>
                             </ul>
                         </div>
-                        <div>
+                        <div className="Inner-h4">
                             <h4>Polling Location Data</h4>
                         </div>
                 </div>
-                <div className="Inner">
+                <div className="Inner-h3">
                     <h3>Data Caveats</h3>
-                    <div>
+                    <div className="Inner-h4">
                         <h4>Geographical Changes</h4>
                         <p>Although county boundaries stay fairly static year-over-year, the Census Bureau updates census tract geographies when the 
                             decennial census is updated. For this reason, years 2012 – 2018 rely on census tract geographies from 2010, and years 2020 
-                            and 2022 rely on census tract geographies from 2022.</p>
+                            and 2022 rely on census tract geographies from 2020.</p>
                     </div>
-                    <div>
+                    <div className="Inner-h4">
                         <h4>Polling Location Data</h4>
                         <p>Polling locations are challenging to track because there is no systematic authority, government or otherwise, that tracks 
                             the locations year-over-year. Individual counties report polling locations to data aggregators like L2, however, there may 
@@ -41,7 +42,7 @@ export default function Methodology({}): JSX.Element {
                             which polling locations were used year-over-year, and polling locations that were added or removed. The Center for New Data 
                             is confident in this data cleaning and matching approach, however, there is room for some error.</p>
                     </div>
-                    <div>
+                    <div className="Inner-h4">
                         <h4>Missing Data</h4>
                         <p>The team encountered some instances of missing data for specific states.</p>
                         <ul>
