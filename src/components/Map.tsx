@@ -110,9 +110,18 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     // Functions ---------------------------------------------------
 
     const stableMouseoutCallback = useStableCallback(mouseOut);
-    const stableMouseoverTractCallback = useStableCallback(mouseOverTract);
-    const stableMouseoverCountyCallback = useStableCallback(mouseOverCounty);
+    const stableMouseoverCallback = useStableCallback(mouseOver);
     const stableMouseoverPollSummaryCallback = useStableCallback(mouseOverPollSummary);
+
+    function mouseOver(properties: any) {
+        if (properties.type === "State") {
+            return mouseOverState;
+        } else if(properties.type === "County") {
+            return mouseOverCounty;
+        } else if(properties.type === "Tract") {
+            return mouseOverTract;
+        }
+    }
 
     function mouseOverPollingLoc(d: any) {
         var coords = mapRef.current.latLngToContainerPoint(d.latlng);
@@ -157,7 +166,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         layer.setStyle(layersStyle.State.highlight);
         var coords = mapRef.current.latLngToContainerPoint(layer.feature.properties.latlng);
         pointerOver(coords.x, coords.y, mouseOverTextState(layer.feature));
-        d3.select(".Status .ComponentGroupInner span").attr("class", "focus"); //removes extra awkard space in tooltip
     }
 
     function mouseOutPoll() {
@@ -179,7 +187,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         const properties = layer.feature.properties;
 
         layer.on({
-          mouseover: properties.type === "State" ? mouseOverState : properties.type === "County" ? stableMouseoverCountyCallback: stableMouseoverTractCallback,
+          mouseover: stableMouseoverCallback(properties),
           mouseout: stableMouseoutCallback,
           click: onClickFeature
         });
