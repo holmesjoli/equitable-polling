@@ -4,6 +4,7 @@ body {
   font-family: $baseFont;
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
+  font-size: .87rem;
   // letter-spacing: 0.1em;
 }
 
@@ -68,7 +69,7 @@ h6 {
 }
 
 p, li {
-  font-size: .87rem;
+  // font-size: .87rem;
   font-weight: 400;
 }
 
