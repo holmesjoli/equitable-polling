@@ -70,7 +70,8 @@ getCounties <- function(state_fips, pth) {
     rename(stfp = STATEFP,
            cntyfp = COUNTYFP,
            name = NAME,
-           geoid = GEOID)
+           geoid = GEOID) %>% 
+    mutate(cntyfp = paste0(stfp, cntyfp))
 
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)
@@ -100,8 +101,7 @@ getTracts <- function(state_fips, years, pth) {
           rename(cntyfp = COUNTY,
                  stfp = STATE,
                  name = NAME,
-                 tractfp = TRACT) %>% 
-          mutate(geoid = paste0(stfp, cntyfp, tractfp))
+                 tractfp = TRACT)
 
       } else {
         df <- df %>% 
@@ -113,9 +113,14 @@ getTracts <- function(state_fips, years, pth) {
                  geoid = GEOID)
       }
 
+      df <- df %>% 
+        mutate(geoid = paste0(stfp, cntyfp, tractfp),
+               cntyfp = paste0(stfp, cntyfp),
+               tractfp = geoid)
+
       df <- cbind(df, getBbox(df))
       df <- getCentroid(df)
-      
+
       return(df)
 
     }) %>% bind_rows()
@@ -143,11 +148,12 @@ getVd <- function(state_fips, pth, year = 2020) {
              geoid = GEOID20,
              name = NAME20) %>% 
       select(stfp, cntyfp, vtdst, geoid, name, geometry) %>% 
-      mutate(year = year)
-    
+      mutate(year = year,
+             cntyfp = paste0(stfp, cntyfp))
+
     df <- cbind(df, getBbox(df))
     df <- getCentroid(df)
-    
+
     return(df)
   }) %>% dplyr::bind_rows()
   
@@ -174,9 +180,12 @@ getLongitudinal <- function(df, state_fips, years) {
 
 #' Get Counties longitudinal
 #' Writes out a json file at the year-cntyfp level
-getCountiesLongitudinal <- function(df, state_fips, years, pth) {
+getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
 
   df <- getLongitudinal(df, state_fips, years)
+  pollSummary <- getPollSummary(pollSummary)
+  df <- df %>% 
+    right_join(pollSummary)
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countiesLongitudinal.json"))
   
@@ -236,7 +245,7 @@ getPollsChangeStatus <- function(df) {
   return(df)
 }
 
-getIndicatorsChangeStatus<- function(df, state_fips) {
+getPollSummary <- function(df) {
   
   df <- df %>% 
     select(changeyear, cntyfp, baseyear, nopollsadded, nopollsremoved, changenopolls) %>% 
@@ -263,9 +272,6 @@ getIndicatorsChangeStatus<- function(df, state_fips) {
                           overallChange < 0 & overallChange >= -3 ~ "-1",
                           overallChange < -3 & overallChange >= -10 ~ "-2",
                           overallChange < -10 ~ "-3"))
-
-  exportJSON <- toJSON(df)
-  write(exportJSON, "../data/processed/indicatorsChangeStatus.json")
 
   return(df)
 }

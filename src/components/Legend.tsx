@@ -40,7 +40,7 @@ function legendText(svg: any, data: any[], id: string | undefined = undefined, g
         .attr('font-size', theme.fontSize)
         .attr('fill', theme.grey.primary),
       (update: any) => update
-        .attr('opacity', (d: any) => geo ? thresholdScale(d.pctBlack) as string === id as string || id === undefined ? theme.choroplethOpacity : 0.3 : d.id === id || id === undefined? 1 : 0.3)
+        .attr('opacity', (d: any) => geo ? thresholdScale(d.pctBlack) as string === id as string || id === undefined ? theme.highlightOpacity : theme.nonHighlightOpacity : d.id === id || id === undefined? 1 : theme.nonHighlightOpacity)
     );
 }
 
@@ -84,7 +84,7 @@ function updateSizeLegend(pollHover: any, changeYear: ChangeYear) {
       .attr("stroke", theme.grey.primary)
       .attr('stroke-width', 1),
     (update: any) => update
-      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : 0.3)
+      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : theme.nonHighlightOpacity)
   );
 
   svg
@@ -102,7 +102,7 @@ function updateSizeLegend(pollHover: any, changeYear: ChangeYear) {
         .attr('fill', theme.grey.primary)
         .attr('dominant-baseline', 'middle'),
       (update: any) => update
-      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : 0.3)
+      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : theme.nonHighlightOpacity)
     );
 }
 
@@ -113,7 +113,7 @@ function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
 
   if (pollHover.type === "County" ) {
 
-    if (pollHover.changeYearData.pollSummary === undefined) { // todo remove this ifelse once we have data for all counties
+    if (pollHover.changeYearData === undefined) { // todo remove this ifelse once we have data for all counties
       id = undefined;
     } else {
       id = pollHover.changeYearData.pollSummary.id;
@@ -153,7 +153,7 @@ function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
         .attr("stroke", (d: any) => pollStrokeScale(d.overall) as string) // Add type assertion
         .attr('stroke-width', 1),
       update => update
-        .attr('opacity', (d: any) => d.id === id || id === undefined? 1 : 0.3)
+        .attr('opacity', (d: any) => d.id === id || id === undefined? 1 : theme.nonHighlightOpacity)
   );
 
   legendText(svg, data.filter(d => d.geo === geo), id);
@@ -165,7 +165,12 @@ function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
   let fillColor: string | undefined = undefined;
 
   if (geoHover.changeYearData  !== undefined ) {
-    fillColor = geoHover.changeYearData[equityIndicator.variable].fillColor;
+
+    if (geoHover.changeYearData[equityIndicator.variable] !== undefined) {
+      fillColor = geoHover.changeYearData[equityIndicator.variable].fillColor;
+    } else {
+      fillColor = undefined;
+    }
   } else {
     fillColor = undefined;
   }
@@ -184,12 +189,12 @@ function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
         .attr('transform', function (d, i) {
           return 'translate(' + (circleStart - 6) + ', ' + (i * 23 + 10) + ')';
         })
-        .attr('opacity', theme.choroplethOpacity)
+        .attr('opacity', theme.highlightOpacity)
         .attr('fill', (d: any) => thresholdScale(d.pctBlack) as string)
         .attr("stroke", theme.darkGradientColor)
         .attr('stroke-width', 1),
       update => update
-        .attr('opacity', (d: any) => thresholdScale(d.pctBlack) as string === fillColor as string || fillColor === undefined ? theme.choroplethOpacity : 0.3
+        .attr('opacity', (d: any) => thresholdScale(d.pctBlack) as string === fillColor as string || fillColor === undefined ? theme.highlightOpacity : theme.nonHighlightOpacity
         )
   );
 

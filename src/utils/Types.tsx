@@ -4,7 +4,7 @@ export type PixelCoords = {x: number, y: number};
 
 export type Bounds = {northEast: LatLng, southWest: LatLng};
 
-export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, zoom: number};
+export type GeoID = {geoid: string, type: string};
 
 export type EquityIndicatorData = {equityMeasure: number, fillColor:string, strokeColor: string};
 
@@ -25,8 +25,8 @@ export type County = {type: string, stfp: string, name: string, cntyfp: string, 
                       changeYearData: any
                     };
 
-export type State = {type: string, stfp: string, geoid: string, name: string, counties: GeoJSON.FeatureCollection, 
-                     latlng: LatLng, zoom: number, abbr: string};
+export type State = {type: string, stfp: string, geoid: string, name: string,
+                     latlng: LatLng, zoom: number, abbr: string, selected: boolean};
 
 export type ChangeYear = {id: string, descr: string, baseYear: number, changeYear: string, decennialCensusYear: number, ms: boolean, sc: boolean, ga: boolean, wi: boolean};
 

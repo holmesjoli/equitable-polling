@@ -1,0 +1,16 @@
+th, td {
+    padding: $appPadding/2;
+}
+
+td:first-child {
+    border-right: 1px solid $appBorderColorPrimary;
+}
+
+tr:first-child {
+    border-bottom: 1px solid $appBorderColorPrimary;
+}
+
+
+.NA {
+    color: $appBorderColorPrimary;
+}

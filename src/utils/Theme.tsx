@@ -1,21 +1,23 @@
 import * as d3 from 'd3';
 
 import { EquityIndicator } from "./Types";
+import { featureGroup } from 'leaflet';
 
 export const theme = {
     fontSize: 12,
-    grey: {primary: '#757575', secondary: '#C6C6C6', tertiary: '#EAEAEA'},
+    grey: {primary: '#757575', secondary: '#9d9d9d', tertiary: '#EAEAEA'},
     backgroundFill: '#FAF6F0',
     focusColor: '#1D618E',
     focusColorDark: '#113A55',
     darkGradientColor: "#113A55",
     fontFamily: 'Inter',
-    choroplethOpacity: .8,
+    highlightOpacity: .7,
+    nonHighlightOpacity: .3,
     lineHeight: 1.2
 }
 
-export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0.5, weight: 1 },
-                            outline: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: 0, weight: 2 },
+export const layersStyle = {default: { color: theme.grey.primary, fillColor: theme.backgroundFill, fillOpacity: theme.highlightOpacity, weight: 1 },
+                            outline: { color: theme.grey.primary, fill: false, weight: 2 },
                             greyOut: { color: theme.grey.secondary, fillOpacity: 0.7, weight: 0},
                             State: {
                               highlight: { weight: 2 },
@@ -27,79 +29,67 @@ export const layersStyle = {default: { color: theme.grey.primary, fillColor: the
                               highlight: { weight: 3 },
                             },
                             VD: {
-                              highlight: { weight: 3 }
+                              highlight: { weight: 3,
+                              fillColor: theme.focusColorDark,
+                              fillOpacity: theme.nonHighlightOpacity}
                             }
                           }
-
-function getColor(d: any) {
-    return d ? theme.backgroundFill : theme.grey.primary;
+                          
+function getStrokeOpacity(d: any) {
+  return d ? 1 : theme.nonHighlightOpacity;
 }
 
-function getStrokeOpacity(d: any) {
-  return d ? 1 : .35;
+function getPollFillOpacity(d: any) {
+  return d ? 1 : theme.nonHighlightOpacity;
 }
 
 function getFillOpacity(d: any) {
-  return d ? .6 : .35;
+  return d ? theme.highlightOpacity : theme.nonHighlightOpacity;
+}
+
+function getWeight(d: any) {
+  return d ? 3 : 2;
 }
 
 // Selected county styles
-export function highlightSelectedCounty(feature: any) {
-    return {
-      color: theme.grey.primary,
-      fillColor: getColor(feature.properties!.selected),
-      weight: 3,
-      opacity: getStrokeOpacity(feature.properties!.selected),
-      fillOpacity: getFillOpacity(feature.properties!.selected)
-    };
+export function highlightGeographicBoundary(feature: any, equityIndicator: EquityIndicator) {
+
+  let color = equityIndicator.variable === 'none' || feature.properties!.selected === false? theme.grey.primary: theme.focusColor;
+
+  return {
+    color: color,
+    weight: getWeight(feature.properties!.selected),
+    opacity: getStrokeOpacity(feature.properties!.selected),
+    fill: false
+  };
 }
 
 export function choroplethStyle(feature: any, equityIndicator: EquityIndicator) {
 
-  if (feature.properties.type === "State") {
-    return stateStyle();
-  } else if (feature.properties.type === "County") {
-    return countyStyle(feature, equityIndicator);
-  } else if (feature.properties.type === "Tract") {
-    return tractStyle(feature, equityIndicator);
-  } else {
-    return vdStyle(feature);
-  }
-}
+  let color = theme.grey.primary;
+  let fillColor = theme.backgroundFill;
 
-export function stateStyle() {
-  return {
-    color: theme.grey.primary,
-    fillColor: theme.backgroundFill,
-    weight: 1,
-    opacity: 1,
-    fillOpacity: .6
-  };
+  if (feature.properties.type === 'Voting district') {
+    return vdStyle(feature);
+  } else {
+
+    if (equityIndicator.variable !== 'none' && feature.properties!.changeYearData !== undefined) {
+      color = feature.properties!.changeYearData[equityIndicator.variable].strokeColor;
+      fillColor = feature.properties!.changeYearData[equityIndicator.variable].fillColor;
+    }
+
+    return {
+      color: color,
+      fillColor: fillColor,
+      weight: 1,
+      opacity: getStrokeOpacity(feature.properties!.selected),
+      fillOpacity: getFillOpacity(feature.properties!.selected)
+    }
+  }
 }
 
 export function returnSpecificEquityIndicator(feature: any, equityIndicator: EquityIndicator) {
   return feature.properties!.changeYearData[equityIndicator.variable];
-}
-
-export function countyStyle(feature: any, equityIndicator: EquityIndicator) {
-  return {
-    color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
-    weight: 1,
-    opacity: 1,
-    fillOpacity: .6
-  };
-}
-
-
-export function tractStyle(feature: any, equityIndicator: EquityIndicator) {
-  return {
-    color: returnSpecificEquityIndicator(feature, equityIndicator).strokeColor,
-    fillColor: returnSpecificEquityIndicator(feature, equityIndicator).fillColor,
-    weight: 1,
-    opacity: getStrokeOpacity(feature.properties!.selected),
-    fillOpacity: equityIndicator.variable === "none" ? 0 : feature.properties!.selected? theme.choroplethOpacity : .3
-  };
 }
 
 // Voting district styles
@@ -109,17 +99,17 @@ export function vdStyle(feature: any) {
     weight: 1,
     opacity: getStrokeOpacity(feature.properties!.selected),
     fillOpacity: 0
-  };
+  }
 }
 
 // Poll styles
-export function pollStyle(point: any) {
+export function pollStyle(point: any, selected: boolean = true) {
   return {
     fillColor: pollFillScale(point.id) as string,
     color: pollStrokeScale(point.overall) as string,
     weight: 1,
-    opacity: 1,
-    fillOpacity: 1
+    opacity: getPollFillOpacity(selected),
+    fillOpacity: getPollFillOpacity(selected)
   };
 }
 

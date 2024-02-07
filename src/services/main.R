@@ -11,7 +11,8 @@ getStates(state_fips, pth)
 getCounties(state_fips, pth)
 getTracts(state_fips, years, pth)
 getVd(state_fips, pth)
-df <- getCountiesLongitudinal(readr::read_csv("../data/raw/county_year_summary_RI_World_01032024_fips.csv"), state_fips, years, pth)
+getCountiesLongitudinal(readr::read_csv("../data/raw/county_year_summary_RI_World_01032024_fips.csv"), 
+                        readr::read_csv("../data/raw/sc_ga_ms_wi_indicator_change_summary.csv"),
+                        state_fips, years, pth)
 getTractsLongitudinal(readr::read_csv("../data/raw/census_tract_year_summary_RI_World_01032024_fips.csv"), state_fips, years, pth)
 getPollsChangeStatus(readr::read_csv("../data/raw/sc_ga_ms_wi_polling_location_changes.csv"))
-getIndicatorsChangeStatus(readr::read_csv("../data/raw/sc_ga_ms_wi_indicator_change_summary.csv"), state_fips)

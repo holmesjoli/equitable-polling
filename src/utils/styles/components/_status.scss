@@ -10,7 +10,7 @@
     background-color: $appBackgroundTransparent;
     width: 250px;
     transition: right 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    border: 1px solid $appBorderColor;
+    border: 1px solid $appBorderColorPrimary;
     border-radius: 5px;
     overflow-y: auto;
     z-index: +9;
