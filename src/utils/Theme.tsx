@@ -1,7 +1,6 @@
 import * as d3 from 'd3';
 
 import { EquityIndicator } from "./Types";
-import { featureGroup } from 'leaflet';
 
 export const theme = {
     fontSize: 12,

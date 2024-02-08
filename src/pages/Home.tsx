@@ -48,8 +48,6 @@ export default function Home({}): JSX.Element {
     const [loadedVdData, setLoadedVdData] = useState<boolean>(false);
     const [decennialCensusYear, setDecennialCensusYear] = useState<number>(changeYear.decennialCensusYear);
 
-    // console.log('statesdata', loadedStatesData)
-
     // Set data
     const [statesData, setStatesData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
     const [pollingLocsData, setPollingData] = useState<PollingLoc[]>([]);
@@ -106,10 +104,6 @@ export default function Home({}): JSX.Element {
              .then((data: any) => setVdData(getVd(data)))
              .finally(() => setLoadedVdData(true))
     };
-
-    
-    // console.log(statesData);
-
 
     // React Hooks --------------------------------------------------------------------------
     useEffect(()=>{
