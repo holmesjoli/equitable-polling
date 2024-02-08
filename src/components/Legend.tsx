@@ -13,14 +13,12 @@ import { EquityIndicator, ChangeYear } from '../utils/Types';
 const equityLegendId = 'Equity-Legend';
 const sizeLegendId = 'Size-Legend';
 const pollLegendId = 'Poll-Legend';
-const width = 200;
 
 const circleStart = 17;
-
 const textStart = circleStart + 20;
 
 // Reusable function to initialize legend
-function initLegend(selector: string) {
+function initLegend(selector: string, width: number = 200) {
   d3.select(`.Legend #${selector}`)
     .append('svg')
     .attr('width', width);

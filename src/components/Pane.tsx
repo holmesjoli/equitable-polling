@@ -1,12 +1,14 @@
-import { useRef, useMemo } from "react";
-
-import { GeoJSON, ZoomControl, Rectangle, FeatureGroup, Circle, Pane } from "react-leaflet";
-
-import { layersStyle } from "../utils/Theme";
+// Libraries
+import { useRef, useMemo, useEffect } from "react";
+import { GeoJSON, Rectangle, FeatureGroup, Circle, Pane } from "react-leaflet";
+import { select } from 'd3';
 
 import { GeoID } from "../utils/Types";
 
 import { defaultMap, outerBounds } from "../utils/Global";
+
+// Styles
+import { layersStyle, theme } from "../utils/Theme";
 
 export function BackgroundPane({geoJsonId, setGeoJsonId} : {geoJsonId: GeoID, setGeoJsonId: any}) {
 

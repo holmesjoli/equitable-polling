@@ -6,12 +6,12 @@
     color: $removedColor;
 }
 
-.tooltip .ComponentGroupInner {
+.Tooltip .ComponentGroupInner {
     padding-bottom: 0.15rem;
     margin-bottom: 0.35rem;
     border-bottom: 1px solid $appBorderColorPrimary;
 }
 
-.tooltip > .DetailInformation {
+.Tooltip > .DetailInformation {
     padding-bottom: 0.3rem;
 }

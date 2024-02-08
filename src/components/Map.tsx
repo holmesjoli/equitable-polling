@@ -1,5 +1,5 @@
 // Libraries
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, Rectangle, FeatureGroup, Circle, Pane } from "react-leaflet";
 import { point, bounds, PathOptions } from 'leaflet';
 
@@ -14,7 +14,7 @@ import { BackgroundPane } from "./Pane";
 import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator } from "../utils/Types";
 
 // Global
-import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
+import { defaultMap, defaultCounty, defaultState } from "../utils/Global";
 import { useStableCallback, returnCountyShouldInteract } from "../utils/Helper";
 
 // Styles
@@ -265,7 +265,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             });
 
             setCountiesData(countiesData);
-
             setSelectedState(state);
             setSelectedCounty(defaultCounty);
             setGeoJsonBoundaryData(statesData);
@@ -337,7 +336,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     return(
         <>
-           <BackgroundPane geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId}/>
+            <BackgroundPane geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId}/>
             <Pane name="geo-pane" style={{ zIndex: 100 }}>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 { loadedGeoJsonData ? <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/> : null }
@@ -345,31 +344,31 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             </Pane>
             <Pane name="poll-pane" style={{ zIndex: 200 }}>
 
-            {selectedState.stfp !== '' && selectedCounty.cntyfp === '' ? 
-                <FeatureGroup key="pollChangeSummaryFeatureGroup">
-                    {
-                        countiesData.features.map((feature: any, i: number) => {
-                            if (feature.properties.changeYearData !== undefined) {
-                                return (
-                                    <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(feature.properties.changeYearData.pollSummary, feature.properties.selected)} radius={pollSummarySize(feature.properties.changeYearData.pollSummary)} eventHandlers={{
-                                        click: () => {
-                                            setGeoJsonId({geoid: feature.properties.geoid, 
-                                                          type: feature.properties.type} as GeoID);
-                                        },
-                                        mouseover: () => {
-                                            stableMouseoverPollSummaryCallback(feature);
-                                        },
-                                        mouseout: () => {    
-                                            mouseOutPoll();
-                                        }
-                                    }}/>
-                                );
-                            } else {
-                                return null;
-                            }
-                        })
-                    }
-                </FeatureGroup> : null}
+                {selectedState.stfp !== '' && selectedCounty.cntyfp === '' ? 
+                    <FeatureGroup key="pollChangeSummaryFeatureGroup">
+                        {
+                            countiesData.features.map((feature: any, i: number) => {
+                                if (feature.properties.changeYearData !== undefined) {
+                                    return (
+                                        <Circle key={i} center={[feature.properties.latlng.lat, feature.properties.latlng.lng]} pathOptions={pollStyle(feature.properties.changeYearData.pollSummary, feature.properties.selected)} radius={pollSummarySize(feature.properties.changeYearData.pollSummary)} eventHandlers={{
+                                            click: () => {
+                                                setGeoJsonId({geoid: feature.properties.geoid, 
+                                                            type: feature.properties.type} as GeoID);
+                                            },
+                                            mouseover: () => {
+                                                stableMouseoverPollSummaryCallback(feature);
+                                            },
+                                            mouseout: () => {    
+                                                mouseOutPoll();
+                                            }
+                                        }}/>
+                                    );
+                                } else {
+                                    return null;
+                                }
+                            })
+                        }
+                    </FeatureGroup> : null}
             {showPolls ?
                 <FeatureGroup key="pollingLocFeatureGroup">
                     {pollingLocsInBound.map((d: PollingLoc, i: number) => (
@@ -384,10 +383,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                     ))}
                 </FeatureGroup> : null}
             </Pane>
-            <Pane name="data-annotation-pane" style={{ zIndex: 200 }}>
-
-
-            </Pane>
         </>
     )
 }
@@ -398,7 +393,7 @@ export default function Map({ geoJsonId, setGeoJsonId, selectedState, setSelecte
                               loadedCountyData, loadedTractData, loadedVdData,
                               setStatesData, setCountiesData, setTractsData }: 
                             { geoJsonId: GeoID, setGeoJsonId: any, selectedState: State, setSelectedState: any, 
-                            selectedCounty: any,
+                              selectedCounty: any,
                               setSelectedCounty: any, showPolls: boolean, setShowPolls: any, setPollHover: any, 
                               showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, 
                               setGeoHover: any, 

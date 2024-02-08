@@ -7,6 +7,7 @@ import { CountyStatus, StateStatus, USStatus } from '../components/Status';
 import { QueryMenu } from "../components/Query";
 import Map from "../components/Map";
 import * as Tooltip from "../components/Tooltip";
+import * as Annotation from "../components/Annotation";
 
 import { ChangeYear } from "../utils/Types";
 
@@ -108,6 +109,7 @@ export default function Home({}): JSX.Element {
     // React Hooks --------------------------------------------------------------------------
     useEffect(()=>{
         Tooltip.init();
+        Annotation.init();
         fetchStatesData();
     }, []);
 

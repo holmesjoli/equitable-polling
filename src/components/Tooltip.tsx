@@ -10,9 +10,9 @@ import { EquityIndicator, ChangeYear } from '../utils/Types';
 const selector = "root";
 
 export function init() {
-    const tooltip = d3.select(`#${selector}`)
+    return d3.select(`#${selector}`)
             .append('div')
-            .attr('class', 'tooltip')
+            .attr('class', 'Tooltip')
             .style('max-width', '200px')
             .style('position', 'absolute')
             .style('top', '0px')
@@ -28,8 +28,6 @@ export function init() {
             .style('font-size', `${theme.fontSize}px`)
             .style('color', theme.grey.primary)
             .style('line-height', theme.lineHeight);
-
-    return tooltip;
 }
 
 export function pointerOver(x: number, y: number, str: string) {
@@ -39,7 +37,7 @@ export function pointerOver(x: number, y: number, str: string) {
 
     y = y + navHeight! - 20;
 
-    d3.select(`#${selector} .tooltip`)
+    d3.select(`#${selector} .Tooltip`)
         .style('visibility', 'visible')
         .style('top', `${y}px`)
         .style('left', `${x}px`)
@@ -47,7 +45,7 @@ export function pointerOver(x: number, y: number, str: string) {
 }
 
 export function pointerOut() {
-    d3.select(`#${selector} .tooltip`)
+    d3.select(`#${selector} .Tooltip`)
         .style('visibility', 'hidden');
 }
 
