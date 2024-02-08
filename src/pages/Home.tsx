@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 // Components
 import Main from '../components/Main';
-import { CountyStatus, StateStatus, USStatus } from '../components/Status';
+import { CountyStatus, StateStatus } from '../components/Status';
 import { QueryMenu } from "../components/Query";
 import Map from "../components/Map";
 import * as Tooltip from "../components/Tooltip";
@@ -155,7 +155,7 @@ export default function Home({}): JSX.Element {
     return(
         <Main>
             {geoJsonId.type === 'US'? 
-                <USStatus /> : 
+                null : 
                 <>
                 {geoJsonId.type === "State" ? (
                     <StateStatus
@@ -180,16 +180,15 @@ export default function Home({}): JSX.Element {
                 )}
                 </>
             }
-      
-            {loadedCountyData && loadedStatesData ? 
+
+            { loadedStatesData ? 
+            <>
                 <QueryMenu geoJsonId={geoJsonId} changeYear={changeYear} setChangeYear={setChangeYear} 
                         changeYearOpts={changeYearOpts}
                         selectedState={selectedState} setSelectedState={setSelectedState} 
                         selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
                         setGeoJsonId={setGeoJsonId} statesData={statesData}
-                        countiesData={countiesData}/> : null}
-
-            { loadedStatesData ? 
+                        countiesData={countiesData}/>
                 <Map geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId} 
                     selectedState={selectedState} setSelectedState={setSelectedState} 
                     selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} 
@@ -199,7 +198,8 @@ export default function Home({}): JSX.Element {
                     pollingLocsData={pollingLocsData} countiesData={countiesData} tractsData={tractsData}
                     vdData={vdData} statesData={statesData}
                     loadedCountyData={loadedCountyData} loadedTractData={loadedTractData} loadedVdData={loadedVdData}
-                    setStatesData={setStatesData} setCountiesData={setCountiesData} setTractsData={setTractsData}/> : null }
+                    setStatesData={setStatesData} setCountiesData={setCountiesData} setTractsData={setTractsData}/> 
+                    </>: null }
         </Main>
     )
 }

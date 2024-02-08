@@ -164,11 +164,11 @@ function SelectChangeYear({changeYear, setChangeYear, changeYearOpts} : {changeY
     )
 }
 
-export const Menu = styled.div<{ $geojsonid: GeoID; }>`
+export const Menu = styled.div`
     z-index: +9;
     position: absolute;
     top: 10vh;
-    left: ${props => props.$geojsonid.type === 'US' ? '-100vw;' : '0vw;'};
+    left: '0vw';
     width: 20rem;
     // padding: .625rem;
     background-color: ${theme.backgroundFill};
@@ -182,7 +182,7 @@ export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState,
                           { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[], statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection}) {
 
     return(
-        <Menu $geojsonid={geoJsonId}>
+        <Menu>
             <div className="Query">
                 <PageDescription>
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
