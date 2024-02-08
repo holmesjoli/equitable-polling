@@ -91,7 +91,7 @@ export function getCounties(countiesGeo: any[], countiesLong: any[]) {
                          selected: false,
                          changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong),
                          bounds: getBounds(d),
-                         stabbr: d.abbr
+                         stabbr: d.stabbr
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
     });

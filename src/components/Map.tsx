@@ -148,12 +148,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOverCountyorPollSummary(feature: any) {
 
-    //    if (returnCountyShouldInteract(changeYear, feature.properties)) {
         var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
         pointerOver(coords.x + 30, coords.y - 10, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
         setPollHover(feature.properties);
         setGeoHover(feature.properties);
-    //    }
     }
 
     function mouseOverCounty(event: any) {
