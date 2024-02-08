@@ -71,7 +71,14 @@ getCounties <- function(state_fips, pth) {
            cntyfp = COUNTYFP,
            name = NAME,
            geoid = GEOID) %>% 
-    mutate(cntyfp = paste0(stfp, cntyfp))
+    mutate(cntyfp = paste0(stfp, cntyfp)) %>% 
+    left_join(tigris::states(cb = T) %>% 
+                filter(STATEFP %in% state_fips) %>% 
+                select(STATEFP, STUSPS) %>%
+                sf::st_drop_geometry() %>% 
+                rename(stfp = STATEFP,
+                       stabbr = STUSPS) %>% 
+                mutate(stabbr = tolower(stabbr)))
 
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)
