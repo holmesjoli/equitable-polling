@@ -8,12 +8,13 @@ import * as d3 from 'd3';
 // Components
 import {mouseOverTextVD, mouseOverTextState, mouseOverTextTract, mouseOverTextPoll, 
         mouseOverTextPollSummary, pointerOver, pointerOut} from "./Tooltip";
-        
+import { BackgroundPane } from "./Pane";
+
 // Types
 import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator } from "../utils/Types";
 
 // Global
-import { defaultMap, outerBounds, defaultCounty, defaultState, selectVariable } from "../utils/Global";
+import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
 import { useStableCallback, returnCountyShouldInteract } from "../utils/Helper";
 
 // Styles
@@ -102,7 +103,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     const [pollingLocsInBound, setPollingLocsInBound] = useState<any[]>([]);
 
-    const rectRef = useRef<L.Rectangle>(null);
     const geoJsonRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonBoundaryRef = useRef<L.GeoJSON<any, any>>(null);
     const geoJsonVdRef = useRef<L.GeoJSON<any, any>>(null);
@@ -147,13 +147,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     }
 
     function mouseOverCountyorPollSummary(feature: any) {
-
-    //    if (returnCountyShouldInteract(changeYear, feature.properties)) {
         var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
         pointerOver(coords.x + 30, coords.y - 10, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
         setPollHover(feature.properties);
         setGeoHover(feature.properties);
-    //    }
     }
 
     function mouseOverCounty(event: any) {
@@ -222,16 +219,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     }
 
     // React Hooks ---------------------------------------------------
-
-    // on Click Rectangle - Resets the zoom and full screen to the us map
-    const onClickRect = useMemo(
-        () => ({
-          click() {
-            setGeoJsonId({geoid: defaultMap.geoid, type: defaultMap.type} as GeoID);
-          }
-        }),
-        [geoJsonId]
-    );
 
     useEffect(() => {
         // United State
@@ -350,9 +337,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     return(
         <>
-            <Pane name="background-pane" style={{ zIndex: -100 }}>
-                <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect} ref={rectRef}/>
-            </Pane>
+           <BackgroundPane geoJsonId={geoJsonId} setGeoJsonId={setGeoJsonId}/>
             <Pane name="geo-pane" style={{ zIndex: 100 }}>
                 {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 { loadedGeoJsonData ? <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/> : null }
@@ -398,6 +383,10 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                           }}/>
                     ))}
                 </FeatureGroup> : null}
+            </Pane>
+            <Pane name="data-annotation-pane" style={{ zIndex: 200 }}>
+
+
             </Pane>
         </>
     )
