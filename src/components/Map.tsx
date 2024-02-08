@@ -115,16 +115,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOver(properties: any) {
 
-        console.log(properties)
-        const opts: { [key: string]: any } = selectVariable.changeYear.find((d: any) => d.changeYear === changeYear.changeYear) || {};
-        const selectedOption = opts?.[properties.abbr] || null;
-        console.log(selectedOption);
-        // if (changeYear.changeYear === '2018 - 2022' && properties.stfp === "Tract") {
-
-
-
-        // }
-
         if (properties.type === "State") {
             return mouseOverState;
         } else if(properties.type === "County") {
@@ -156,10 +146,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     }
 
     function mouseOverCountyorPollSummary(feature: any) {
+
+       if ( (selectVariable as { [key: string]: any }).changeYear.find((d: any) => d.changeYear === changeYear.changeYear)?.[feature.properties.stabbr] ) {
         var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
         pointerOver(coords.x + 30, coords.y - 10, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
         setPollHover(feature.properties);
         setGeoHover(feature.properties);
+       }
     }
 
     function mouseOverCounty(event: any) {
