@@ -19,5 +19,6 @@ export function useStableCallback<Args extends unknown[], Return>(callback: (...
 
 // Return true if there's data for that county during the selected time period
 export function returnCountyShouldInteract(changeYear: ChangeYear, properties: any) {
+  console.log(properties)
   return (selectVariable as { [key: string]: any }).changeYear.find((d: any) => d.changeYear === changeYear.changeYear)?.[properties.stabbr];
 }

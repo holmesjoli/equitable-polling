@@ -24,7 +24,6 @@ export function BackgroundPane({geoJsonId, setGeoJsonId} : {geoJsonId: GeoID, se
         [geoJsonId]
     );
 
-
     return(
         <Pane name="background-pane" style={{ zIndex: -100 }}>
             <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect} ref={rectRef}/>

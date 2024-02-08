@@ -9,14 +9,15 @@ import Map from "../components/Map";
 import * as Tooltip from "../components/Tooltip";
 import * as Annotation from "../components/Annotation";
 
-import { ChangeYear } from "../utils/Types";
-
 // Data 
 import { selectVariable, defaultCounty, defaultState, defaultMap } from "../utils/Global";
 import { getPollingLocsData, getCounties, getTracts, getVd, getStates } from "../utils/DM";
 
 // Types
-import { GeoID, PollingLoc } from "../utils/Types";
+import { GeoID, PollingLoc, ChangeYear } from "../utils/Types";
+
+// Helper
+import { returnCountyShouldInteract } from "../utils/Helper";
 
 const statesURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/statesGeoJSON.json';
 const pollingLocsURL = 'https://raw.githubusercontent.com/holmesjoli/equitable-polling/main/src/data/processed/pollsChangeStatus.json';
@@ -122,19 +123,21 @@ export default function Home({}): JSX.Element {
 
         setLoadedCountiesLongData(false);
         setLoadedTractsLongData(false);
+
     }, [changeYear]);
 
     useEffect(()=>{
 
         if (geoJsonId.type === 'State') {
             fetchCountiesLongData();
+            console.log(statesData.features.map((d: any) => returnCountyShouldInteract(changeYear, d.properties)))
+
+            Annotation.updateAnnotation();
         } else if (geoJsonId.type === 'County') {
             fetchTractsLongData();
             fetchPollingData();
             fetchVdData();
         }
-
-        Annotation.updateAnnotation();
 
     }, [changeYear, geoJsonId]);
 

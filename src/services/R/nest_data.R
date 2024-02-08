@@ -49,9 +49,9 @@ getStates <- function(state_fips, pth) {
     rename(stfp = STATEFP,
            name = NAME,
            geoid = GEOID,
-           abbr = STUSPS) %>% 
+           stabbr = STUSPS) %>% 
     mutate(zoom = ifelse(stfp == "45", 8, 7),
-           abbr = tolower(abbr))
+           stabbr = tolower(stabbr))
   
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)
@@ -77,8 +77,8 @@ getCounties <- function(state_fips, pth) {
                 select(STATEFP, STUSPS) %>%
                 sf::st_drop_geometry() %>% 
                 rename(stfp = STATEFP,
-                       abbr = STUSPS) %>% 
-                mutate(abbr = tolower(abbr)))
+                       stabbr = STUSPS) %>% 
+                mutate(stabbr = tolower(stabbr)))
 
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)
