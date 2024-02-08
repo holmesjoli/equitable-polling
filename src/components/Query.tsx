@@ -125,13 +125,13 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
     );
 }
 
-function SelectGeography({ selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, statesData, countiesData } : 
-                         { selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection }) : JSX.Element {
+function SelectGeography({ selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, statesData, countiesData, loadedCountyData } : 
+                         { selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection, loadedCountyData: boolean }) : JSX.Element {
 
     return(
         <ComponentGroup title="Select geography">
             <SelectState selectedState={selectedState} setSelectedState={setSelectedState} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} statesData={statesData}/>
-            {selectedState.stfp !== '' ? <SelectCounty selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} countiesData={countiesData}/>: null}
+            {loadedCountyData ? <SelectCounty selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} countiesData={countiesData}/>: null}
         </ComponentGroup>
     )
 }
@@ -178,8 +178,8 @@ export const Menu = styled.div`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts, statesData, countiesData} : 
-                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[], statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection}) {
+export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts, statesData, countiesData, loadedCountyData} : 
+                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[], statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection, loadedCountyData: boolean}) {
 
     return(
         <Menu>
@@ -187,7 +187,7 @@ export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState,
                 <PageDescription>
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
                 </PageDescription>
-                <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} statesData={statesData} countiesData={countiesData}/>
+                <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} statesData={statesData} countiesData={countiesData} loadedCountyData={loadedCountyData}/>
                 { geoJsonId.type !== "US" ? <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} changeYearOpts={changeYearOpts} />: null}
             </div>
         </Menu>

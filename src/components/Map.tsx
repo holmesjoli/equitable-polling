@@ -358,7 +358,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             </Pane>
             <Pane name="poll-pane" style={{ zIndex: 200 }}>
 
-            {selectedState.stfp !== '' && selectedCounty.cntyfp === '' ? 
+            {selectedState.stfp !== '' && selectedCounty.cntyfp === '' && loadedCountyData ? 
                 <FeatureGroup key="pollChangeSummaryFeatureGroup">
                     {
                         countiesData.features.map((feature: any, i: number) => {
