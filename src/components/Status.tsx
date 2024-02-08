@@ -20,6 +20,8 @@ import { selectVariable } from "../utils/Global";
 // Types
 import { EquityIndicator, Indicator, ChangeYear } from '../utils/Types';
 
+import { appTitle } from '../utils/Global';
+
 function SelectEquityIndicator({equityIndicator, setEquityIndicator} : {equityIndicator: EquityIndicator, setEquityIndicator: any}) : JSX.Element {
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -101,11 +103,13 @@ export function USStatus() {
     return (
       <Status>
         <ComponentGroup className="US" title="Description">
-          <p>The goal of the Polling Equity Dashboard is to help users assess which communities could
-                benefit from additional access to polling locations. The dashboard was designed by 
-                the <a href="https://www.newdata.org/" target="_blank">Center for New Data</a>, a 
-                non-partisan non-profit interested in using data to strengthen our democracy. <span className="">Select 
-                a outlined state to get started.</span></p>
+          <p>The goal of the {appTitle} is to help voting rights advocates assess which communities could
+            benefit from additional access to polling locations.</p> 
+              {/* <p>The dashboard was designed by 
+            the <a href="https://www.newdata.org/" target="_blank">Center for New Data</a>, a 
+            non-partisan non-profit interested in using data to strengthen our democracy.</p>  */}
+              <p><span className="">Get started by clicking  
+            an outlined state on the map.</span></p>
         </ComponentGroup>
       </Status>
     );
