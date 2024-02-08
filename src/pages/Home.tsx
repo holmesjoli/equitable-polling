@@ -110,7 +110,6 @@ export default function Home({}): JSX.Element {
     useEffect(()=>{
         Tooltip.init();
         Annotation.init();
-        Annotation.updateAnnotation();
         fetchStatesData();
     }, []);
 
@@ -134,6 +133,8 @@ export default function Home({}): JSX.Element {
             fetchPollingData();
             fetchVdData();
         }
+
+        Annotation.updateAnnotation();
 
     }, [changeYear, geoJsonId]);
 

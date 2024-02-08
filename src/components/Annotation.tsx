@@ -9,31 +9,23 @@ const selector = "root";
 // Reusable function to initialize svg
 export function init() {
     d3.select(`#${selector}`)
-      .append('svg')
+      .append('div')
       .attr('class', 'Annotation')
-      .attr('width', '100%')
-      .attr('height', '100%')
+      .attr('width', '100px')
+      .attr('height', '50px')
       .style('position', 'absolute')
       .style('top', '0px')
-      .style('left', '0px');
+      .style('left', '0px')
+      .style('visibility', 'hidden')
 }
 
 export function updateAnnotation() {
 
-    const data = [{x: 100, y: 200, text: "Test", id: 1}]
+    const data = [{x: 500, y: 200, text: "Test", id: 1}]
 
-    const svg = d3.select(`.Annotation`);
-
-    svg
-    .selectAll('text')
-    .data(data, (d: any) => d.id)
-    .join(
-        (enter: any) => enter
-        .append('text')
-        .attr('x', (d: any) => d.x)
-        .attr('y', (d: any) => d.y)
-        .text((d: any) => d.text)
-        .style('font-size', 16)
-        .style('fill', 'black')
-    );
+    d3.select(`#${selector} .Annotation`)
+    .style('visibility', 'visible')
+    .style('top', `${data[0].y}px`)
+    .style('left', `${data[0].x}px`)
+    .html(data[0].text);
 }
