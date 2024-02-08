@@ -17,6 +17,8 @@ import { defaultCounty } from "../utils/Global";
 import styled from "styled-components";
 import { theme } from "../utils/Theme";
 
+import { appTitle } from '../utils/Global';
+
 export function ComponentGroupInner({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
 
     return(
@@ -184,11 +186,24 @@ export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState,
     return(
         <Menu>
             <div className="Query">
+
+                {geoJsonId.type === "US" ? <PageDescription>
+                    <p>The goal of the {appTitle} is to help voting rights advocates assess which communities could
+                 benefit from additional access to polling locations.</p> 
+                    {/* <p>The dashboard was designed by 
+                 the <a href="https://www.newdata.org/" target="_blank">Center for New Data</a>, a 
+                 non-partisan non-profit interested in using data to strengthen our democracy.</p>  */}
+                    <p><span className="">Get started by clicking  
+                 an outlined state on the map.</span></p></PageDescription>:
                 <PageDescription>
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
-                </PageDescription>
-                <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} statesData={statesData} countiesData={countiesData} loadedCountyData={loadedCountyData}/>
-                { geoJsonId.type !== "US" ? <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} changeYearOpts={changeYearOpts} />: null}
+                </PageDescription>}
+                
+                { geoJsonId.type !== "US" ? 
+                <>
+                    <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} statesData={statesData} countiesData={countiesData} loadedCountyData={loadedCountyData}/>
+                    <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} changeYearOpts={changeYearOpts} /> 
+                </>: null}
             </div>
         </Menu>
     );
