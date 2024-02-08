@@ -111,6 +111,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     const stableMouseoutCallback = useStableCallback(mouseOut);
     const stableMouseoverCallback = useStableCallback(mouseOver);
+    const stableOnClickCallback = useStableCallback(onClickFeature);
     const stableMouseoverPollSummaryCallback = useStableCallback(mouseOverPollSummary);
 
     function mouseOver(properties: any) {
@@ -195,7 +196,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         layer.on({
           mouseover: stableMouseoverCallback(properties),
           mouseout: stableMouseoutCallback,
-          click: onClickFeature
+          click: stableOnClickCallback
         });
         pointerOut();
     }
@@ -213,11 +214,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         const layer = event.target;
         const properties = layer.feature.properties;
 
-        // if (properties.type === "County") {
-        //     console.log(returnCountyShouldInteract(changeYear, properties));
-        // }
-
-        if (properties.type !== "Tract") {
+        if (properties.type === "State") {
+            setGeoJsonId({geoid: properties.geoid, type: properties.type} as GeoID);
+        } else if ((properties.type === "County" && returnCountyShouldInteract(changeYear, properties))) {
             setGeoJsonId({geoid: properties.geoid, type: properties.type} as GeoID);
         }
     }
