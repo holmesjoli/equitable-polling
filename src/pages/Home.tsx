@@ -145,8 +145,8 @@ export default function Home({}): JSX.Element {
     }, [loadedCountiesLongData, loadedTractsLongData, countiesLongData, tractsLongData, decennialCensusYear, geoJsonId]);
 
     useEffect(()=>{
-        if (selectedState.abbr !== '') {
-            const opts = selectVariable.changeYear.filter((d: any) => d[selectedState.abbr]);
+        if (selectedState.stabbr !== '') {
+            const opts = selectVariable.changeYear.filter((d: any) => d[selectedState.stabbr]);
             setChangeYearOpts(opts);
             setChangeYear(opts[0]);
         }

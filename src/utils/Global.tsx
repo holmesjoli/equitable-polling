@@ -50,7 +50,7 @@ export const defaultState = {type: 'State',
                              stfp:'',
                              latlng: defaultMap.latlng, 
                              zoom: 5,
-                             abbr: '',
+                             stabbr: '',
                              selected: false} as State;
 
 export const appTitle = 'Polling Equity Dashboard';
