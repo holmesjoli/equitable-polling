@@ -68,7 +68,7 @@ export function getStates(data: any) {
                          geoid: e.geoid, 
                          latlng: getLatLng(e),
                          zoom: e.zoom,
-                         abbr: e.abbr,
+                         stabbr: e.stabbr,
                          selected: true} as State, 
             geometry: e.geometry as GeoJSON.Geometry})
     });
