@@ -14,7 +14,7 @@ import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator } from ".
 
 // Global
 import { defaultMap, outerBounds, defaultCounty, defaultState, selectVariable } from "../utils/Global";
-import { useStableCallback } from "../utils/Helper";
+import { useStableCallback, returnCountyShouldInteract } from "../utils/Helper";
 
 // Styles
 import { layersStyle, highlightGeographicBoundary, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
@@ -147,18 +147,20 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
     function mouseOverCountyorPollSummary(feature: any) {
 
-       if ( (selectVariable as { [key: string]: any }).changeYear.find((d: any) => d.changeYear === changeYear.changeYear)?.[feature.properties.stabbr] ) {
+    //    if (returnCountyShouldInteract(changeYear, feature.properties)) {
         var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
         pointerOver(coords.x + 30, coords.y - 10, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
         setPollHover(feature.properties);
         setGeoHover(feature.properties);
-       }
+    //    }
     }
 
     function mouseOverCounty(event: any) {
         var layer = event.target;
-        layer.setStyle(layersStyle.County.highlight);
-        mouseOverCountyorPollSummary(layer.feature);
+        if (returnCountyShouldInteract(changeYear, layer.feature.properties)) {
+            layer.setStyle(layersStyle.County.highlight);
+            mouseOverCountyorPollSummary(layer.feature);
+        }
     }
 
     function mouseOverPollSummary(feature: any) {
@@ -211,9 +213,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         const layer = event.target;
         const properties = layer.feature.properties;
 
+        // if (properties.type === "County") {
+        //     console.log(returnCountyShouldInteract(changeYear, properties));
+        // }
+
         if (properties.type !== "Tract") {
             setGeoJsonId({geoid: properties.geoid, type: properties.type} as GeoID);
-        }        
+        }
     }
 
     // React Hooks ---------------------------------------------------
@@ -330,7 +336,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     // Updates main geography and main boundary
     useEffect(() => {
         geoJsonRef.current?.clearLayers().addData(geoJsonData).setStyle((feature) => choroplethStyle(feature, equityIndicator) as PathOptions);
-        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle((feature) => highlightGeographicBoundary(feature, equityIndicator) as unknown as PathOptions);
+        geoJsonBoundaryRef.current?.clearLayers().addData(geoJsonBoundaryData).setStyle((feature) => highlightGeographicBoundary(feature, equityIndicator) as PathOptions);
 
     }, [geoJsonBoundaryData, geoJsonData, equityIndicator, changeYear]);
 
