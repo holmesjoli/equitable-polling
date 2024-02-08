@@ -1,7 +1,3 @@
-// Raw Data
-import statesGeo from "../data/processed/statesGeoJSON.json";
-import countiesGeo from "../data/processed/countiesGeoJSON.json";  
-
 // Scales
 import { theme, thresholdScale } from "./Theme";
 
@@ -58,7 +54,7 @@ export function getStates(data: any) {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
-    (statesGeo as any[]).forEach((e: any) => {
+    (data as any[]).forEach((e: any) => {
 
         stateFeatures.push({type: 'Feature', 
             properties: {type: 'State',
@@ -94,7 +90,8 @@ export function getCounties(countiesGeo: any[], countiesLong: any[]) {
                          zoom: 10,
                          selected: false,
                          changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong),
-                         bounds: getBounds(d)
+                         bounds: getBounds(d),
+                         stabbr: d.abbr
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
     });

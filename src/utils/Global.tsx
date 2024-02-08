@@ -40,14 +40,14 @@ export const defaultMap =  {geoid: '0',
 export const defaultCounty = {type: 'County',
                               stfp: '',
                               name:'',
+                              stabbr: '',
                               cntyfp:'',
                               geoid:'',
                               latlng: {lat: 0, lng: 0}} as County;
 
 export const defaultState = {type: 'State',
                              name:'', 
-                             stfp:'', 
-
+                             stfp:'',
                              latlng: defaultMap.latlng, 
                              zoom: 5,
                              abbr: '',

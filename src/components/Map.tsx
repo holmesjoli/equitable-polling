@@ -13,7 +13,7 @@ import {mouseOverTextVD, mouseOverTextState, mouseOverTextTract, mouseOverTextPo
 import { State, County, GeoID, PollingLoc, ChangeYear, EquityIndicator } from "../utils/Types";
 
 // Global
-import { defaultMap, outerBounds, defaultCounty, defaultState } from "../utils/Global";
+import { defaultMap, outerBounds, defaultCounty, defaultState, selectVariable } from "../utils/Global";
 import { useStableCallback } from "../utils/Helper";
 
 // Styles
@@ -84,16 +84,16 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                            setShowPolls, setPollHover, showVD, setShowVD, changeYear, equityIndicator, setGeoHover, 
                            pollingLocsData, statesData, countiesData, tractsData, vdData, loadedCountyData, loadedTractData, loadedVdData ,
                            setStatesData, setCountiesData, setTractsData}: 
-                        {   mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, 
-                            selectedState: State, setSelectedState: any, 
-                            selectedCounty: any, setSelectedCounty: any, 
-                            showPolls: boolean, setShowPolls: any, setPollHover: any, 
-                            showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, 
-                            setGeoHover: any, 
-                            pollingLocsData: any, statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection, tractsData: GeoJSON.FeatureCollection,
-                            vdData: GeoJSON.FeatureCollection,
-                            loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean,
-                            setStatesData: any, setCountiesData: any, setTractsData: any }) {
+                        {  mapRef: any, geoJsonId: GeoID, setGeoJsonId: any, 
+                           selectedState: State, setSelectedState: any, 
+                           selectedCounty: any, setSelectedCounty: any, 
+                           showPolls: boolean, setShowPolls: any, setPollHover: any, 
+                           showVD: boolean, setShowVD: any, changeYear: ChangeYear, equityIndicator: EquityIndicator, 
+                           setGeoHover: any, 
+                           pollingLocsData: any, statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection, tractsData: GeoJSON.FeatureCollection,
+                           vdData: GeoJSON.FeatureCollection,
+                           loadedCountyData: boolean, loadedTractData: boolean, loadedVdData: boolean,
+                           setStatesData: any, setCountiesData: any, setTractsData: any }) {
 
     const [loadedGeoJsonData, setLoadedGeoJsonData] = useState<boolean>(false);
     const [geoJsonData, setGeoJsonData] = useState<GeoJSON.FeatureCollection>({} as GeoJSON.FeatureCollection);
@@ -114,6 +114,17 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const stableMouseoverPollSummaryCallback = useStableCallback(mouseOverPollSummary);
 
     function mouseOver(properties: any) {
+
+        console.log(properties)
+        const opts: { [key: string]: any } = selectVariable.changeYear.find((d: any) => d.changeYear === changeYear.changeYear) || {};
+        const selectedOption = opts?.[properties.abbr] || null;
+        console.log(selectedOption);
+        // if (changeYear.changeYear === '2018 - 2022' && properties.stfp === "Tract") {
+
+
+
+        // }
+
         if (properties.type === "State") {
             return mouseOverState;
         } else if(properties.type === "County") {
@@ -238,7 +249,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             });
 
             setStatesData(statesData);
-            
 
             mapRef.current.flyTo(defaultMap.latlng, defaultMap.zoom) // zooms to country level, otherwise react finds the center of the world map in Africa
                 .on('moveend', () => {

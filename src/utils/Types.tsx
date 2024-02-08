@@ -22,7 +22,7 @@ export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst:
 
 export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string,
                       latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds, 
-                      changeYearData: any
+                      changeYearData: any, stabbr: string
                     };
 
 export type State = {type: string, stfp: string, geoid: string, name: string,
