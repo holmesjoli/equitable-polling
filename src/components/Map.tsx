@@ -146,10 +146,13 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     }
 
     function mouseOverCountyorPollSummary(feature: any) {
+
+       if ( (selectVariable as { [key: string]: any }).changeYear.find((d: any) => d.changeYear === changeYear.changeYear)?.[feature.properties.stabbr] ) {
         var coords = mapRef.current.latLngToContainerPoint(feature.properties.latlng);
         pointerOver(coords.x + 30, coords.y - 10, mouseOverTextPollSummary(feature, equityIndicator, changeYear));
         setPollHover(feature.properties);
         setGeoHover(feature.properties);
+       }
     }
 
     function mouseOverCounty(event: any) {
@@ -187,16 +190,12 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
 
         const properties = layer.feature.properties;
 
-
-        if (!(properties.type === "County" && 
-            (selectVariable as { [key: string]: any }).changeYear.find((d: any) => d.changeYear === changeYear.changeYear)?.[properties.stabbr] )) {
-                layer.on({
-                    mouseover: stableMouseoverCallback(properties),
-                    mouseout: stableMouseoutCallback,
-                    click: onClickFeature
-                  });
-                  pointerOut();
-        }  
+        layer.on({
+          mouseover: stableMouseoverCallback(properties),
+          mouseout: stableMouseoutCallback,
+          click: onClickFeature
+        });
+        pointerOut();
     }
 
     function onEachVD(_: any, layer: any) {
