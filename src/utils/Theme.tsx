@@ -8,7 +8,6 @@ export const theme = {
     backgroundFill: '#FAF6F0',
     focusColor: '#1D618E',
     focusColorDark: '#113A55',
-    darkGradientColor: "#113A55",
     fontFamily: 'Inter',
     highlightOpacity: .7,
     nonHighlightOpacity: .3,

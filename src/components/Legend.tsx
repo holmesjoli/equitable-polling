@@ -189,7 +189,7 @@ function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
         })
         .attr('opacity', theme.highlightOpacity)
         .attr('fill', (d: any) => thresholdScale(d.pctBlack) as string)
-        .attr("stroke", theme.darkGradientColor)
+        .attr("stroke", theme.focusColorDark)
         .attr('stroke-width', 1),
       update => update
         .attr('opacity', (d: any) => thresholdScale(d.pctBlack) as string === fillColor as string || fillColor === undefined ? theme.highlightOpacity : theme.nonHighlightOpacity

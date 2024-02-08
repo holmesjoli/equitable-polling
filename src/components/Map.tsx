@@ -20,6 +20,7 @@ import { useStableCallback, returnCountyShouldInteract } from "../utils/Helper";
 // Styles
 import { layersStyle, highlightGeographicBoundary, vdStyle, choroplethStyle, pollStyle, pollSummarySize } from "../utils/Theme";
 
+
 // Returns the bounds of the current map view
 function getMapBounds(mapRef: any) {
     const mapBounds = mapRef.current.getBounds();

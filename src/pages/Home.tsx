@@ -110,6 +110,7 @@ export default function Home({}): JSX.Element {
     useEffect(()=>{
         Tooltip.init();
         Annotation.init();
+        Annotation.updateAnnotation();
         fetchStatesData();
     }, []);
 
