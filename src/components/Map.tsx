@@ -413,8 +413,9 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
             {showPolls ?
                 <FeatureGroup key="pollingLocFeatureGroup">
                     {pollingLocsInBound.map((d: PollingLoc, i: number) => {
+
                         return(
-                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d)} radius={200} eventHandlers={{
+                            <Circle key={i} center={[d.latlng.lat, d.latlng.lng]} pathOptions={pollStyle(d, d.cntyfp === selectedCounty.cntyfp)} radius={200} eventHandlers={{
                             mouseover: () => {
                                 mouseOverPollingLoc(d);
                             },
