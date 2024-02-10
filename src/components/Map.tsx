@@ -347,8 +347,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         }
     }, [geoJsonVdData, showVD, loadedVdData]);
 
-    // console.log(loadedPollingLocsData);
-
     return(
         <>
             <Pane name="background-pane" style={{ zIndex: -100 }}>
