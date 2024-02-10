@@ -68,7 +68,7 @@ export default function Home({}): JSX.Element {
     const fetchPollingLocsData = async () => {
         fetch(pollingLocsURL, {method: 'GET'})
              .then(res => res.json())
-             .then((data: any) => setPollingData(getPollingLocsData(data, changeYear) as PollingLoc[]))
+             .then((data: any) => setPollingData(getPollingLocsData(data.filter((d: any) => d.changeYear === changeYear.changeYear)) as PollingLoc[]))
              .finally(() => setLoadedPollingLocsData(true));
     };
 
@@ -96,7 +96,7 @@ export default function Home({}): JSX.Element {
     const fetchTractsData = async () => {
         fetch(tractsGeoURL, {method: 'GET'})
              .then(res => res.json())
-             .then((data: any) => setTractsData(getTracts(data, tractsLongData, decennialCensusYear)))
+             .then((data: any) => setTractsData(getTracts(data, tractsLongData, pollingLocsData, decennialCensusYear)))
              .finally(() => setLoadedTractData(true))
     };
 
@@ -140,7 +140,7 @@ export default function Home({}): JSX.Element {
 
         if (geoJsonId.type === 'State' && loadedCountiesLongData) {
             fetchCountiesData();
-        } else if (geoJsonId.type === 'County' && loadedTractsLongData) {
+        } else if (geoJsonId.type === 'County' && loadedTractsLongData && loadedPollingLocsData) {
             fetchTractsData();
         }
 

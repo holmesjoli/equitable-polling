@@ -10,7 +10,9 @@ export type EquityIndicatorData = {equityMeasure: number, fillColor:string, stro
 
 export type PollSummary = {changeNoPolls: number, overall: string, overallChange: number, id: string, rSize: number};
 
-export type ChangeYearData = {changeYear: string, none:EquityIndicatorData, pctBlack: EquityIndicatorData, pollSummary?: PollSummary};
+export type PollLocSummary = {noPolls: boolean, totalNoPolls: number, status?: {pollsRemoved: number, pollsAdded: number, pollsNoChange: number}};
+
+export type ChangeYearData = {changeYear: string, none:EquityIndicatorData, pctBlack: EquityIndicatorData, pollSummary?: PollSummary, pollLocSummary: PollLocSummary};
 
 export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, 
                      geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean,
@@ -35,5 +37,5 @@ export type EquityIndicator = {variable: string, descr: string};
 export type Indicator = {id: string, descr: string};
 
 export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, 
-                          pixelCoords?: PixelCoords, cntyfp: string,
+                          pixelCoords?: PixelCoords, cntyfp: string, tractfp: string,
                           status: string | undefined, overall: string | undefined, id: string | undefined};

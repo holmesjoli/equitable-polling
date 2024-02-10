@@ -74,7 +74,26 @@ export function mouseOverTextVD(feature: any) {
 }
 
 export function mouseOverTextTract(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
-    return `<div class="ComponentGroupInner SemiBold">${feature.properties.descr} ${feature.properties.name}</div><div>${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</div>`
+
+    // console.log(feature.properties.changeYearData)
+
+    const tractName = `<div class="ComponentGroupInner SemiBold">${feature.properties.descr} ${feature.properties.name}</div>`;
+    const ei = `<div class="DetailInformation">${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</div>`;
+
+    console.log(feature.properties.changeYearData.pollLocSummary.noPolls);
+
+    const pollLocSummary = feature.properties.changeYearData.pollLocSummary;
+
+    if (pollLocSummary.noPolls) {
+        const noPolls = `<div class="DetailInformation">No polling locations in ${changeYear.baseYear}</div>`;
+        return `${tractName}${ei}${noPolls}`;
+    } else {
+        const totalNoPolls = `<div class="DetailInformation"><span class="SemiBold">${pollLocSummary.totalNoPolls} total polling location(s) </span> in ${changeYear.baseYear}</div>`;
+        const pollsAdded = pollLocSummary.status.pollsAdded > 0 ? `<div class="DetailInformation"><span class="added SemiBold">${pollLocSummary.status.pollsAdded} poll added </span> in ${changeYear.baseYear}</div>`: ``;
+        const pollsRemoved = pollLocSummary.status.pollsRemoved > 0 ? `<div class="DetailInformation"><span class="removed SemiBold">${pollLocSummary.status.pollsRemoved} poll removed </span> in ${changeYear.baseYear}</div>`: ``;
+        const pollsNoChange = pollLocSummary.status.pollsNoChange > 0 ? `<div class="DetailInformation"><span class="SemiBold">${pollLocSummary.status.pollsNoChange} polls stayed the same </span> in ${changeYear.baseYear}</div>`: ``;
+        return `${tractName}${ei}${totalNoPolls}${pollsAdded}${pollsRemoved}${pollsNoChange}`;
+    }
 }
 
 export function mouseOverTextCounty(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
@@ -94,7 +113,7 @@ export function mouseOverTextCounty(feature: any, equityIndicator: EquityIndicat
             netChanges = `<div class="DetailInformation"><span class="SemiBold">No change</span> in the net # of polls between ${changeYear.changeYear}</div>`;
         } else {
             const status = pollSummary?.overall === 'added' ? 'gain': 'loss';
-            netChanges = `<div class="DetailInformation">Net<span class="SemiBold ${pollSummary?.overall}"> ${status} of ${Math.abs(pollSummary?.overallChange ?? 0)} </span> poll locations between ${feature.properties.changeYear}</div>`;
+            netChanges = `<div class="DetailInformation">Net<span class="SemiBold ${pollSummary?.overall}"> ${status} of ${Math.abs(pollSummary?.overallChange ?? 0)} </span> poll locations between ${changeYear.changeYear}</div>`;
         }
 
         return `${countyName}${ei}${noChanges}${netChanges}`;
