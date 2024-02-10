@@ -114,7 +114,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
     const stableMouseoverCallback = useStableCallback(mouseOver);
     const stableOnClickCallback = useStableCallback(onClickFeature);
     const stableMouseoverPollSummaryCallback = useStableCallback(mouseOverPollSummary);
-    const stableOnEachBoundary = useStableCallback(onEachBoundary);
 
     function mouseOver(properties: any) {
 
@@ -187,29 +186,6 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
         d3.select(".Status .ComponentGroupInner span").attr("class", "");
         setGeoHover({});
         setPollHover({});
-    }
-
-    // Wait for data update which will make everything much easier.
-    function onEachBoundary(_: any, layer: any) {
-
-        // if (layer.feature.properties.type === "County" && layer.feature.properties.selected) {
-        //     console.log(mapRef)
-        //     console.log(layer)
-        //     pollingLocsData.forEach((d: PollingLoc) => {
-        //         const p = point(d.latlng.lat, d.latlng.lng);
-        //         if (geoJsonBoundaryRef.current) {
-        //             console.log(p)
-        //             console.log(geoJsonBoundaryRef.current.contains(p))
-        //         }
-        //     });
-
-        // }
-
-        // layer.eachLayer(function(memberLayer) {
-        //     if (memberLayer.contains(point.getLatLng())) {
-        //       console.log(memberLayer.feature.properties);
-        //     }
-        //   });
     }
 
     function onEachFeature(_: any, layer: any) {
@@ -379,7 +355,7 @@ function LayersComponent({ mapRef, geoJsonId, setGeoJsonId, selectedState, setSe
                 <Rectangle bounds={outerBounds} pathOptions={layersStyle.greyOut} eventHandlers={onClickRect} ref={rectRef}/>
             </Pane>
             <Pane name="geo-pane" style={{ zIndex: 100 }}>
-                {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} onEachFeature={stableOnEachBoundary} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
+                {selectedState.stfp !== '' ? <GeoJSON data={geoJsonBoundaryData} style={layersStyle.outline} ref={geoJsonBoundaryRef} key="geoJsonBoundary"/> : null}
                 { loadedGeoJsonData ? <GeoJSON data={geoJsonData} style={layersStyle.default} onEachFeature={onEachFeature} ref={geoJsonRef} key="geoJsonAll"/> : null }
                 {showVD &&  loadedVdData ? <GeoJSON data={geoJsonVdData} style={vdStyle} onEachFeature={onEachVD} ref={geoJsonVdRef} key="geoJsonVD"/> :<></> }
             </Pane>
