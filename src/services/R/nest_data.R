@@ -201,20 +201,10 @@ getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
 
 #' Get Tracts longitudinal
 #' Writes out a json file at the year-tractfp level
-getTractsLongitudinal <- function(df, polls, state_fips, years, pth) {
-
-  polls <- polls %>% 
-    group_by(tractfp, status, overall, id, baseYear) %>% 
-    tally() %>% 
-    rename(nPolls = n)
+getTractsLongitudinal <- function(df, state_fips, years, pth) {
 
   df <- getLongitudinal(df, state_fips, years) %>% 
-    mutate(tractfp = geoid) %>% 
-    left_join(polls) %>% 
-    mutate(status = ifelse(is.na(status), "No polls", status),
-           overall = ifelse(is.na(overall), "nopolls", overall),
-           id = ifelse(is.na(id), "NA", id),
-           nPolls = ifelse(is.na(nPolls), 0, nPolls))
+    mutate(tractfp = geoid)
   
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "tractsLongitudinal.json"))
