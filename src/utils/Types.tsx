@@ -35,5 +35,5 @@ export type EquityIndicator = {variable: string, descr: string};
 export type Indicator = {id: string, descr: string};
 
 export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, 
-                          pixelCoords?: PixelCoords,
+                          pixelCoords?: PixelCoords, cntyfp: string,
                           status: string | undefined, overall: string | undefined, id: string | undefined};
