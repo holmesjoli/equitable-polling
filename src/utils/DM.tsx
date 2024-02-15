@@ -54,19 +54,20 @@ export function getStates(data: any) {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
-    (data as any[]).forEach((e: any) => {
+    (data as any[]).forEach((d: any) => {
 
         stateFeatures.push({type: 'Feature', 
             properties: {type: 'State',
                          descr: '',
-                         name: e.name,
-                         stfp: e.stfp,
-                         geoid: e.geoid, 
-                         latlng: getLatLng(e),
-                         zoom: e.zoom,
-                         stabbr: e.stabbr,
+                         name: d.name,
+                         stfp: d.stfp,
+                         geoid: d.geoid, 
+                         latlng: getLatLng(d),
+                         zoom: d.zoom,
+                         stabbr: d.stabbr,
+                         bounds: getBounds(d),
                          selected: true} as State, 
-            geometry: e.geometry as GeoJSON.Geometry})
+            geometry: d.geometry as GeoJSON.Geometry})
     });
 
     return returnFeatureCollection(stateFeatures);
@@ -167,6 +168,7 @@ export function getPollingLocsData(data: any[], changeYear: ChangeYear) {
                     descr: 'Polling location',
                     name: d.name,
                     latlng: { lat: d.Y, lng: d.X } as LatLng,
+                    cntyfp: d.cntyfp,
                     status: d.status,
                     overall: d.overall,
                     id: d.id

@@ -17,8 +17,6 @@ import { defaultCounty } from "../utils/Global";
 import styled from "styled-components";
 import { theme } from "../utils/Theme";
 
-import { appTitle } from '../utils/Global';
-
 export function ComponentGroupInner({title, children}: {title: string, children: React.ReactNode}):  JSX.Element {
 
     return(
@@ -127,13 +125,13 @@ function SelectCounty({ selectedState, selectedCounty, setSelectedCounty, setGeo
     );
 }
 
-function SelectGeography({ selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, statesData, countiesData, loadedCountyData } : 
-                         { selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection, loadedCountyData: boolean }) : JSX.Element {
+function SelectGeography({ selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, statesData, countiesData } : 
+                         { selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection }) : JSX.Element {
 
     return(
         <ComponentGroup title="Select geography">
             <SelectState selectedState={selectedState} setSelectedState={setSelectedState} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} statesData={statesData}/>
-            {loadedCountyData ? <SelectCounty selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} countiesData={countiesData}/>: null}
+            {selectedState.stfp !== '' ? <SelectCounty selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} countiesData={countiesData}/>: null}
         </ComponentGroup>
     )
 }
@@ -166,11 +164,11 @@ function SelectChangeYear({changeYear, setChangeYear, changeYearOpts} : {changeY
     )
 }
 
-export const Menu = styled.div`
+export const Menu = styled.div<{ $geojsonid: GeoID; }>`
     z-index: +9;
     position: absolute;
     top: 10vh;
-    left: '0vw';
+    left: ${props => props.$geojsonid.type === 'US' ? '-100vw;' : '0vw;'};
     width: 20rem;
     // padding: .625rem;
     background-color: ${theme.backgroundFill};
@@ -180,30 +178,17 @@ export const Menu = styled.div`
     border-right: 1px solid #B7B7B7;
 `;
 
-export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts, statesData, countiesData, loadedCountyData} : 
-                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[], statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection, loadedCountyData: boolean}) {
+export function QueryMenu({ geoJsonId, changeYear, setChangeYear, selectedState, setSelectedState, selectedCounty, setSelectedCounty, setGeoJsonId, changeYearOpts, statesData, countiesData} : 
+                          { geoJsonId: GeoID, changeYear: ChangeYear, setChangeYear: any, selectedState: State, setSelectedState: any, selectedCounty: County, setSelectedCounty: any, setGeoJsonId: any, changeYearOpts: ChangeYear[], statesData: GeoJSON.FeatureCollection, countiesData: GeoJSON.FeatureCollection}) {
 
     return(
-        <Menu>
+        <Menu $geojsonid={geoJsonId}>
             <div className="Query">
-
-                {geoJsonId.type === "US" ? <PageDescription>
-                    <p>The goal of the {appTitle} is to help voting rights advocates assess which communities could
-                 benefit from additional access to polling locations.</p> 
-                    {/* <p>The dashboard was designed by 
-                 the <a href="https://www.newdata.org/" target="_blank">Center for New Data</a>, a 
-                 non-partisan non-profit interested in using data to strengthen our democracy.</p>  */}
-                    <p><span className="">Get started by clicking  
-                 an outlined state on the map.</span></p></PageDescription>:
                 <PageDescription>
                     <p>The mapping page shows an overview of how polling locations have changed over the last decade. Click a specific county to return a more detailed view.</p>
-                </PageDescription>}
-                
-                { geoJsonId.type !== "US" ? 
-                <>
-                    <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} statesData={statesData} countiesData={countiesData} loadedCountyData={loadedCountyData}/>
-                    <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} changeYearOpts={changeYearOpts} /> 
-                </>: null}
+                </PageDescription>
+                <SelectGeography selectedState={selectedState} setSelectedState={setSelectedState} selectedCounty={selectedCounty} setSelectedCounty={setSelectedCounty} setGeoJsonId={setGeoJsonId} statesData={statesData} countiesData={countiesData}/>
+                <SelectChangeYear changeYear={changeYear} setChangeYear={setChangeYear} changeYearOpts={changeYearOpts} />
             </div>
         </Menu>
     );

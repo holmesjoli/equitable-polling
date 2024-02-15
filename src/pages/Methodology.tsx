@@ -1,6 +1,15 @@
+//Libraries
+import { useEffect } from 'react';
+import * as d3 from 'd3';
+
+// Components
 import Main from '../components/Main';
 
 export default function Methodology({}): JSX.Element {
+
+    useEffect(() => {
+        d3.select('body').style('overflow', 'scroll');
+    }, []);
 
     return(
         <Main>
@@ -8,7 +17,7 @@ export default function Methodology({}): JSX.Element {
                 <h2>Methodology</h2>
                 <div className="Inner-h3">
                     <h3>Data Sources</h3>
-                    {/* <p>To create the Polling Equity Dashboard, the team identified multiple data sources and created a data pipeline to clean and aggregate the data.</p> */}
+                    {/* <p>To create the ${appTitle}, the team identified multiple data sources and created a data pipeline to clean and aggregate the data.</p> */}
                         <div className="Inner-h4">
                             <h4>Geographic Boundary Data</h4>
                             <ul>

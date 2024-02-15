@@ -1,4 +1,4 @@
-## Equitable polling data processsing
+## Voting Access Monitor data processsing
 
 The shapefiles for the project have been processed in R using the `tigris` package.
 

@@ -1,8 +1,17 @@
+//Libraries
+import { useEffect } from 'react';
+import * as d3 from 'd3';
+
+// Components
 import Main from '../components/Main';
 
 import { appTitle } from '../utils/Global';
 
 export default function About({}): JSX.Element {
+
+    useEffect(()=>{
+        d3.select('body').style('overflow', 'hidden');
+    }, []);
 
     return(
         <Main>
