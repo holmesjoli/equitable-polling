@@ -29,7 +29,7 @@ export default function About({}): JSX.Element {
                     <h3><a href="https://www.newdata.org/">The Center for New Data</a></h3>
                     <p><a href="https://www.newdata.org/">The Center for New Data</a> is a technology non-profit using data-driven insights to protect democracy. We partner with civic, academic, 
                         media and technology organizations to develop meaningful data products that drive social impact.</p>
-                    <p>Our Polling Equity products provide the data voting rights advocates need to address problems like long lines at the ballot box 
+                    <p>Our Observing Democracy products provide the data voting rights advocates need to address problems like long lines at the ballot box 
                         and voting access disparities. Equipped with the right analytics, they work with local election officials to ensure polling locations 
                         are distributed equitably in their communities and support litigation action [under the Voting Rights Act] when voters encounter 
                         systemic challenges at the polls.</p>
