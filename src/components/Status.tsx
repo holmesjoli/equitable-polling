@@ -142,7 +142,7 @@ export function CountyStatus ({equityIndicator, setEquityIndicator, showPolls, s
               <SelectEquityIndicator equityIndicator={equityIndicator} setEquityIndicator={setEquityIndicator}/>
               {equityIndicator.variable !== "none"?  <EquityLegend equityIndicator={equityIndicator} geoHover={geoHover} />: null}
           </ComponentGroupInner>
-          <ComponentGroupInner title="Voting districts">
+          <ComponentGroupInner title="Voting districts from 2020">
             <VDSwitch showVD={showVD} setShowVD={setShowVD}/>
           </ComponentGroupInner>
           <ComponentGroupInner title="Poll status">

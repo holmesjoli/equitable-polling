@@ -53,4 +53,4 @@ export const defaultState = {type: 'State',
                              stabbr: '',
                              selected: false} as State;
 
-export const appTitle = 'Polling Equity Dashboard';
+export const appTitle = 'Voting Access Monitor';

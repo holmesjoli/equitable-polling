@@ -1,6 +1,6 @@
-# Equitable Polling Locations
+# Voting Access Monitor
 
-This respository contains code that produces the equitable polling locations interactive data visualization. The repository is structured as follow:
+This respository contains code that produces the Voting Access Monitor (VAM) interactive data visualization. The repository is structured as follow:
 
 public/
 src/

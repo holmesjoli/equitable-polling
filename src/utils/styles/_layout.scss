@@ -6,6 +6,7 @@ html, body {
 body {
   color: $appColor;
   background-color: $appBackground;
+  overflow: hidden;
 }
 
 // React app mounting point

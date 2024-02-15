@@ -1,5 +1,7 @@
 // Libraries
 import { useState, useEffect } from "react";
+import * as d3 from 'd3';
+
 
 // Components
 import Main from '../components/Main';
@@ -7,7 +9,6 @@ import { CountyStatus, StateStatus, USStatus } from '../components/Status';
 import { QueryMenu } from "../components/Query";
 import Map from "../components/Map";
 import * as Tooltip from "../components/Tooltip";
-
 import { ChangeYear } from "../utils/Types";
 
 // Data 
@@ -111,6 +112,7 @@ export default function Home({}): JSX.Element {
     useEffect(()=>{
         Tooltip.init();
         fetchStatesData();
+        d3.select('body').style('overflow', 'hidden');
     }, []);
 
     useEffect(() => {
