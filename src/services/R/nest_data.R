@@ -236,7 +236,7 @@ getPollsChangeStatus <- function(df) {
     rename(pollId = pollid,
            baseYear = baseyear,
            changeYear = changeyear,
-           status = changestatus,
+           status = changetype,
            X = x,
            Y = y,
            name = pollname) %>%
