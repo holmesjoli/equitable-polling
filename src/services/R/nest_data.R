@@ -170,13 +170,13 @@ getVd <- function(state_fips, pth, year = 2020) {
 
 #' Process longitudinal data
 getLongitudinal <- function(df, state_fips, years) {
-
+  
   df <- df %>% 
     mutate(stfp = stringr::str_sub(fips_code, 1, 2),
            cntyfp = stringr::str_sub(fips_code, 1, 5)) %>% 
     filter(stfp %in% state_fips) %>%
     filter(year %in% years) %>% 
-    select(fips_code, percentage_race_black_african_american, year, stfp, cntyfp) %>% 
+    select(fips_code, percentage_race_black_african_american, year, stfp, cntyfp, est_total_population, polling_locations_total) %>% 
     rename(geoid = fips_code,
            pctBlack = percentage_race_black_african_american,
            baseYear = year) %>%
@@ -189,10 +189,21 @@ getLongitudinal <- function(df, state_fips, years) {
 #' Writes out a json file at the year-cntyfp level
 getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
 
-  df <- getLongitudinal(df, state_fips, years)
+  df <- df %>% 
+    mutate(stfp = stringr::str_sub(cntyfp, 1, 2),
+           cntyfp = as.character(cntyfp)) %>% 
+    filter(stfp %in% state_fips) %>%
+    filter(year %in% years) %>% 
+    select(percentage_race_black_african_american, year, stfp, cntyfp, total_population, polling_locations_total) %>% 
+    rename(geoid = cntyfp,
+           pctBlack = percentage_race_black_african_american,
+           baseYear = year) %>%
+    mutate(pctBlack = round(pctBlack*100, 1))
+
   pollSummary <- getPollSummary(pollSummary)
   df <- df %>% 
-    right_join(pollSummary)
+    right_join(pollSummary) %>% 
+    mutate(pop_per_poll = round(total_population/polling_locations_total, 0))
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countiesLongitudinal.json"))
   
@@ -231,6 +242,8 @@ getPollingLocations <- function(df) {
 #' Get poll changes status
 #' Writes out a json file at the change year level
 getPollsChangeStatus <- function(df) {
+  
+  # browser()
 
   df <- df %>%
     rename(pollId = pollid,
