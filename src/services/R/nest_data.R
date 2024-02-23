@@ -247,7 +247,7 @@ getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
     left_join(pollLocSummary) %>% 
     mutate(id = ifelse(is.na(id), 0, id),
            status = ifelse(is.na(status), "No polling locations", status),
-           overall = ifelse(is.na(status), "no_polling_locs", status),
+           overall = ifelse(is.na(overall), "no_polling_locs", overall),
            overallChange = pollsAdded - pollsRemoved) %>% 
     select(-n)
   
