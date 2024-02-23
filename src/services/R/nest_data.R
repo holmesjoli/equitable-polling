@@ -225,16 +225,21 @@ getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
     rename(baseYear = baseyear,
            status = changetype) %>% 
     mutate(tractfp = as.character(tractfp))
-
+  
   df <- df %>% 
-    left_join(pollLocs) %>% 
+    left_join(pollLocs %>% 
+                tidyr::pivot_wider(names_from = "status", values_from = "n") %>% 
+                rename(pollsRemoved = removed,
+                       pollsAdded = added,
+                       pollsNoChange = no_change)) %>% 
     mutate(polling_locations_total = ifelse(is.na(polling_locations_total), 0, polling_locations_total),   ## todo fix this with new data
-           n = ifelse(is.na(n), 0, n),
-           status = ifelse(is.na(status), 'no_polling_locs', status))
+           pollsRemoved = ifelse(is.na(pollsRemoved), 0, pollsRemoved),
+           pollsAdded = ifelse(is.na(pollsAdded), 0, pollsAdded),
+           pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange))
   
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "tractsLongitudinal.json"))
-  
+
   return(df)
 }
 
