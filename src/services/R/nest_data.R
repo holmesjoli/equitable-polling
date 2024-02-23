@@ -216,6 +216,7 @@ getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
 #' Writes out a json file at the year-tractfp level
 getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
 
+ 
   df <- getLongitudinal(df, state_fips, years) %>% 
     mutate(tractfp = geoid)
   
@@ -225,15 +226,7 @@ getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
     rename(baseYear = baseyear,
            status = changetype) %>% 
     mutate(tractfp = as.character(tractfp))
-  
-  pollLocSummary = pollLocs %>% 
-    mutate(overall = ifelse(status == "no_change", "nochange", status),
-          id = case_when(overall == "added" ~ "3",
-                         overall == "nochange" ~ "0",
-                         overall == "removed" ~ "-3"),
-          status = case_when(overall == "added" ~ "Added",
-                             overall == "nochange" ~ "No change",
-                             overall == "removed" ~ "Removed"))
+
   df <- df %>% 
     left_join(pollLocs %>% 
                 tidyr::pivot_wider(names_from = "status", values_from = "n") %>% 
@@ -243,13 +236,8 @@ getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
     mutate(polling_locations_total = ifelse(is.na(polling_locations_total), 0, polling_locations_total),   ## todo fix this with new data
            pollsRemoved = ifelse(is.na(pollsRemoved), 0, pollsRemoved),
            pollsAdded = ifelse(is.na(pollsAdded), 0, pollsAdded),
-           pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange)) %>% 
-    left_join(pollLocSummary) %>% 
-    mutate(id = ifelse(is.na(id), 0, id),
-           status = ifelse(is.na(status), "No polling locations", status),
-           overall = ifelse(is.na(overall), "no_polling_locs", overall),
-           overallChange = pollsAdded - pollsRemoved) %>% 
-    select(-n)
+           pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange),
+           overallChange = pollsAdded - pollsRemoved)
   
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "tractsLongitudinal.json"))
