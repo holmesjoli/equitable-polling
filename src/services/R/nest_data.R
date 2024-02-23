@@ -226,6 +226,14 @@ getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
            status = changetype) %>% 
     mutate(tractfp = as.character(tractfp))
   
+  pollLocSummary = pollLocs %>% 
+    mutate(overall = ifelse(status == "no_change", "nochange", status),
+          id = case_when(overall == "added" ~ "3",
+                         overall == "nochange" ~ "0",
+                         overall == "removed" ~ "-3"),
+          status = case_when(overall == "added" ~ "Added",
+                             overall == "nochange" ~ "No change",
+                             overall == "removed" ~ "Removed"))
   df <- df %>% 
     left_join(pollLocs %>% 
                 tidyr::pivot_wider(names_from = "status", values_from = "n") %>% 
@@ -235,7 +243,12 @@ getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
     mutate(polling_locations_total = ifelse(is.na(polling_locations_total), 0, polling_locations_total),   ## todo fix this with new data
            pollsRemoved = ifelse(is.na(pollsRemoved), 0, pollsRemoved),
            pollsAdded = ifelse(is.na(pollsAdded), 0, pollsAdded),
-           pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange))
+           pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange)) %>% 
+    left_join(pollLocSummary) %>% 
+    mutate(id = ifelse(is.na(id), 0, id),
+           status = ifelse(is.na(status), "No polling locations", status),
+           overall = ifelse(is.na(status), "no_polling_locs", status)) %>% 
+    select(-n)
   
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "tractsLongitudinal.json"))
@@ -262,8 +275,6 @@ getPollingLocations <- function(df) {
 #' Get poll changes status
 #' Writes out a json file at the change year level
 getPollsChangeStatus <- function(df) {
-  
-  # browser()
 
   df <- df %>%
     rename(pollId = pollid,
