@@ -171,18 +171,17 @@ getVd <- function(state_fips, pth, year = 2020) {
 }
 
 #' Process longitudinal data
-getLongitudinal <- function(df, state_fips, years) {
+getLongitudinal <- function(df) {
   
   df <- df %>% 
-    mutate(stfp = stringr::str_sub(fips_code, 1, 2),
-           cntyfp = stringr::str_sub(fips_code, 1, 5)) %>% 
-    filter(stfp %in% state_fips) %>%
-    filter(year %in% years) %>% 
-    select(fips_code, percentage_race_black_african_american, year, stfp, cntyfp, est_total_population, polling_locations_total) %>% 
-    rename(geoid = fips_code,
-           pctBlack = percentage_race_black_african_american,
-           baseYear = year) %>%
-    mutate(pctBlack = round(pctBlack*100, 1))
+    rename(pctBlack = percentage_race_black_african_american,
+           baseYear = year,
+           totalPopulation = total_population,
+           populationDensity = population_density,
+           pollingLocationsTotal = polling_locations_total) %>%
+    mutate(pctBlack = round(pctBlack*100, 1),
+           stfp = as.character(stringr::str_sub(cntyfp, 1, 2)),
+           cntyfp = as.character(cntyfp))
 
   return(df)
 }
@@ -191,21 +190,14 @@ getLongitudinal <- function(df, state_fips, years) {
 #' Writes out a json file at the year-cntyfp level
 getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
 
-  df <- df %>% 
-    mutate(stfp = stringr::str_sub(cntyfp, 1, 2),
-           cntyfp = as.character(cntyfp)) %>% 
-    filter(stfp %in% state_fips) %>%
-    filter(year %in% years) %>% 
-    select(percentage_race_black_african_american, year, stfp, cntyfp, total_population, polling_locations_total) %>% 
-    rename(geoid = cntyfp,
-           pctBlack = percentage_race_black_african_american,
-           baseYear = year) %>%
-    mutate(pctBlack = round(pctBlack*100, 1))
+  df <- getLongitudinal(df) %>% 
+    select(stfp, cntyfp, baseYear, pctBlack, totalPopulation, pollingLocationsTotal, populationDensity) %>%
+    mutate(geoid = cntyfp)
 
   pollSummary <- getPollSummary(pollSummary)
   df <- df %>% 
     right_join(pollSummary) %>% 
-    mutate(pop_per_poll = round(total_population/polling_locations_total, 0))
+    mutate(popPerPoll = round(totalPopulation/pollingLocationsTotal, 0))
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countiesLongitudinal.json"))
   
@@ -215,10 +207,11 @@ getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
 #' Get Tracts longitudinal
 #' Writes out a json file at the year-tractfp level
 getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
-
  
-  df <- getLongitudinal(df, state_fips, years) %>% 
-    mutate(tractfp = geoid)
+  df <- getLongitudinal(df) %>% 
+    select(stfp, cntyfp, tractfp, baseYear, pctBlack, totalPopulation, pollingLocationsTotal, populationDensity) %>%
+    mutate(tractfp = as.character(tractfp),
+           geoid = tractfp)
   
   pollLocs <- pollLocs %>% 
     group_by(tractfp, baseyear, changetype) %>% 
@@ -233,8 +226,7 @@ getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
                 rename(pollsRemoved = removed,
                        pollsAdded = added,
                        pollsNoChange = no_change)) %>% 
-    mutate(polling_locations_total = ifelse(is.na(polling_locations_total), 0, polling_locations_total),   ## todo fix this with new data
-           pollsRemoved = ifelse(is.na(pollsRemoved), 0, pollsRemoved),
+    mutate(pollsRemoved = ifelse(is.na(pollsRemoved), 0, pollsRemoved),
            pollsAdded = ifelse(is.na(pollsAdded), 0, pollsAdded),
            pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange),
            overallChange = pollsAdded - pollsRemoved)
