@@ -287,13 +287,13 @@ getPollsChangeStatus <- function(df) {
     mutate(cntyfp = as.character(cntyfp),
            stfp = as.character(stfp),
            tractfp = as.character(tractfp),
-           overall = ifelse(status == "no_change", "nochange", status),
-           id = case_when(overall == "added" ~ "3",
-                          overall == "nochange" ~ "0",
-                          overall == "removed" ~ "-3"),
-           status = case_when(overall == "added" ~ "Added",
-                              overall == "nochange" ~ "No change",
-                              overall == "removed" ~ "Removed"))
+           statusOverall = ifelse(status == "no_change", "nochange", status),
+           statusNumeric = case_when(statusOverall == "added" ~ "3",
+                                     statusOverall == "nochange" ~ "0",
+                                     statusOverall == "removed" ~ "-3"),
+           status = case_when(statusOverall == "added" ~ "Added",
+                              statusOverall == "nochange" ~ "No change",
+                              statusOverall == "removed" ~ "Removed"))
 
   exportJSON <- toJSON(df)
   write(exportJSON, "../data/processed/pollsChangeStatus.json")
