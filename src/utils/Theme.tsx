@@ -106,9 +106,10 @@ export function vdStyle(feature: any) {
 
 // Poll styles
 export function pollStyle(point: any, selected: boolean = true) {
+
   return {
-    fillColor: pollFillScale(point.id) as string,
-    color: pollStrokeScale(point.overall) as string,
+    fillColor: pollFillScale(point.statusNumeric) as string,
+    color: pollStrokeScale(point.statusOverall) as string,
     weight: 1,
     opacity: getPollFillOpacity(selected),
     fillOpacity: getPollFillOpacity(selected)

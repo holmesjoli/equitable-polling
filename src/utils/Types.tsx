@@ -8,7 +8,7 @@ export type GeoID = {geoid: string, type: string};
 
 export type EquityIndicatorData = {equityMeasure: number, fillColor:string, strokeColor: string};
 
-export type PollSummary = {changeNoPolls: number, overall: string, overallChange: number, id: string, rSize: number};
+export type PollSummary = {changeNoPolls: number, statusOverall: string, overallChange: number, statusNumeric: string, rSize: number};
 
 export type ChangeYearData = {changeYear: string, none:EquityIndicatorData, pctBlack: EquityIndicatorData, pollSummary?: PollSummary};
 
@@ -36,4 +36,4 @@ export type Indicator = {id: string, descr: string};
 
 export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, 
                           pixelCoords?: PixelCoords, cntyfp: string,
-                          status: string | undefined, overall: string | undefined, id: string | undefined};
+                          status: string | undefined, statusOverall: string | undefined, statusNumeric: string | undefined};

@@ -18,9 +18,9 @@ function findEquityMeasureByChangeYear(geoid: any, geoData: any) {
                         strokeColor: theme.darkGradientColor, 
                         fillColor: thresholdScale(em.pctBlack) as string}
         pollSummary = {changeNoPolls: em.changeNoPolls, 
-            overall: em.overall, 
+            statusOverall: em.statusOverall, 
             overallChange: em.overallChange, 
-            id: em.id, 
+            statusNumeric: em.statusNumeric, 
             rSize: em.rSize}
 
         return { none: {equityMeasure: 0, //todo refactor to remove none
@@ -170,8 +170,8 @@ export function getPollingLocsData(data: any[], changeYear: ChangeYear) {
                     latlng: { lat: d.Y, lng: d.X } as LatLng,
                     cntyfp: d.cntyfp,
                     status: d.status,
-                    overall: d.overall,
-                    id: d.id
+                    statusOverall: d.statusOverall,
+                    statusNumeric: d.statusNumeric
                 } as PollingLoc );
         });
 
