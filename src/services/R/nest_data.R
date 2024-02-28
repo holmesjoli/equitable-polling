@@ -172,7 +172,7 @@ getVd <- function(state_fips, pth, year = 2020) {
 
 #' Process longitudinal data
 getLongitudinal <- function(df, state_fips, years) {
-  
+
   df <- df %>% 
     mutate(stfp = stringr::str_sub(fips_code, 1, 2),
            cntyfp = stringr::str_sub(fips_code, 1, 5)) %>% 
@@ -212,7 +212,7 @@ getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
     filter(!is.na(geYearPollingLocationsTotal)) %>% 
     mutate(geYearPopPerPoll = geYearTotalPopulation/geYearPollingLocationsTotal,
            baseYearPopPerPoll = baseYearTotalPopulation/baseYearPollingLocationsTotal,
-           changeYear_pop_per_poll = baseYearPopPerPoll - geYearPopPerPoll)
+           changeYearPopPerPoll = baseYearPopPerPoll - geYearPopPerPoll)
   
   pollSummary <- getPollSummary(pollSummary)
   df <- df %>% 
@@ -318,16 +318,16 @@ getPollSummary <- function(df) {
                              changeNoPolls > 5 & changeNoPolls <= 15 ~ 5,
                              changeNoPolls > 15 & changeNoPolls <= 30 ~ 15,
                              changeNoPolls > 30 ~ 30),
-           overall = case_when(overallChange > 0 ~ "added",
-                               overallChange == 0 ~ "nochange",
-                               overallChange < 0 ~ "removed"),
-           id = case_when(overallChange > 10 ~ "3",
-                          overallChange > 3 & overallChange <= 10 ~ "2",
-                          overallChange > 0 & overallChange <= 3~ "1",
-                          overallChange == 0 ~ "0",
-                          overallChange < 0 & overallChange >= -3 ~ "-1",
-                          overallChange < -3 & overallChange >= -10 ~ "-2",
-                          overallChange < -10 ~ "-3"))
+           statusOverall = case_when(overallChange > 0 ~ "added",
+                                     overallChange == 0 ~ "nochange",
+                                     overallChange < 0 ~ "removed"),
+           statusNumeric = case_when(overallChange > 10 ~ "3",
+                                    overallChange > 3 & overallChange <= 10 ~ "2",
+                                    overallChange > 0 & overallChange <= 3~ "1",
+                                    overallChange == 0 ~ "0",
+                                    overallChange < 0 & overallChange >= -3 ~ "-1",
+                                    overallChange < -3 & overallChange >= -10 ~ "-2",
+                                    overallChange < -10 ~ "-3"))
 
   return(df)
 }
