@@ -93,8 +93,8 @@ export function mouseOverTextCounty(feature: any, equityIndicator: EquityIndicat
         if (pollSummary?.overall === 'nochange') {
             netChanges = `<div class="DetailInformation"><span class="SemiBold">No change</span> in the net # of polls between ${changeYear.changeYear}</div>`;
         } else {
-            const status = pollSummary?.overall === 'added' ? 'gain': 'loss';
-            netChanges = `<div class="DetailInformation">Net<span class="SemiBold ${pollSummary?.overall}"> ${status} of ${Math.abs(pollSummary?.overallChange ?? 0)} </span> poll locations between ${feature.properties.changeYear}</div>`;
+            const status = pollSummary?.status === 'Added' ? 'gain': 'loss';
+            netChanges = `<div class="DetailInformation">Net<span class="SemiBold ${pollSummary?.status}"> ${status} of ${Math.abs(pollSummary?.overallChange ?? 0)} </span> poll locations between ${changeYear.changeYear}</div>`;
         }
 
         return `${countyName}${ei}${noChanges}${netChanges}`;

@@ -126,9 +126,8 @@ export const thresholdScale = d3.scaleThreshold([-1, 15, 30, 45], ['#C6C6C6', '#
 
 export const changeNoPollsThresholdScale = d3.scaleThreshold([1, 5, 15, 30], [1, 2, 5, 15, 30]);
 
-
 export const pollStrokeScale = d3.scaleOrdinal()
-  .domain(["added", "nochange", "removed"] )
+  .domain(["Added", "No change", "Removed"] )
   .range(["#610063", theme.grey.primary, "#E45729"] );
 
 export const pollFillScale = d3.scaleOrdinal()
