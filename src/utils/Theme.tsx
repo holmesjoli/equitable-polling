@@ -109,7 +109,7 @@ export function pollStyle(point: any, selected: boolean = true) {
 
   return {
     fillColor: pollFillScale(point.statusNumeric) as string,
-    color: pollStrokeScale(point.statusOverall) as string,
+    color: pollStrokeScale(point.status) as string,
     weight: 1,
     opacity: getPollFillOpacity(selected),
     fillOpacity: getPollFillOpacity(selected)

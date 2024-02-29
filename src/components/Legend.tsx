@@ -125,16 +125,16 @@ function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
     id = undefined;
   }
 
-  const data = [{ id: 1, statusOverall: 'added', label: 'Added 10 or more polls', statusNumeric: '3', geo: 'state' },
-                { id: 2, statusOverall: 'added', label: "Added between 4 and 10 polls", statusNumeric: '2', geo: 'state' },
-                { id: 3, statusOverall: 'added', label: "Added between 1 and 3 polls" , statusNumeric: '1', geo: 'state' },
-                { id: 4, statusOverall: 'nochange', label: "No change", statusNumeric: '0', geo: 'state' },
-                { id: 5, statusOverall: 'removed', label: "Removed between 1 and 3", statusNumeric: '-1', geo: 'state' },
-                { id: 6, statusOverall: 'removed', label: "Removed between 4 and 10", statusNumeric: '-2', geo: 'state' },
-                { id: 7, statusOverall: 'removed', label: "Removed 10 or more polls", statusNumeric: '-3', geo: 'state' },
-                { id: 8, statusOverall: 'added', label: 'Added', statusNumeric: '3', geo: 'county' },
-                { id: 9, statusOverall: 'nochange', label: "No change", statusNumeric: '0', geo: 'county' },
-                { id: 10, statusOverall: 'removed', label: "Removed", statusNumeric: '-3', geo: 'county' }];
+  const data = [{ id: 1, status: 'Added', label: 'Added 10 or more polls', statusNumeric: '3', geo: 'state' },
+                { id: 2, status: 'Added', label: "Added between 4 and 10 polls", statusNumeric: '2', geo: 'state' },
+                { id: 3, status: 'Added', label: "Added between 1 and 3 polls" , statusNumeric: '1', geo: 'state' },
+                { id: 4, status: 'No change', label: "No change", statusNumeric: '0', geo: 'state' },
+                { id: 5, status: 'Removed', label: "Removed between 1 and 3", statusNumeric: '-1', geo: 'state' },
+                { id: 6, status: 'Removed', label: "Removed between 4 and 10", statusNumeric: '-2', geo: 'state' },
+                { id: 7, status: 'Removed', label: "Removed 10 or more polls", statusNumeric: '-3', geo: 'state' },
+                { id: 8, status: 'Added', label: 'Added', statusNumeric: '3', geo: 'county' },
+                { id: 9, status: 'No change', label: "No change", statusNumeric: '0', geo: 'county' },
+                { id: 10, status: 'Removed', label: "Removed", statusNumeric: '-3', geo: 'county' }];
 
   const svg = d3.select(`#${pollLegendId} svg`)
     .attr('height', legendHeight(data.filter(d => d.geo === geo)));
@@ -150,7 +150,7 @@ function updatePollLegend(geo: string, pollHover: any, changeYear: ChangeYear) {
           return 'translate(' + circleStart + ', ' + (i * 23 + 15) + ')';
         })
         .attr('fill', (d: any) => pollFillScale(d.statusNumeric) as string) // Add type assertion
-        .attr("stroke", (d: any) => pollStrokeScale(d.statusOverall) as string) // Add type assertion
+        .attr("stroke", (d: any) => pollStrokeScale(d.status) as string) // Add type assertion
         .attr('stroke-width', 1),
       update => update
         .attr('opacity', (d: any) => d.statusNumeric === id || id === undefined? 1 : theme.nonHighlightOpacity)

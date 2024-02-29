@@ -287,13 +287,12 @@ getPollsChangeStatus <- function(df) {
     mutate(cntyfp = as.character(cntyfp),
            stfp = as.character(stfp),
            tractfp = as.character(tractfp),
-           statusOverall = ifelse(status == "no_change", "nochange", status),
-           statusNumeric = case_when(statusOverall == "added" ~ "3",
-                                     statusOverall == "nochange" ~ "0",
-                                     statusOverall == "removed" ~ "-3"),
-           status = case_when(statusOverall == "added" ~ "Added",
-                              statusOverall == "nochange" ~ "No change",
-                              statusOverall == "removed" ~ "Removed"))
+           status = case_when(status == "added" ~ "Added",
+                              status == "no_change" ~ "No change",
+                              status == "removed" ~ "Removed"),
+           statusNumeric = case_when(status == "Added" ~ "3",
+                                     status == "No change" ~ "0",
+                                     status == "Removed" ~ "-3"))
 
   exportJSON <- toJSON(df)
   write(exportJSON, "../data/processed/pollsChangeStatus.json")
@@ -318,9 +317,6 @@ getPollSummary <- function(df) {
                              changeNoPolls > 5 & changeNoPolls <= 15 ~ 5,
                              changeNoPolls > 15 & changeNoPolls <= 30 ~ 15,
                              changeNoPolls > 30 ~ 30),
-           statusOverall = case_when(overallChange > 0 ~ "added",
-                                     overallChange == 0 ~ "nochange",
-                                     overallChange < 0 ~ "removed"),
            statusNumeric = case_when(overallChange > 10 ~ "3",
                                     overallChange > 3 & overallChange <= 10 ~ "2",
                                     overallChange > 0 & overallChange <= 3~ "1",
