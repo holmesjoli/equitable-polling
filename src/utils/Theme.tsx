@@ -117,12 +117,15 @@ export function pollStyle(point: any, selected: boolean = true) {
 }
 
 export function pollSummarySize(point: any) {
-  const r = rScale(point.rSize);
+  const r = rScale(changeNoPollsThresholdScale(point.changeNoPolls));
   return r*500;
 }
 
 // https://coolors.co/f5ece0-320e3b-1d618e-e45729-610063
 export const thresholdScale = d3.scaleThreshold([-1, 15, 30, 45], ['#C6C6C6', '#a2c2d8', '#6999b8', '#437da3', '#1d6183']);
+
+export const changeNoPollsThresholdScale = d3.scaleThreshold([1, 5, 15, 30], [1, 2, 5, 15, 30]);
+
 
 export const pollStrokeScale = d3.scaleOrdinal()
   .domain(["added", "nochange", "removed"] )
@@ -136,11 +139,11 @@ export const rScale = d3.scaleSqrt()
   .domain([1, 30])
   .range([3, 15]);
 
-export const sizeData =[{id: 0, rSize: 1, label: '0' },
-                        {id: 1, rSize: 2, label: "Between 1 and 5" },
-                        {id: 3, rSize: 5, label: "Between 6 and 15" },
-                        {id: 4, rSize: 15, label: "Between 16 and 30" },
-                        {id: 5, rSize: 30, label: "Greater than 30" }];
+export const sizeData =[{id: 0, threshold: 1, label: '0' },
+                        {id: 1, threshold: 2, label: "Between 1 and 5" },
+                        {id: 3, threshold: 5, label: "Between 6 and 15" },
+                        {id: 4, threshold: 15, label: "Between 16 and 30" },
+                        {id: 5, threshold: 30, label: "Greater than 30" }];
 
 export const equityIndicatorData = [{variable: 'pctBlack', label: 'Less than 15%', pctBlack: 10},
                                     {variable: 'pctBlack', label: 'Between 15% and 30%', pctBlack: 25},

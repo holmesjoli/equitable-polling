@@ -19,8 +19,7 @@ function findEquityMeasureByChangeYear(geoid: any, geoData: any) {
                         fillColor: thresholdScale(em.pctBlack) as string}
         pollSummary = {changeNoPolls: em.changeNoPolls, 
             overallChange: em.overallChange, 
-            statusNumeric: em.statusNumeric, 
-            rSize: em.rSize}
+            statusNumeric: em.statusNumeric}
 
         return { none: {equityMeasure: 0, //todo refactor to remove none
                 strokeColor: theme.grey.primary,

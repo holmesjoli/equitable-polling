@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 // Components
 import { ComponentGroupInner } from "./Query";
 import { theme, pollFillScale, pollStrokeScale, rScale, thresholdScale,
-         sizeData, equityIndicatorData } from "../utils/Theme";
+         sizeData, equityIndicatorData, changeNoPollsThresholdScale } from "../utils/Theme";
 
 // Types
 import { EquityIndicator, ChangeYear } from '../utils/Types';
@@ -53,17 +53,14 @@ function legendHeight(data: any[], margin: number = 0) {
 // Initiate size legend
 function updateSizeLegend(pollHover: any, changeYear: ChangeYear) {
 
-  let rSize: string | undefined = undefined;
+  let threshold: number | undefined = undefined;
 
   if (pollHover.changeYearData !== undefined ) {
+    let pollSummary = pollHover.changeYearData.pollSummary;
 
-    if (pollHover.changeYearData.pollSummary !== undefined) { // todo remove this ifelse once we have data for all counties
-      rSize = pollHover.changeYearData.pollSummary.rSize;
-    } else {
-      rSize = undefined;
-    }
+    threshold = changeNoPollsThresholdScale(pollSummary.changeNoPolls);
   } else {
-    rSize = undefined;
+    threshold = undefined;
   }
 
   const svg = d3.select(`#${sizeLegendId} svg`)
@@ -71,38 +68,38 @@ function updateSizeLegend(pollHover: any, changeYear: ChangeYear) {
 
   svg
   .selectAll('circle')
-  .data(sizeData, (d: any) => d.rSize)
+  .data(sizeData, (d: any) => d.id)
   .join(
     (enter: any) => enter
       .append('circle')
-      .attr('r', (d: any) => rScale(d.rSize))
+      .attr('r', (d: any) => rScale(d.threshold))
       .attr('transform', function (d: any, i: any) {
-        let x = sizeData.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
-        return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.rSize) + 8) + ')';
+        let x = sizeData.filter(e => e.threshold < d.threshold).map(e => e.threshold).reduce((a, b) => a + b, 0);
+        return 'translate(' + circleStart + ', ' + (i * 16 + x + rScale(d.threshold) + 8) + ')';
       })
       .attr('fill', theme.grey.secondary)
       .attr("stroke", theme.grey.primary)
       .attr('stroke-width', 1),
     (update: any) => update
-      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : theme.nonHighlightOpacity)
+      .attr('opacity', (d: any) => d.threshold === threshold || threshold === undefined? 1 : theme.nonHighlightOpacity)
   );
 
   svg
     .selectAll('text')
-    .data(sizeData, (d: any) => d.rSize)
+    .data(sizeData, (d: any) => d.threshold)
     .join(
       (enter: any) => enter
         .append('text')
         .attr('x', textStart)
         .attr('y', function(d: any, i: any) { 
-          let x = sizeData.filter(e => e.rSize < d.rSize).map(e => e.rSize).reduce((a, b) => a + b, 0);
-          return i * 16 + x + rScale(d.rSize) + 8})
+          let x = sizeData.filter(e => e.threshold < d.threshold).map(e => e.threshold).reduce((a, b) => a + b, 0);
+          return i * 16 + x + rScale(d.threshold) + 8})
         .text((d: any) => d.label)
         .attr('font-size', theme.fontSize)
         .attr('fill', theme.grey.primary)
         .attr('dominant-baseline', 'middle'),
       (update: any) => update
-      .attr('opacity', (d: any) => d.rSize === rSize || rSize === undefined? 1 : theme.nonHighlightOpacity)
+      .attr('opacity', (d: any) => d.threshold === threshold || threshold === undefined? 1 : theme.nonHighlightOpacity)
     );
 }
 

@@ -8,7 +8,7 @@ export type GeoID = {geoid: string, type: string};
 
 export type EquityIndicatorData = {equityMeasure: number, fillColor:string, strokeColor: string};
 
-export type PollSummary = {changeNoPolls: number, overallChange: number, statusNumeric: string, rSize: number};
+export type PollSummary = {changeNoPolls: number, overallChange: number, statusNumeric: string};
 
 export type ChangeYearData = {changeYear: string, none:EquityIndicatorData, pctBlack: EquityIndicatorData, pollSummary?: PollSummary};
 
