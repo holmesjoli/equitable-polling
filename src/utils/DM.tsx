@@ -19,16 +19,16 @@ function findEquityMeasureByChangeYear(geoid: any,geoData: any, pollSummaryData:
     const em = geoData.find((f: any) => f.geoid === geoid);
 
     // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
-    let pctBlack;
+    let baseYearPctBlack;
     let pollSummary = undefined;
     if (em === undefined) {
-        pctBlack =  {equityMeasure: 0,
+        baseYearPctBlack =  {equityMeasure: 0,
                         strokeColor: theme.grey.primary,
                         fillColor: theme.grey.tertiary}
     } else {
-        pctBlack =  {equityMeasure: em!.pctBlack, 
+        baseYearPctBlack =  {equityMeasure: em!.baseYearPctBlack, 
                         strokeColor: theme.darkGradientColor, 
-                        fillColor: thresholdScale(em.pctBlack) as string}
+                        fillColor: thresholdScale(em.baseYearPctBlack) as string}
     }
 
     if (pollSummaryData != undefined) {
@@ -47,7 +47,7 @@ function findEquityMeasureByChangeYear(geoid: any,geoData: any, pollSummaryData:
     return {none: {equityMeasure: 0,
                     strokeColor: theme.grey.primary,
                     fillColor: theme.backgroundFill},
-            pctBlack: pctBlack,
+            baseYearPctBlack: baseYearPctBlack,
             pollSummary: pollSummary
         };
 }

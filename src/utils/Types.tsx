@@ -10,7 +10,7 @@ export type EquityIndicatorData = {equityMeasure: number, fillColor:string, stro
 
 export type PollSummary = {changeNoPolls: number, overall: string, overallChange: number, id: string, rSize: number};
 
-export type ChangeYearData = {changeYear: string, none:EquityIndicatorData, pctBlack: EquityIndicatorData, pollSummary?: PollSummary};
+export type ChangeYearData = {changeYear: string, none:EquityIndicatorData, baseYearPctBlack: EquityIndicatorData, pollSummary?: PollSummary};
 
 export type Tract = {type: string, stfp: string, cntyfp: string, tractfp: string, name: string, 
                      geoid: string, latlng: LatLng, zoom: number, bounds: Bounds, selected: boolean,

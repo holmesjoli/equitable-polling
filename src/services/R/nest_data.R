@@ -49,9 +49,9 @@ getStates <- function(state_fips, pth) {
     rename(stfp = STATEFP,
            name = NAME,
            geoid = GEOID,
-           abbr = STUSPS) %>% 
+           stabbr = STUSPS) %>% 
     mutate(zoom = ifelse(stfp == "45", 8, 7),
-           abbr = tolower(abbr))
+           stabbr = tolower(stabbr))
   
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)
@@ -70,7 +70,15 @@ getCounties <- function(state_fips, pth) {
     rename(stfp = STATEFP,
            cntyfp = COUNTYFP,
            name = NAME,
-           geoid = GEOID)
+           geoid = GEOID) %>% 
+    mutate(cntyfp = paste0(stfp, cntyfp)) %>% 
+    left_join(tigris::states(cb = T) %>% 
+                filter(STATEFP %in% state_fips) %>% 
+                select(STATEFP, STUSPS) %>%
+                sf::st_drop_geometry() %>% 
+                rename(stfp = STATEFP,
+                       stabbr = STUSPS) %>% 
+                mutate(stabbr = tolower(stabbr)))
 
   df <- cbind(df, getBbox(df))
   df <- getCentroid(df)
@@ -80,6 +88,8 @@ getCounties <- function(state_fips, pth) {
 
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countiesGeoJSON.json"))
+  
+  return(df)
 }
 
 #' Get Census tracts
@@ -100,8 +110,7 @@ getTracts <- function(state_fips, years, pth) {
           rename(cntyfp = COUNTY,
                  stfp = STATE,
                  name = NAME,
-                 tractfp = TRACT) %>% 
-          mutate(geoid = paste0(stfp, cntyfp, tractfp))
+                 tractfp = TRACT)
 
       } else {
         df <- df %>% 
@@ -113,9 +122,14 @@ getTracts <- function(state_fips, years, pth) {
                  geoid = GEOID)
       }
 
+      df <- df %>% 
+        mutate(geoid = paste0(stfp, cntyfp, tractfp),
+               cntyfp = paste0(stfp, cntyfp),
+               tractfp = geoid)
+
       df <- cbind(df, getBbox(df))
       df <- getCentroid(df)
-      
+
       return(df)
 
     }) %>% bind_rows()
@@ -143,11 +157,12 @@ getVd <- function(state_fips, pth, year = 2020) {
              geoid = GEOID20,
              name = NAME20) %>% 
       select(stfp, cntyfp, vtdst, geoid, name, geometry) %>% 
-      mutate(year = year)
-    
+      mutate(year = year,
+             cntyfp = paste0(stfp, cntyfp))
+
     df <- cbind(df, getBbox(df))
     df <- getCentroid(df)
-    
+
     return(df)
   }) %>% dplyr::bind_rows()
   
@@ -156,27 +171,44 @@ getVd <- function(state_fips, pth, year = 2020) {
 }
 
 #' Process longitudinal data
-getLongitudinal <- function(df, state_fips, years) {
+getLongitudinal <- function(df) {
 
   df <- df %>% 
-    mutate(stfp = stringr::str_sub(fips_code, 1, 2),
-           cntyfp = stringr::str_sub(fips_code, 1, 5)) %>% 
-    filter(stfp %in% state_fips) %>%
-    filter(year %in% years) %>% 
-    select(fips_code, percentage_race_black_african_american, year, stfp, cntyfp) %>% 
-    rename(geoid = fips_code,
-           pctBlack = percentage_race_black_african_american,
-           baseYear = year) %>%
-    mutate(pctBlack = round(pctBlack*100, 1))
+    select(-name) %>%
+    rename(baseYear = year,
+           baseYearPctBlack = percentage_race_black_african_american,
+           baseYearTotalPop = total_population,
+           baseYearPopDensity = population_density,
+           baseYearPollingLocationsTotal = polling_locations_total) %>%
+    mutate(baseYearPctBlack = round(baseYearPctBlack*100, 1),
+           stfp = as.character(stringr::str_sub(cntyfp, 1, 2)),
+           cntyfp = as.character(cntyfp)) %>%
+    filter(!(stfp == "13" & baseYear %in% c(2012, 2014))) %>% # filter out years where georgia is missing data
+    filter(!(stfp == "28" & baseYear %in% 2020)) ## filter out years where mississippi is missing data
 
   return(df)
 }
 
 #' Get Counties longitudinal
 #' Writes out a json file at the year-cntyfp level
-getCountiesLongitudinal <- function(df, state_fips, years, pth) {
+getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
+  
+  df <- getLongitudinal(df) %>%
+    mutate(geoid = cntyfp) %>%
+    arrange(cntyfp, baseYear) %>% 
+    group_by(cntyfp) %>%
+    mutate(geYearPollingLocationsTotal = lag(baseYearPollingLocationsTotal),
+           geYearTotalPop = lag(baseYearTotalPop),
+           geYear = lag(baseYear),
+           changeYear = paste0(geYear, " - ", baseYear)) %>% 
+    filter(!is.na(geYearPollingLocationsTotal)) %>% 
+    mutate(geYearPopPerPoll = geYearTotalPop/geYearPollingLocationsTotal,
+           baseYearPopPerPoll = baseYearTotalPop/baseYearPollingLocationsTotal,
+           changeYearPopPerPoll = baseYearPopPerPoll - geYearPopPerPoll)
 
-  df <- getLongitudinal(df, state_fips, years)
+  df <- df %>% 
+    right_join(getPollSummary(pollSummary))  
+
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countiesLongitudinal.json"))
   
@@ -185,12 +217,32 @@ getCountiesLongitudinal <- function(df, state_fips, years, pth) {
 
 #' Get Tracts longitudinal
 #' Writes out a json file at the year-tractfp level
-getTractsLongitudinal <- function(df, state_fips, years, pth) {
+getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
 
-  df <- getLongitudinal(df, state_fips, years)
+  df <- getLongitudinal(df) %>% 
+    mutate(tractfp = as.character(tractfp),
+           geoid = tractfp)
+
+  pollLocs <- pollLocs %>% 
+    group_by(tractfp, baseyear, changetype) %>% 
+    tally() %>% 
+    tidyr::pivot_wider(names_from = "changetype", values_from = "n") %>% 
+    rename(pollsRemoved = removed,
+           pollsAdded = added,
+           pollsNoChange = no_change,
+           baseYear = baseyear) %>% 
+    mutate(tractfp = as.character(tractfp))
+
+  df <- df %>% 
+    left_join(pollLocs) %>% 
+    mutate(pollsRemoved = ifelse(is.na(pollsRemoved), 0, pollsRemoved),
+           pollsAdded = ifelse(is.na(pollsAdded), 0, pollsAdded),
+           pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange),
+           overallChange = pollsAdded - pollsRemoved)
+  
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "tractsLongitudinal.json"))
-  
+
   return(df)
 }
 
@@ -218,17 +270,16 @@ getPollsChangeStatus <- function(df) {
     rename(pollId = pollid,
            baseYear = baseyear,
            changeYear = changeyear,
-           status = changestatus,
+           status = changetype,
            X = x,
            Y = y,
            name = pollname) %>%
-    mutate(overall = ifelse(status == "no_change", "nochange", status),
-           id = case_when(overall == "added" ~ "3",
-                          overall == "nochange" ~ "0",
-                          overall == "removed" ~ "-3"),
-           status = case_when(overall == "added" ~ "Added",
-                              overall == "nochange" ~ "No change",
-                              overall == "removed" ~ "Removed"))
+    mutate(cntyfp = as.character(cntyfp),
+           stfp = as.character(stfp),
+           tractfp = as.character(tractfp),
+           status = case_when(status == "added" ~ "Added",
+                              status == "no_change" ~ "No change",
+                              status == "removed" ~ "Removed"))
 
   exportJSON <- toJSON(df)
   write(exportJSON, "../data/processed/pollsChangeStatus.json")
@@ -236,7 +287,7 @@ getPollsChangeStatus <- function(df) {
   return(df)
 }
 
-getIndicatorsChangeStatus<- function(df, state_fips) {
+getPollSummary <- function(df) {
   
   df <- df %>% 
     select(changeyear, cntyfp, baseyear, nopollsadded, nopollsremoved, changenopolls) %>% 
@@ -247,25 +298,7 @@ getIndicatorsChangeStatus<- function(df, state_fips) {
            noPollsRemoved = nopollsremoved) %>% 
     mutate(cntyfp = as.character(cntyfp),
            geoid = cntyfp,
-           overallChange = noPollsAdded - noPollsRemoved,
-           rSize = case_when(changeNoPolls == 0 ~ 1,
-                             changeNoPolls > 0 & changeNoPolls <= 5 ~ 2,
-                             changeNoPolls > 5 & changeNoPolls <= 15 ~ 5,
-                             changeNoPolls > 15 & changeNoPolls <= 30 ~ 15,
-                             changeNoPolls > 30 ~ 30),
-           overall = case_when(overallChange > 0 ~ "added",
-                               overallChange == 0 ~ "nochange",
-                               overallChange < 0 ~ "removed"),
-           id = case_when(overallChange > 10 ~ "3",
-                          overallChange > 3 & overallChange <= 10 ~ "2",
-                          overallChange > 0 & overallChange <= 3~ "1",
-                          overallChange == 0 ~ "0",
-                          overallChange < 0 & overallChange >= -3 ~ "-1",
-                          overallChange < -3 & overallChange >= -10 ~ "-2",
-                          overallChange < -10 ~ "-3"))
-
-  exportJSON <- toJSON(df)
-  write(exportJSON, "../data/processed/indicatorsChangeStatus.json")
+           overallChange = noPollsAdded - noPollsRemoved)
 
   return(df)
 }

@@ -30,7 +30,7 @@ function initLegend(selector: string) {
 function legendText(svg: any, data: any[], id: string | undefined = undefined, geo: boolean = false) {
   svg
     .selectAll('text')
-    .data(data, (d: any) => geo? d.pctBlack: d.id)
+    .data(data, (d: any) => geo? d.baseYearPctBlack: d.id)
     .join(
       (enter: any) => enter
         .append('text')
@@ -40,7 +40,7 @@ function legendText(svg: any, data: any[], id: string | undefined = undefined, g
         .attr('font-size', theme.fontSize)
         .attr('fill', theme.grey.primary),
       (update: any) => update
-        .attr('opacity', (d: any) => geo ? thresholdScale(d.pctBlack) as string === id as string || id === undefined ? theme.choroplethOpacity : 0.3 : d.id === id || id === undefined? 1 : 0.3)
+        .attr('opacity', (d: any) => geo ? thresholdScale(d.baseYearPctBlack) as string === id as string || id === undefined ? theme.choroplethOpacity : 0.3 : d.id === id || id === undefined? 1 : 0.3)
     );
 }
 
@@ -175,7 +175,7 @@ function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
 
   svg
     .selectAll('rect')
-    .data(equityIndicatorData.filter(d => d.variable === equityIndicator.variable), (d: any) => d.pctBlack)
+    .data(equityIndicatorData.filter(d => d.variable === equityIndicator.variable), (d: any) => d.baseYearPctBlack)
     .join(
       enter => enter
         .append('rect')
@@ -185,11 +185,11 @@ function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
           return 'translate(' + (circleStart - 6) + ', ' + (i * 23 + 10) + ')';
         })
         .attr('opacity', theme.choroplethOpacity)
-        .attr('fill', (d: any) => thresholdScale(d.pctBlack) as string)
+        .attr('fill', (d: any) => thresholdScale(d.baseYearPctBlack) as string)
         .attr("stroke", theme.darkGradientColor)
         .attr('stroke-width', 1),
       update => update
-        .attr('opacity', (d: any) => thresholdScale(d.pctBlack) as string === fillColor as string || fillColor === undefined ? theme.choroplethOpacity : 0.3
+        .attr('opacity', (d: any) => thresholdScale(d.baseYearPctBlack) as string === fillColor as string || fillColor === undefined ? theme.choroplethOpacity : 0.3
         )
   );
 
