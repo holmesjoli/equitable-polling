@@ -4,6 +4,7 @@ body {
   font-family: $baseFont;
   font-size: $baseFontSize;
   line-height: $baseLineHeight;
+  font-size: .87rem;
   // letter-spacing: 0.1em;
 }
 
@@ -38,12 +39,13 @@ h1 {
 }
 
 h2 {
-  font-size: 1.75rem;
+  font-size: 1.2rem;
   line-height: 1.25;
+  font-weight: 500;
 }
 
 h3 {
-  font-size: .90rem;
+  font-size: .92rem;
   line-height: 1.3;
   font-weight: 500;
   padding-bottom: 1rem;
@@ -51,8 +53,9 @@ h3 {
 }
 
 h4 {
-  font-size: .90rem;
+  font-size: .9rem;
   line-height: 1.3;
+  margin-bottom: $appPadding;
 }
 
 h5 {
@@ -65,9 +68,15 @@ h6 {
   line-height: 1.4;
 }
 
-p {
-  font-size: .85rem;
+p, li {
+  // font-size: .87rem;
   font-weight: 400;
+  line-height: 1.38;
+  margin-bottom: $appMargin;
+}
+
+li {
+  margin-left: $appMargin;
 }
 
 b, strong {
@@ -82,7 +91,7 @@ a {
 
 a:hover,
 .focus {
-  font-weight: 500;
+  color: #333333;
 }
 
 a:hover h3 {
@@ -104,6 +113,14 @@ img {
   font-weight: 600;
 }
 
+.Italic {
+  font-style: italic;
+}
+
 .focusColor {
   color: $appColorFocus;
+}
+
+li {
+
 }

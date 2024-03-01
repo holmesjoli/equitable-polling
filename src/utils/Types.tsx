@@ -4,11 +4,11 @@ export type PixelCoords = {x: number, y: number};
 
 export type Bounds = {northEast: LatLng, southWest: LatLng};
 
-export type GeoID = {geoid: string, name: string, type: string, latlng: LatLng, zoom: number};
+export type GeoID = {geoid: string, type: string};
 
 export type EquityIndicatorData = {equityMeasure: number, fillColor:string, strokeColor: string};
 
-export type PollSummary = {changeNoPolls: number, overall: string, overallChange: number, id: string, rSize: number};
+export type PollSummary = {changeNoPolls: number, overallChange: number, statusNumeric: string};
 
 export type ChangeYearData = {changeYear: string, none:EquityIndicatorData, baseYearPctBlack: EquityIndicatorData, pollSummary?: PollSummary};
 
@@ -22,11 +22,11 @@ export type VotingDistrict = {type: string, stfp: string, cntyfp: string, vtdst:
 
 export type County = {type: string, stfp: string, name: string, cntyfp: string, geoid: string,
                       latlng: LatLng, zoom: number, selected: boolean, bounds: Bounds, 
-                      changeYearData: any
+                      changeYearData: any, stabbr: string
                     };
 
-export type State = {type: string, stfp: string, geoid: string, name: string, counties: GeoJSON.FeatureCollection, 
-                     latlng: LatLng, zoom: number, abbr: string};
+export type State = {type: string, stfp: string, geoid: string, name: string,
+                     latlng: LatLng, zoom: number, stabbr: string, selected: boolean, bounds: Bounds};
 
 export type ChangeYear = {id: string, descr: string, baseYear: number, changeYear: string, decennialCensusYear: number, ms: boolean, sc: boolean, ga: boolean, wi: boolean};
 
@@ -35,5 +35,5 @@ export type EquityIndicator = {variable: string, descr: string};
 export type Indicator = {id: string, descr: string};
 
 export type PollingLoc = {type: string, name: string, descr: string, latlng: LatLng, 
-                          pixelCoords?: PixelCoords,
-                          status: string | undefined, overall: string | undefined, id: string | undefined};
+                          pixelCoords?: PixelCoords, cntyfp: string,
+                          status: string | undefined, statusNumeric: string | undefined};

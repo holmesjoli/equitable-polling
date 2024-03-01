@@ -1,7 +1,3 @@
-// Raw Data
-import statesGeo from "../data/processed/statesGeoJSON.json";
-import countiesGeo from "../data/processed/countiesGeoJSON.json";  
-
 // Scales
 import { theme, thresholdScale } from "./Theme";
 
@@ -10,46 +6,30 @@ import { State, County, Tract, Bounds, VotingDistrict, PollingLoc, ChangeYear } 
 import { LatLng } from "leaflet";
 import { Feature } from "geojson";
 
-// Processed Data
-export const stateData = getStates();
-
 // Returns the equity measure for the selected equity indicator
-function findEquityMeasureByChangeYear(geoid: any,geoData: any, pollSummaryData: any[] | undefined = undefined) {
+function findEquityMeasureByChangeYear(geoid: any, geoData: any) {
 
     const em = geoData.find((f: any) => f.geoid === geoid);
 
-    // Added this logic because some tracts dont exist in all baseyear because of the census tract boundary changes
-    let baseYearPctBlack;
-    let pollSummary = undefined;
-    if (em === undefined) {
-        baseYearPctBlack =  {equityMeasure: 0,
-                        strokeColor: theme.grey.primary,
-                        fillColor: theme.grey.tertiary}
-    } else {
-        baseYearPctBlack =  {equityMeasure: em!.baseYearPctBlack, 
+    let pctBlack;
+    let pollSummary;
+    if (em !== undefined) {
+        pctBlack =  {equityMeasure: em!.pctBlack, 
                         strokeColor: theme.darkGradientColor, 
-                        fillColor: thresholdScale(em.baseYearPctBlack) as string}
-    }
+                        fillColor: thresholdScale(em.pctBlack) as string}
+        pollSummary = {changeNoPolls: em.changeNoPolls, 
+            overallChange: em.overallChange, 
+            statusNumeric: em.statusNumeric}
 
-    if (pollSummaryData != undefined) {
-        const indicatorYearData = pollSummaryData.find((f: any) => f.geoid === geoid);
-
-        if (indicatorYearData !== undefined) { // todo removed if once we have complete data
-
-            pollSummary = {changeNoPolls: indicatorYearData.changeNoPolls, 
-                        overall: indicatorYearData.overall, 
-                        overallChange: indicatorYearData.overallChange, 
-                        id: indicatorYearData.id, 
-                        rSize: indicatorYearData.rSize}
-        }
-    }
-
-    return {none: {equityMeasure: 0,
-                    strokeColor: theme.grey.primary,
-                    fillColor: theme.backgroundFill},
-            baseYearPctBlack: baseYearPctBlack,
-            pollSummary: pollSummary
+        return { none: {equityMeasure: 0, //todo refactor to remove none
+                strokeColor: theme.grey.primary,
+                fillColor: theme.backgroundFill},
+                pctBlack: pctBlack,
+                pollSummary: pollSummary
         };
+    } else {
+        return undefined;
+    }
 }
 
 // Structures the bounds for each geometry
@@ -68,49 +48,31 @@ function returnFeatureCollection(features: Feature[]) {
     return {type: 'FeatureCollection', features: features as GeoJSON.Feature[]} as GeoJSON.FeatureCollection;
 }
 
-function getStates() {
+export function getStates(data: any) {
 
     const stateFeatures = [] as GeoJSON.Feature[];
 
-    (statesGeo as any[]).forEach((e: any) => {
-
-        const countyFeatures = [] as GeoJSON.Feature[];
-
-        (countiesGeo as any[]).filter((d: any) => d.stfp === e.stfp).forEach((d: any) => {
-
-            countyFeatures.push({type: 'Feature', 
-                properties: {type: 'County',
-                             descr: 'County',
-                             name: d.name,
-                             cntyfp: d.cntyfp,
-                             stfp: d.stfp,
-                             geoid: d.geoid,
-                             latlng: getLatLng(d),
-                             bounds: getBounds(d) 
-                            }, 
-                geometry: d.geometry as GeoJSON.Geometry})
-        });
-
-        const countyData = {type: 'FeatureCollection', features: countyFeatures} as GeoJSON.FeatureCollection;
+    (data as any[]).forEach((d: any) => {
 
         stateFeatures.push({type: 'Feature', 
             properties: {type: 'State',
                          descr: '',
-                         name: e.name,
-                         stfp: e.stfp,
-                         geoid: e.geoid, 
-                         latlng: getLatLng(e),
-                         counties: countyData,
-                         zoom: e.zoom,
-                         abbr: e.abbr} as State, 
-            geometry: e.geometry as GeoJSON.Geometry})
+                         name: d.name,
+                         stfp: d.stfp,
+                         geoid: d.geoid, 
+                         latlng: getLatLng(d),
+                         zoom: d.zoom,
+                         stabbr: d.stabbr,
+                         bounds: getBounds(d),
+                         selected: true} as State, 
+            geometry: d.geometry as GeoJSON.Geometry})
     });
 
     return returnFeatureCollection(stateFeatures);
 }
 
 // Returns a feature collection of all the counties for the selected project states
-export function getCounties(countiesGeo: any[], countiesLong: any[], pollSummaryData: any[]) {
+export function getCounties(countiesGeo: any[], countiesLong: any[]) {
 
     const features: Feature[] = [];
 
@@ -126,8 +88,9 @@ export function getCounties(countiesGeo: any[], countiesLong: any[], pollSummary
                          latlng: getLatLng(d),
                          zoom: 10,
                          selected: false,
-                         changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong, pollSummaryData),
-                         bounds: getBounds(d)
+                         changeYearData: findEquityMeasureByChangeYear(d.geoid, countiesLong),
+                         bounds: getBounds(d),
+                         stabbr: d.stabbr
                         } as County, 
             geometry: d.geometry as GeoJSON.Geometry})
     });
@@ -203,9 +166,9 @@ export function getPollingLocsData(data: any[], changeYear: ChangeYear) {
                     descr: 'Polling location',
                     name: d.name,
                     latlng: { lat: d.Y, lng: d.X } as LatLng,
+                    cntyfp: d.cntyfp,
                     status: d.status,
-                    overall: d.overall,
-                    id: d.id
+                    statusNumeric: d.statusNumeric
                 } as PollingLoc );
         });
 

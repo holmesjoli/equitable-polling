@@ -3,6 +3,6 @@
 // @import "~react-leaflet-markercluster/dist/styles.min.css";
 
 .home-map {
-    height: 85vh;
+    min-height: calc(100vh - $navHeight - $footerHeight);
     z-index: 0;
 }

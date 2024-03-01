@@ -1,6 +1,6 @@
 // Libraries
 import { LatLng } from "leaflet";
-import { County, State, GeoID } from "./Types"
+import { County, State} from "./Types"
 
 export const selectVariable = {
     changeYear: [
@@ -35,19 +35,22 @@ export const defaultMap =  {geoid: '0',
                             zoom: 5, 
                             latlng: {lat: 39.97, lng: -86.19} as LatLng,
                             minZoom: 4,
-                            maxZoom: 18} as GeoID;
+                            maxZoom: 18};
 
 export const defaultCounty = {type: 'County',
                               stfp: '',
                               name:'',
+                              stabbr: '',
                               cntyfp:'',
                               geoid:'',
                               latlng: {lat: 0, lng: 0}} as County;
 
 export const defaultState = {type: 'State',
                              name:'', 
-                             stfp:'', 
-                             counties: {} as GeoJSON.FeatureCollection, 
+                             stfp:'',
                              latlng: defaultMap.latlng, 
                              zoom: 5,
-                             abbr: ''} as State;
+                             stabbr: '',
+                             selected: false} as State;
+
+export const appTitle = 'Voting Access Monitor';

@@ -65,7 +65,7 @@ function mouseOverEquityMeasure(feature: GeoJSON.Feature, equityIndicator: Equit
 }
 
 export function mouseOverTextPoll(d: any) {
-    return `<div class="ComponentGroupInner SemiBold">${d.name}</div><div>Status:<span class=${d.overall}> ${d.status}</span></div>`;
+    return `<div class="ComponentGroupInner SemiBold">${d.name}</div><div>Status:<span class="${d.overall} SemiBold"> ${d.status}</span></div>`;
 }
 
 // todo update back to `${mouseOverGeo(feature)}` when we have more information on the state to add here
@@ -80,19 +80,25 @@ export function mouseOverTextTract(feature: any, equityIndicator: EquityIndicato
 export function mouseOverTextCounty(feature: any, equityIndicator: EquityIndicator, changeYear: ChangeYear) {
 
     const countyName = mouseOverGeo(feature);
-    const ei = `<div class="DetailInformation">${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</div>`;
-    const pollSummary = feature.properties.changeYearData.pollSummary;
-    const noChanges = `<div class="DetailInformation"><span class="SemiBold">${pollSummary?.changeNoPolls}</span> poll locations changed</div>`;
 
-    let netChanges;
-    if (pollSummary?.overall === 'nochange') {
-        netChanges = `<div class="DetailInformation"><span class="SemiBold">No change</span> in the net # of polls between ${changeYear.changeYear}</div>`;
+    if (feature.properties.changeYearData === undefined) {
+        const summary = `<span>Missing data for ${feature.properties.name} ${feature.properties.descr} in base year ${changeYear.baseYear}</span>`;
+        return `${countyName}${summary}`;
     } else {
-        const status = pollSummary?.overall === 'added' ? 'gain': 'loss';
-        netChanges = `<div class="DetailInformation">Net<span class="SemiBold ${pollSummary?.overall}"> ${status} of ${Math.abs(pollSummary?.overallChange ?? 0)} </span> poll locations between ${feature.properties.changeYear}</div>`;
-    }
+        const ei = `<div class="DetailInformation">${mouseOverEquityMeasure(feature, equityIndicator, changeYear)}</div>`;
+        const pollSummary = feature.properties.changeYearData.pollSummary;
+        const noChanges = `<div class="DetailInformation"><span class="SemiBold">${pollSummary?.changeNoPolls}</span> poll locations changed</div>`;
 
-    return `${countyName}${ei}${noChanges}${netChanges}`;
+        let netChanges;
+        if (pollSummary?.overall === 'nochange') {
+            netChanges = `<div class="DetailInformation"><span class="SemiBold">No change</span> in the net # of polls between ${changeYear.changeYear}</div>`;
+        } else {
+            const status = pollSummary?.status === 'Added' ? 'gain': 'loss';
+            netChanges = `<div class="DetailInformation">Net<span class="SemiBold ${pollSummary?.status}"> ${status} of ${Math.abs(pollSummary?.overallChange ?? 0)} </span> poll locations between ${changeYear.changeYear}</div>`;
+        }
+
+        return `${countyName}${ei}${noChanges}${netChanges}`;
+    }    
 }
 
 // keeping two functions in case we need to distinguish between the two tooltips
