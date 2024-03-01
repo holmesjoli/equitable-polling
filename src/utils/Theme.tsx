@@ -144,7 +144,7 @@ export const sizeData =[{id: 0, threshold: 1, label: '0' },
                         {id: 4, threshold: 15, label: "Between 16 and 30" },
                         {id: 5, threshold: 30, label: "Greater than 30" }];
 
-export const equityIndicatorData = [{variable: 'pctBlack', label: 'Less than 15%', pctBlack: 10},
-                                    {variable: 'pctBlack', label: 'Between 15% and 30%', pctBlack: 25},
-                                    {variable: 'pctBlack', label: 'Between 30% and 45%', pctBlack: 40},
-                                    {variable: 'pctBlack', label: 'Greater than 45%', pctBlack: 46}];
+export const equityIndicatorData = [{variable: 'baseYearPctBlack', label: 'Less than 15%', baseYearPctBlack: 10},
+                                    {variable: 'baseYearPctBlack', label: 'Between 15% and 30%', baseYearPctBlack: 25},
+                                    {variable: 'baseYearPctBlack', label: 'Between 30% and 45%', baseYearPctBlack: 40},
+                                    {variable: 'baseYearPctBlack', label: 'Greater than 45%', baseYearPctBlack: 46}];

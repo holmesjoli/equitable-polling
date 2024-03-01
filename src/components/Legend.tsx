@@ -30,7 +30,7 @@ function initLegend(selector: string) {
 function legendText(svg: any, data: any[], id: string | undefined = undefined, geo: boolean = false) {
   svg
     .selectAll('text')
-    .data(data, (d: any) => geo? d.pctBlack: d.id)
+    .data(data, (d: any) => geo? d.baseYearPctBlack: d.id)
     .join(
       (enter: any) => enter
         .append('text')
@@ -177,7 +177,7 @@ function updateEquityLegend(equityIndicator: EquityIndicator, geoHover: any) {
 
   svg
     .selectAll('rect')
-    .data(equityIndicatorData.filter(d => d.variable === equityIndicator.variable), (d: any) => d.pctBlack)
+    .data(equityIndicatorData.filter(d => d.variable === equityIndicator.variable), (d: any) => d.baseYearPctBlack)
     .join(
       enter => enter
         .append('rect')
