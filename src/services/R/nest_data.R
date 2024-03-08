@@ -171,52 +171,51 @@ getVd <- function(state_fips, pth, year = 2020) {
 }
 
 #' Process longitudinal data
-getLongitudinal <- function(df, state_fips, years) {
+getLongitudinal <- function(df) {
 
   df <- df %>% 
-    mutate(stfp = stringr::str_sub(fips_code, 1, 2),
-           cntyfp = stringr::str_sub(fips_code, 1, 5)) %>% 
-    filter(stfp %in% state_fips) %>%
-    filter(year %in% years) %>% 
-    select(fips_code, percentage_race_black_african_american, year, stfp, cntyfp, est_total_population, polling_locations_total) %>% 
-    rename(geoid = fips_code,
-           pctBlack = percentage_race_black_african_american,
-           baseYear = year) %>%
-    mutate(pctBlack = round(pctBlack*100, 1))
+    select(-name) %>%
+    rename(baseYear = year,
+           baseYearPctBlack = percentage_race_black_african_american,
+           baseYearTotalPop = total_population,
+           baseYearPopDensity = population_density,
+           baseYearPollingLocationsTotal = polling_locations_total) %>%
+    mutate(baseYearPctBlack = round(baseYearPctBlack*100, 1),
+           stfp = as.character(stringr::str_sub(cntyfp, 1, 2)),
+           cntyfp = as.character(cntyfp)) %>%
+    filter(!(stfp == "13" & baseYear %in% c(2012, 2014))) %>% # filter out years where georgia is missing data
+    filter(!(stfp == "28" & baseYear %in% 2020)) ## filter out years where mississippi is missing data
 
   return(df)
 }
 
 #' Get Counties longitudinal
 #' Writes out a json file at the year-cntyfp level
-getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
-
-  df <- df %>%
-    rename(pctBlack = percentage_race_black_african_american,
-           baseYear = year,
-           baseYearTotalPopulation = total_population,
-           baseYearPollingLocationsTotal = polling_locations_total,
-           populationDensity = population_density) %>%
-    select(-name) %>% 
-    tidyr::drop_na() %>% # drop these data for baseYears where data are not available
-    arrange(cntyfp, baseYear) %>% 
-    group_by(cntyfp) %>%
-    mutate(stfp = stringr::str_sub(cntyfp, 1, 2),
-           cntyfp = as.character(cntyfp),
-           pctBlack = round(pctBlack*100, 1),
-           geoid = cntyfp,
-           geYearPollingLocationsTotal = lag(baseYearPollingLocationsTotal),
-           geYearTotalPopulation = lag(baseYearTotalPopulation),
-           geYear = lag(baseYear),
-           changeYear = paste0(geYear, " - ", baseYear)) %>% 
-    filter(!is.na(geYearPollingLocationsTotal)) %>% 
-    mutate(geYearPopPerPoll = geYearTotalPopulation/geYearPollingLocationsTotal,
-           baseYearPopPerPoll = baseYearTotalPopulation/baseYearPollingLocationsTotal,
-           changeYearPopPerPoll = baseYearPopPerPoll - geYearPopPerPoll)
+getCountiesLongitudinal <- function(df, pth) {
   
-  pollSummary <- getPollSummary(pollSummary)
   df <- df %>% 
-    right_join(pollSummary)  
+    rename(baseYear = baseyear,
+           changeYear = changeyear,
+           baseYearPctBlack = baseyearpctblack,
+           baseYearTotalPop = baseyeartotalpop,
+           baseYearPopDensity = baseyearpopdensity,
+           baseYearPollingLocationsTotal = baseyearpollinglocstotal,
+           lastGeYearTotalPop = lastgeyeartotalpop,
+           lastGeYearPollingLocsTotal = lastgeyearpollinglocstotal,
+           lastGeYearPopPerPoll = lastgeyearpopperpoll,
+           baseYearPopPerPoll = baseyearpopperpoll,
+           changeYearPopPerPoll = changeyearpopperpoll,
+           changeNoPolls = changenopolls,
+           noPollsAdded = nopollsadded,
+           noPollsRemoved = nopollsremoved) %>%
+    mutate(cntyfp = as.character(cntyfp),
+           geoid = cntyfp,
+           stfp = substr(cntyfp, 1,2),
+           baseYearPopPerPoll = baseYearTotalPop/baseYearPollingLocationsTotal,
+           lastGePopPerPoll = lastGeYearTotalPop/lastGeYearPollingLocsTotal,
+           changeYearPopPerPoll = baseYearPopPerPoll - lastGeYearPopPerPoll,
+           overallChange = noPollsAdded - noPollsRemoved)
+
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countiesLongitudinal.json"))
   
@@ -227,25 +226,23 @@ getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
 #' Writes out a json file at the year-tractfp level
 getTractsLongitudinal <- function(df, pollLocs, state_fips, years, pth) {
 
- 
-  df <- getLongitudinal(df, state_fips, years) %>% 
-    mutate(tractfp = geoid)
-  
+  df <- getLongitudinal(df) %>% 
+    mutate(tractfp = as.character(tractfp),
+           geoid = tractfp)
+
   pollLocs <- pollLocs %>% 
     group_by(tractfp, baseyear, changetype) %>% 
     tally() %>% 
-    rename(baseYear = baseyear,
-           status = changetype) %>% 
+    tidyr::pivot_wider(names_from = "changetype", values_from = "n") %>% 
+    rename(pollsRemoved = removed,
+           pollsAdded = added,
+           pollsNoChange = no_change,
+           baseYear = baseyear) %>% 
     mutate(tractfp = as.character(tractfp))
 
   df <- df %>% 
-    left_join(pollLocs %>% 
-                tidyr::pivot_wider(names_from = "status", values_from = "n") %>% 
-                rename(pollsRemoved = removed,
-                       pollsAdded = added,
-                       pollsNoChange = no_change)) %>% 
-    mutate(polling_locations_total = ifelse(is.na(polling_locations_total), 0, polling_locations_total),   ## todo fix this with new data
-           pollsRemoved = ifelse(is.na(pollsRemoved), 0, pollsRemoved),
+    left_join(pollLocs) %>% 
+    mutate(pollsRemoved = ifelse(is.na(pollsRemoved), 0, pollsRemoved),
            pollsAdded = ifelse(is.na(pollsAdded), 0, pollsAdded),
            pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange),
            overallChange = pollsAdded - pollsRemoved)
@@ -289,10 +286,7 @@ getPollsChangeStatus <- function(df) {
            tractfp = as.character(tractfp),
            status = case_when(status == "added" ~ "Added",
                               status == "no_change" ~ "No change",
-                              status == "removed" ~ "Removed"),
-           statusNumeric = case_when(status == "Added" ~ "3",
-                                     status == "No change" ~ "0",
-                                     status == "Removed" ~ "-3"))
+                              status == "removed" ~ "Removed"))
 
   exportJSON <- toJSON(df)
   write(exportJSON, "../data/processed/pollsChangeStatus.json")
@@ -311,14 +305,7 @@ getPollSummary <- function(df) {
            noPollsRemoved = nopollsremoved) %>% 
     mutate(cntyfp = as.character(cntyfp),
            geoid = cntyfp,
-           overallChange = noPollsAdded - noPollsRemoved,
-           statusNumeric = case_when(overallChange > 10 ~ "3",
-                                    overallChange > 3 & overallChange <= 10 ~ "2",
-                                    overallChange > 0 & overallChange <= 3~ "1",
-                                    overallChange == 0 ~ "0",
-                                    overallChange < 0 & overallChange >= -3 ~ "-1",
-                                    overallChange < -3 & overallChange >= -10 ~ "-2",
-                                    overallChange < -10 ~ "-3"))
+           overallChange = noPollsAdded - noPollsRemoved)
 
   return(df)
 }
