@@ -191,23 +191,29 @@ getLongitudinal <- function(df) {
 
 #' Get Counties longitudinal
 #' Writes out a json file at the year-cntyfp level
-getCountiesLongitudinal <- function(df, pollSummary, state_fips, years, pth) {
+getCountiesLongitudinal <- function(df, pth) {
   
-  df <- getLongitudinal(df) %>%
-    mutate(geoid = cntyfp) %>%
-    arrange(cntyfp, baseYear) %>% 
-    group_by(cntyfp) %>%
-    mutate(geYearPollingLocationsTotal = lag(baseYearPollingLocationsTotal),
-           geYearTotalPop = lag(baseYearTotalPop),
-           geYear = lag(baseYear),
-           changeYear = paste0(geYear, " - ", baseYear)) %>% 
-    filter(!is.na(geYearPollingLocationsTotal)) %>% 
-    mutate(geYearPopPerPoll = geYearTotalPop/geYearPollingLocationsTotal,
-           baseYearPopPerPoll = baseYearTotalPop/baseYearPollingLocationsTotal,
-           changeYearPopPerPoll = baseYearPopPerPoll - geYearPopPerPoll)
-
   df <- df %>% 
-    right_join(getPollSummary(pollSummary))  
+    rename(baseYear = baseyear,
+           changeYear = changeyear,
+           baseYearPctBlack = baseyearpctblack,
+           baseYearTotalPop = baseyeartotalpop,
+           baseYearPopDensity = baseyearpopdensity,
+           baseYearPollingLocationsTotal = baseyearpollinglocstotal,
+           lastGeYearTotalPop = lastgeyeartotalpop,
+           lastGeYearPollingLocsTotal = lastgeyearpollinglocstotal,
+           lastGeYearPopPerPoll = lastgeyearpopperpoll,
+           baseYearPopPerPoll = baseyearpopperpoll,
+           changeYearPopPerPoll = changeyearpopperpoll,
+           changeNoPolls = changenopolls,
+           noPollsAdded = nopollsadded,
+           noPollsRemoved = nopollsremoved) %>%
+    mutate(geoid = cntyfp,
+           stfp = substr(cntyfp, 1,2),
+           baseYearPopPerPoll = baseYearTotalPop/baseYearPollingLocationsTotal,
+           lastGePopPerPoll = lastGeYearTotalPop/lastGeYearPollingLocsTotal,
+           changeYearPopPerPoll = baseYearPopPerPoll - lastGeYearPopPerPoll,
+           overallChange = noPollsAdded - noPollsRemoved)
 
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countiesLongitudinal.json"))
