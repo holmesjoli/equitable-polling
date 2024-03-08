@@ -12,9 +12,7 @@ getCounties(state_fips, pth)
 getTracts(state_fips, years, pth)
 
 getVd(state_fips, pth)
-getCountiesLongitudinal(readr::read_csv("../data/raw/county_summary_slim.csv"), 
-                        readr::read_csv("../data/raw/indicators_change_summary_table.csv"),
-                        state_fips, years, pth)
+getCountiesLongitudinal(readr::read_csv("../data/raw/county_summary.csv"), pth)
 getPollsChangeStatus(readr::read_csv("../data/raw/polling_locations_table.csv"))
 getTractsLongitudinal(readr::read_csv("../data/raw/census_tract_summary_slim.csv"), 
                       readr::read_csv("../data/raw/polling_locations_table.csv"), state_fips, years, pth)
