@@ -232,7 +232,6 @@ getTractsLongitudinal <- function(df, pth) {
     mutate(tractfp = as.character(tractfp),
            cntyfp = as.character(cntyfp),
            geoid = as.character(geoid),
-           baseYearPctBlack = round(baseYearPctBlack*100, 1),
            pollsRemoved = ifelse(is.na(pollsRemoved), 0, pollsRemoved),
            pollsAdded = ifelse(is.na(pollsAdded), 0, pollsAdded),
            pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange),
