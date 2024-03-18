@@ -101,12 +101,12 @@ getTracts <- function(state_fips, years, pth) {
     yearsdata <- lapply(c(2010, 2020), function(year) {
       
       df <- tigris::tracts(state = state, year = year, cb = TRUE) %>% 
-        mutate(year = year)
+        mutate(baseYear = year)
       
       if (year == 2010) {
 
         df <- df %>%
-          select(COUNTY, STATE, TRACT, NAME, geometry, year) %>% 
+          select(COUNTY, STATE, TRACT, NAME, geometry, baseYear) %>% 
           rename(cntyfp = COUNTY,
                  stfp = STATE,
                  name = NAME,
@@ -114,7 +114,7 @@ getTracts <- function(state_fips, years, pth) {
 
       } else {
         df <- df %>% 
-          select(COUNTYFP, STATEFP, TRACTCE, NAME, GEOID, geometry, year) %>% 
+          select(COUNTYFP, STATEFP, TRACTCE, NAME, GEOID, geometry, baseYear) %>% 
           rename(cntyfp = COUNTYFP,
                  stfp = STATEFP,
                  name = NAME,
@@ -173,7 +173,7 @@ getVd <- function(state_fips, pth, year = 2020) {
 #' Get Counties longitudinal
 #' Writes out a json file at the year-cntyfp level
 getCountiesLongitudinal <- function(df, pth) {
-  
+
   df <- df %>% 
     rename(baseYear = baseyear,
            changeYear = changeyear,
@@ -194,17 +194,9 @@ getCountiesLongitudinal <- function(df, pth) {
            changeYearCVAPPerPoll = changeyearcvapperpoll,
            noPollsAdded = nopollsadded,
            noPollsRemoved = nopollsremoved) %>%
-    mutate(missingDataPopPerPollFlag = is.na(baseYearPopPerPoll) | is.na(lastGeYearPopPerPoll),
-           missingDataCVAPPerPollFlag = is.na(baseYearCVAPPerPoll) | is.na(lastGeYearCVAPPerPoll),
-           baseYearPopPerPoll = ifelse(is.na(baseYearPopPerPoll), 0, baseYearPopPerPoll),
-           lastGeYearPopPerPoll = ifelse(is.na(lastGeYearPopPerPoll), 0, lastGeYearPopPerPoll),
-           changeYearPopPerPoll = baseYearPopPerPoll - lastGeYearPopPerPoll,
-           changeYearPopPerPoll = ifelse(missingDataPopPerPollFlag, 0, changeYearPopPerPoll),
-           baseYearCVAPPerPoll = ifelse(is.na(baseYearCVAPPerPoll), 0, baseYearCVAPPerPoll),
-           lastGeYearCVAPPerPoll = ifelse(is.na(lastGeYearCVAPPerPoll), 0, lastGeYearCVAPPerPoll),
-           changeYearCVAPPerPoll = baseYearCVAPPerPoll - lastGeYearCVAPPerPoll,
-           changeYearCVAPPerPoll = ifelse(missingDataCVAPPerPollFlag, 0, changeYearCVAPPerPoll),
-           overallChange = noPollsAdded - noPollsRemoved)
+    mutate(overallChange = noPollsAdded - noPollsRemoved)
+  
+  df <- missingDataFlag(df)
 
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "countiesLongitudinal.json"))
@@ -228,7 +220,8 @@ getTractsLongitudinal <- function(df, pth) {
            baseYearPollingLocationsTotal = baseyearpollinglocstotal,
            pollsRemoved = nopollsremoved,
            pollsAdded = nopollsadded,
-           pollsNoChange = changenopolls) %>%
+           pollsNoChange = pollsnochange,
+           changeNoPolls = changenopolls) %>%
     mutate(tractfp = as.character(tractfp),
            cntyfp = as.character(cntyfp),
            geoid = as.character(geoid),
@@ -237,6 +230,8 @@ getTractsLongitudinal <- function(df, pth) {
            pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange),
            overallChange = pollsAdded - pollsRemoved) %>% 
     select(-pcthispanic)
+  
+  df <- missingDataFlag(df)
 
   exportJSON <- toJSON(df)
   write(exportJSON, file.path(pth, "tractsLongitudinal.json"))
@@ -260,9 +255,26 @@ getPollsChangeStatus <- function(df) {
            status = case_when(status == "added" ~ "Added",
                               status == "no_change" ~ "No change",
                               status == "removed" ~ "Removed"))
+  
+  df <- missingDataFlag(df)
 
   exportJSON <- toJSON(df)
   write(exportJSON, "../data/processed/pollsChangeStatus.json")
 
+  return(df)
+}
+
+missingDataFlag <- function(df) {
+  changeYear1214 <- c("28021", "28027", "28037", "28051", "28053", "28057", "28065", "28069", "28073", "28085", "28097", "28109", "28125", "28129", "28143", "28161", "28163")
+  changeYear1416 <- c("28021", "28027", "28035", "28053", "28057", "28069", "28073", "28079", "28085", "28089", "28095", "28103", "28109", "28115", "28125", "28129", "28161")
+  changeYear1618 <- c("28027", "28035", "28057", "28069", "28079", "28085", "28089", "28095", "28115")
+  changeYear1822 <- c("28027", "28069")
+  
+  df <- df %>% 
+    mutate(missingDataFlag = case_when(changeYear == "2012 - 2014" & cntyfp %in% changeYear1214 ~ TRUE,
+                                       changeYear == "2014 - 2016" & cntyfp %in% changeYear1416 ~ TRUE,
+                                       changeYear == "2016 - 2018" & cntyfp %in% changeYear1618 ~ TRUE,
+                                       changeYear == "2018 - 2022" & cntyfp %in% changeYear1822 ~ TRUE,
+                                       .default = FALSE))
   return(df)
 }
