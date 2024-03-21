@@ -230,7 +230,7 @@ getTractsLongitudinal <- function(df, pth) {
            pollsNoChange = ifelse(is.na(pollsNoChange), 0, pollsNoChange),
            overallChange = pollsAdded - pollsRemoved) %>% 
     select(-pcthispanic)
-  
+
   df <- missingDataFlag(df)
 
   exportJSON <- toJSON(df)
@@ -265,7 +265,7 @@ getPollsChangeStatus <- function(df) {
 }
 
 missingDataFlag <- function(df) {
-  changeYear1214 <- c("28021", "28027", "28037", "28051", "28053", "28057", "28065", "28069", "28073", "28085", "28097", "28109", "28125", "28129", "28143", "28161", "28163")
+  changeYear1214 <- c("28021", "28027", "28037", "28051", "28053", "28057", "28065", "28069", "28073", "28085", "28097", "28109", "28125", "28129", "28143", "28161", "28163", "28103")
   changeYear1416 <- c("28021", "28027", "28035", "28053", "28057", "28069", "28073", "28079", "28085", "28089", "28095", "28103", "28109", "28115", "28125", "28129", "28161")
   changeYear1618 <- c("28027", "28035", "28057", "28069", "28079", "28085", "28089", "28095", "28115")
   changeYear1822 <- c("28027", "28069")
